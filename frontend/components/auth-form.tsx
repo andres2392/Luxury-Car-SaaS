@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { loginUser, signupUser } from "@/lib/api";
-import { storeAuthSession } from "@/lib/auth";
+import { canManageCars, storeAuthSession } from "@/lib/auth";
 
 export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const router = useRouter();
@@ -48,7 +48,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
           : await loginUser({ email, password });
 
       storeAuthSession(payload);
-      router.push("/cars");
+      router.push(canManageCars(payload.user) ? "/dashboard" : "/cars");
       router.refresh();
     } catch (error) {
       setError(error instanceof Error ? error.message : "Could not complete request.");

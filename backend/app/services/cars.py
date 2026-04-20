@@ -15,6 +15,32 @@ def _car_query() -> Select[tuple[Car]]:
     return select(Car).options(joinedload(Car.dealer), joinedload(Car.images))
 
 
+def _get_dealer_for_user(db: Session, current_user: User) -> Dealer:
+    dealer = db.scalar(select(Dealer).where(Dealer.contact_email == current_user.email))
+    if dealer is None:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No dealer profile is linked to this account.",
+        )
+    return dealer
+
+
+def _get_manageable_car(db: Session, car_id: int, current_user: User) -> Car:
+    car = db.scalars(_car_query().where(Car.id == car_id)).unique().one_or_none()
+    if car is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Car not found.")
+
+    if current_user.role == UserRole.DEALER:
+        dealer = _get_dealer_for_user(db, current_user)
+        if car.dealer_id != dealer.id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You can only manage cars from your own dealership.",
+            )
+
+    return car
+
+
 def get_cars(
     db: Session,
     brand: str | None = None,
@@ -44,13 +70,26 @@ def get_car_by_id(db: Session, car_id: int) -> Car:
     return car
 
 
-def create_car(db: Session, payload: CarCreate, current_user: User) -> Car:
-    if current_user.role not in {UserRole.ADMIN, UserRole.DEALER}:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only admins and dealers can create cars.")
+def get_cars_for_dashboard(db: Session, current_user: User) -> list[Car]:
+    if current_user.role == UserRole.ADMIN:
+        return get_cars(db)
 
-    dealer = db.get(Dealer, payload.dealer_id)
-    if dealer is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Dealer not found.")
+    dealer = _get_dealer_for_user(db, current_user)
+    query = _car_query().where(Car.dealer_id == dealer.id).order_by(Car.created_at.desc())
+    return list(db.scalars(query).unique().all())
+
+
+def create_car(db: Session, payload: CarCreate, current_user: User) -> Car:
+    if current_user.role == UserRole.ADMIN:
+        if payload.dealer_id is None:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="dealer_id is required for admin car creation.")
+        dealer = db.get(Dealer, payload.dealer_id)
+        if dealer is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Dealer not found.")
+        dealer_id = dealer.id
+    else:
+        dealer = _get_dealer_for_user(db, current_user)
+        dealer_id = dealer.id
 
     car = Car(
         title=payload.title,
@@ -61,7 +100,7 @@ def create_car(db: Session, payload: CarCreate, current_user: User) -> Car:
         mileage=payload.mileage,
         description=payload.description,
         main_image_url=payload.main_image_url,
-        dealer_id=payload.dealer_id,
+        dealer_id=dealer_id,
     )
     db.add(car)
     db.flush()
@@ -74,15 +113,15 @@ def create_car(db: Session, payload: CarCreate, current_user: User) -> Car:
 
 
 def update_car(db: Session, car_id: int, payload: CarUpdate, current_user: User) -> Car:
-    if current_user.role not in {UserRole.ADMIN, UserRole.DEALER}:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only admins and dealers can update cars.")
-
-    car = db.scalars(_car_query().where(Car.id == car_id)).unique().one_or_none()
-    if car is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Car not found.")
+    car = _get_manageable_car(db, car_id, current_user)
 
     updates = payload.model_dump(exclude_unset=True, exclude={"image_urls"})
     if "dealer_id" in updates:
+        if current_user.role != UserRole.ADMIN:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Dealers cannot reassign cars to another dealership.",
+            )
         dealer = db.get(Dealer, updates["dealer_id"])
         if dealer is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Dealer not found.")
@@ -100,12 +139,7 @@ def update_car(db: Session, car_id: int, payload: CarUpdate, current_user: User)
 
 
 def delete_car(db: Session, car_id: int, current_user: User) -> None:
-    if current_user.role not in {UserRole.ADMIN, UserRole.DEALER}:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only admins and dealers can delete cars.")
-
-    car = db.get(Car, car_id)
-    if car is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Car not found.")
+    car = _get_manageable_car(db, car_id, current_user)
 
     db.delete(car)
     db.commit()

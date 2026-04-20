@@ -39,6 +39,8 @@ export interface Inquiry {
   email: string;
   message: string;
   created_at: string;
+  car_title?: string | null;
+  dealer_name?: string | null;
 }
 
 export interface AuthResponse {
@@ -63,7 +65,6 @@ export interface CarPayload {
   mileage: number;
   description?: string;
   main_image_url?: string;
-  dealer_id: number;
+  dealer_id?: number;
   image_urls?: string[];
 }
-

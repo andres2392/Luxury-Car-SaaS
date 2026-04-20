@@ -18,7 +18,7 @@ class CarCreate(ORMBaseSchema):
     mileage: int = Field(ge=0)
     description: str | None = None
     main_image_url: str | None = None
-    dealer_id: int
+    dealer_id: int | None = None
     image_urls: list[str] = Field(default_factory=list)
 
 

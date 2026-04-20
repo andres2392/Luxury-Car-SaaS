@@ -34,3 +34,12 @@ class Inquiry(Base):
     car: Mapped["Car"] = relationship(back_populates="inquiries")
     user: Mapped["User | None"] = relationship(back_populates="inquiries")
 
+    @property
+    def car_title(self) -> str | None:
+        return self.car.title if self.car is not None else None
+
+    @property
+    def dealer_name(self) -> str | None:
+        if self.car is None or self.car.dealer is None:
+            return None
+        return self.car.dealer.name

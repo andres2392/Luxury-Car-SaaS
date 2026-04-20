@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { SiteHeader } from "@/components/site-header";
+import { AppShell } from "@/components/app-shell";
 
 import "./globals.css";
 
@@ -17,8 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <SiteHeader />
-        <main className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-12">{children}</main>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

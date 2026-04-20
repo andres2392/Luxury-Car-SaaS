@@ -14,3 +14,8 @@ export function createInquiry(payload: {
   });
 }
 
+export function getDashboardInquiries() {
+  return apiRequest<Inquiry[]>("/inquiries", {
+    auth: true,
+  });
+}

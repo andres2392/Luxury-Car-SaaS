@@ -100,5 +100,8 @@ export function canManageCars(user: User | null) {
   return user?.role === "admin" || user?.role === "dealer";
 }
 
-export { AUTH_EVENT };
+export function isDealer(user: User | null) {
+  return user?.role === "dealer";
+}
 
+export { AUTH_EVENT };

@@ -3,10 +3,17 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, Response, status
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_db, require_dealer_or_admin
+from app.api.deps import get_db, require_dashboard_user, require_dealer_or_admin
 from app.models.user import User
 from app.schemas.car import CarCreate, CarResponse, CarUpdate
-from app.services.cars import create_car, delete_car, get_car_by_id, get_cars, update_car
+from app.services.cars import (
+    create_car,
+    delete_car,
+    get_car_by_id,
+    get_cars,
+    get_cars_for_dashboard,
+    update_car,
+)
 
 router = APIRouter(prefix="/cars", tags=["cars"])
 
@@ -20,6 +27,14 @@ def list_cars(
     year: int | None = Query(default=None, ge=1900),
 ) -> list[CarResponse]:
     return get_cars(db, brand=brand, min_price=min_price, max_price=max_price, year=year)
+
+
+@router.get("/mine", response_model=list[CarResponse])
+def list_my_cars(
+    db: Annotated[Session, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_dashboard_user)],
+) -> list[CarResponse]:
+    return get_cars_for_dashboard(db, current_user)
 
 
 @router.get("/{car_id}", response_model=CarResponse)

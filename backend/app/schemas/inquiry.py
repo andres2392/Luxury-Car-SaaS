@@ -22,4 +22,5 @@ class InquiryResponse(ORMBaseSchema):
     email: str
     message: str
     created_at: datetime
-
+    car_title: str | None = None
+    dealer_name: str | None = None

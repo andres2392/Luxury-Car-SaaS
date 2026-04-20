@@ -17,3 +17,23 @@ export function createCar(payload: CarPayload) {
   });
 }
 
+export function updateCar(id: number | string, payload: Partial<CarPayload>) {
+  return apiRequest<Car>(`/cars/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+    auth: true,
+  });
+}
+
+export function deleteCar(id: number | string) {
+  return apiRequest<void>(`/cars/${id}`, {
+    method: "DELETE",
+    auth: true,
+  });
+}
+
+export function getMyCars() {
+  return apiRequest<Car[]>("/cars/mine", {
+    auth: true,
+  });
+}

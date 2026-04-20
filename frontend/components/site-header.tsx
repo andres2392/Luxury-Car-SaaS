@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { useAuthSession } from "@/hooks/use-auth-session";
-import { clearAuthSession, isAdmin } from "@/lib/auth";
+import { canManageCars, clearAuthSession } from "@/lib/auth";
 
 export function SiteHeader() {
   const { isReady, user } = useAuthSession();
@@ -26,7 +26,7 @@ export function SiteHeader() {
             Cars
           </Link>
 
-          {isReady && isAdmin(user) ? (
+          {isReady && canManageCars(user) ? (
             <Link href="/dashboard" className="px-3 py-2 text-sm text-[var(--color-muted-foreground)] transition hover:text-[var(--color-foreground)]">
               Dashboard
             </Link>
