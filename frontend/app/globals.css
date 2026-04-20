@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --color-background: #efe7da;
-  --color-foreground: #111111;
-  --color-card: #fffaf2;
-  --color-card-foreground: #111111;
-  --color-muted: #e6ddcf;
-  --color-muted-foreground: #5f5a53;
-  --color-border: rgba(17, 17, 17, 0.1);
-  --color-accent: #c39d5f;
-  --color-accent-foreground: #17120a;
-  --font-heading: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia,
-    serif;
-  --font-body: "Avenir Next", "Segoe UI", "Helvetica Neue", Helvetica, Arial,
-    sans-serif;
+  --color-background: #f6f2ea;
+  --color-foreground: #161311;
+  --color-card: #fffaf3;
+  --color-card-foreground: #161311;
+  --color-muted: #efe7db;
+  --color-muted-foreground: #73695e;
+  --color-border: rgba(22, 19, 17, 0.1);
+  --color-accent: #b99152;
+  --color-accent-foreground: #fffaf4;
+  --font-heading: "Baskerville", "Iowan Old Style", "Palatino Linotype",
+    "Book Antiqua", Georgia, serif;
+  --font-body: "Avenir Next", "Neue Haas Grotesk Text Pro", "Segoe UI",
+    "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 * {
@@ -30,6 +30,10 @@ body {
   font-family: var(--font-body);
   color: var(--color-foreground);
   background: var(--color-background);
+  background-image:
+    radial-gradient(circle at top, rgba(185, 145, 82, 0.2), transparent 26%),
+    radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.7), transparent 16%),
+    linear-gradient(180deg, #fbf8f2 0%, #f4eee3 46%, #efe6d7 100%);
 }
 
 .font-heading {

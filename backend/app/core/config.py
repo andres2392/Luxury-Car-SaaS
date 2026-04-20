@@ -22,6 +22,10 @@ class Settings(BaseSettings):
         default="postgresql+psycopg://luxury_admin:luxury_password@localhost:5432/luxury_car_saas",
         alias="DATABASE_URL",
     )
+    secret_key: str = Field(default="change-this-in-production", alias="SECRET_KEY")
+    access_token_expire_minutes: int = Field(default=60, alias="ACCESS_TOKEN_EXPIRE_MINUTES")
+    backend_cors_origins: str = Field(default="http://localhost:3000", alias="BACKEND_CORS_ORIGINS")
+    admin_email: str = Field(default="admin@luxury.owner", alias="ADMIN_EMAIL")
 
 
 @lru_cache
@@ -30,4 +34,3 @@ def get_settings() -> Settings:
 
 
 settings = get_settings()
-

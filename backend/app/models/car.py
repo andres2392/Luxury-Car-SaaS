@@ -47,3 +47,6 @@ class Car(Base):
         cascade="all, delete-orphan",
     )
 
+    @property
+    def image_urls(self) -> list[str]:
+        return [image.image_url for image in self.images]

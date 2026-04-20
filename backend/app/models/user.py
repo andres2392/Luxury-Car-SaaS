@@ -22,7 +22,11 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     role: Mapped[UserRole] = mapped_column(
-        Enum(UserRole, name="user_role"),
+        Enum(
+            UserRole,
+            name="user_role",
+            values_callable=lambda enum_class: [item.value for item in enum_class],
+        ),
         index=True,
         nullable=False,
     )
@@ -36,4 +40,3 @@ class User(Base):
         back_populates="user",
         passive_deletes=True,
     )
-

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { SiteHeader } from "@/components/site-header";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,7 +16,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <SiteHeader />
+        <main className="mx-auto max-w-7xl px-6 sm:px-10 lg:px-12">{children}</main>
+      </body>
     </html>
   );
 }
