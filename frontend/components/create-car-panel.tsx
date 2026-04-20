@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,12 +9,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createCar } from "@/lib/api";
-import { getStoredToken, getStoredUser } from "@/lib/auth";
-import type { Dealer, User } from "@/lib/types";
+import { canManageCars } from "@/lib/auth";
+import { useAuthSession } from "@/hooks/use-auth-session";
+import type { Dealer } from "@/lib/types";
 
 interface CreateCarPanelProps {
   dealers: Dealer[];
-  onCreated: () => Promise<void>;
 }
 
 const initialForm = {
@@ -29,29 +30,31 @@ const initialForm = {
   image_urls: "",
 };
 
-export function CreateCarPanel({ dealers, onCreated }: CreateCarPanelProps) {
+export function CreateCarPanel({ dealers }: CreateCarPanelProps) {
+  const router = useRouter();
+  const { user } = useAuthSession();
   const [form, setForm] = useState(initialForm);
-  const [user, setUser] = useState<User | null>(null);
   const [status, setStatus] = useState("");
+  const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    setUser(getStoredUser());
-  }, []);
-
-  const canCreate = user?.role === "admin" || user?.role === "dealer";
+  const canCreate = useMemo(() => canManageCars(user), [user]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const token = getStoredToken();
+    setStatus("");
+    setError("");
 
-    if (!token) {
-      setStatus("Please log in as a dealer or admin first.");
+    if (!canCreate) {
+      setError("You do not have permission to create car listings.");
+      return;
+    }
+
+    if (!form.title.trim() || !form.brand.trim() || !form.model.trim() || !form.dealer_id) {
+      setError("Please complete the required fields.");
       return;
     }
 
     setIsSubmitting(true);
-    setStatus("");
 
     try {
       await createCar(
@@ -69,14 +72,14 @@ export function CreateCarPanel({ dealers, onCreated }: CreateCarPanelProps) {
             .split(",")
             .map((item) => item.trim())
             .filter(Boolean),
-        },
-        token
+        }
       );
       setForm(initialForm);
       setStatus("Car created successfully.");
-      await onCreated();
+      router.push("/cars");
+      router.refresh();
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Could not create car.");
+      setError(error instanceof Error ? error.message : "Could not create car.");
     } finally {
       setIsSubmitting(false);
     }
@@ -162,10 +165,11 @@ export function CreateCarPanel({ dealers, onCreated }: CreateCarPanelProps) {
             />
           </div>
 
+          {error ? <p className="text-sm text-red-600">{error}</p> : null}
           {status ? <p className="text-sm text-[var(--color-muted-foreground)]">{status}</p> : null}
 
           <Button type="submit" disabled={!canCreate || isSubmitting}>
-            {isSubmitting ? "Creating..." : canCreate ? "Create listing" : "Dealer or admin login required"}
+            {isSubmitting ? "Creating..." : canCreate ? "Create listing" : "Admin access required"}
           </Button>
         </form>
       </CardContent>

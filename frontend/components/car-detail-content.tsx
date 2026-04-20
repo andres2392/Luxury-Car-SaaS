@@ -2,9 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import { LoadingState } from "@/components/loading-state";
+import { SectionHeading } from "@/components/section-heading";
 import { InquiryForm } from "@/components/inquiry-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { getCar } from "@/lib/api";
+import { getCarById } from "@/lib/api";
 import type { Car } from "@/lib/types";
 
 function formatPrice(price: string) {
@@ -22,7 +24,7 @@ export function CarDetailContent({ carId }: { carId: string }) {
   useEffect(() => {
     async function loadCar() {
       try {
-        const data = await getCar(carId);
+        const data = await getCarById(carId);
         setCar(data);
         setStatus("");
       } catch (error) {
@@ -43,13 +45,7 @@ export function CarDetailContent({ carId }: { carId: string }) {
   }, [car]);
 
   if (!car) {
-    return (
-      <Card className="mt-10">
-        <CardContent className="p-6 text-sm text-[var(--color-muted-foreground)]">
-          {status}
-        </CardContent>
-      </Card>
-    );
+    return <LoadingState message={status} />;
   }
 
   return (
@@ -77,10 +73,7 @@ export function CarDetailContent({ carId }: { carId: string }) {
 
         <div className="space-y-6">
           <div>
-            <p className="text-sm uppercase tracking-[0.2em] text-[var(--color-muted-foreground)]">
-              {car.brand} {car.model}
-            </p>
-            <h1 className="mt-3 font-heading text-5xl tracking-[-0.05em]">{car.title}</h1>
+            <SectionHeading eyebrow={`${car.brand} ${car.model}`} title={car.title} />
             <p className="mt-4 text-3xl font-semibold text-[var(--color-accent)]">
               {formatPrice(car.price)}
             </p>
@@ -136,4 +129,3 @@ export function CarDetailContent({ carId }: { carId: string }) {
     </div>
   );
 }
-

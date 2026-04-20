@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createInquiry } from "@/lib/api";
-import { getStoredToken, getStoredUser } from "@/lib/auth";
+import { getStoredUser } from "@/lib/auth";
 
 export function InquiryForm({ carId }: { carId: number }) {
   const storedUser = getStoredUser();
@@ -15,11 +15,24 @@ export function InquiryForm({ carId }: { carId: number }) {
   const [email, setEmail] = useState(storedUser?.email ?? "");
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState("");
+  const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus("");
+    setError("");
+
+    if (!name.trim() || !email.trim() || !message.trim()) {
+      setError("Please complete all required fields.");
+      return;
+    }
+
+    if (!email.includes("@")) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -29,13 +42,12 @@ export function InquiryForm({ carId }: { carId: number }) {
           name,
           email,
           message,
-        },
-        getStoredToken()
+        }
       );
       setMessage("");
       setStatus("Inquiry sent successfully.");
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Could not send inquiry.");
+      setError(error instanceof Error ? error.message : "Could not send inquiry.");
     } finally {
       setIsSubmitting(false);
     }
@@ -62,6 +74,7 @@ export function InquiryForm({ carId }: { carId: number }) {
         />
       </div>
 
+      {error ? <p className="text-sm text-red-600">{error}</p> : null}
       {status ? <p className="text-sm text-[var(--color-muted-foreground)]">{status}</p> : null}
 
       <Button type="submit" disabled={isSubmitting}>
@@ -70,4 +83,3 @@ export function InquiryForm({ carId }: { carId: number }) {
     </form>
   );
 }
-

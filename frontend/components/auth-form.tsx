@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { login, signup } from "@/lib/api";
+import { loginUser, signupUser } from "@/lib/api";
 import { storeAuthSession } from "@/lib/auth";
 
 export function AuthForm({ mode }: { mode: "login" | "signup" }) {
@@ -16,24 +16,42 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState("");
+  const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus("");
+    setError("");
+
+    if (!email.trim() || !password.trim()) {
+      setError("Please fill in both email and password.");
+      return;
+    }
+
+    if (!email.includes("@")) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    if (mode === "signup" && password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       const payload =
         mode === "signup"
-          ? await signup({ email, password })
-          : await login({ email, password });
+          ? await signupUser({ email, password })
+          : await loginUser({ email, password });
 
       storeAuthSession(payload);
       router.push("/cars");
       router.refresh();
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Could not complete request.");
+      setError(error instanceof Error ? error.message : "Could not complete request.");
     } finally {
       setIsSubmitting(false);
     }
@@ -68,6 +86,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
               />
             </div>
 
+            {error ? <p className="text-sm text-red-600">{error}</p> : null}
             {status ? <p className="text-sm text-[var(--color-muted-foreground)]">{status}</p> : null}
 
             <Button type="submit" className="w-full" disabled={isSubmitting}>

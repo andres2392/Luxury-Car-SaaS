@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, Response, status
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user, get_db
+from app.api.deps import get_db, require_dealer_or_admin
 from app.models.user import User
 from app.schemas.car import CarCreate, CarResponse, CarUpdate
 from app.services.cars import create_car, delete_car, get_car_by_id, get_cars, update_car
@@ -31,7 +31,7 @@ def get_car(car_id: int, db: Annotated[Session, Depends(get_db)]) -> CarResponse
 def create_car_route(
     payload: CarCreate,
     db: Annotated[Session, Depends(get_db)],
-    current_user: Annotated[User, Depends(get_current_user)],
+    current_user: Annotated[User, Depends(require_dealer_or_admin)],
 ) -> CarResponse:
     return create_car(db, payload, current_user)
 
@@ -41,7 +41,7 @@ def update_car_route(
     car_id: int,
     payload: CarUpdate,
     db: Annotated[Session, Depends(get_db)],
-    current_user: Annotated[User, Depends(get_current_user)],
+    current_user: Annotated[User, Depends(require_dealer_or_admin)],
 ) -> CarResponse:
     return update_car(db, car_id, payload, current_user)
 
@@ -50,8 +50,7 @@ def update_car_route(
 def delete_car_route(
     car_id: int,
     db: Annotated[Session, Depends(get_db)],
-    current_user: Annotated[User, Depends(get_current_user)],
+    current_user: Annotated[User, Depends(require_dealer_or_admin)],
 ) -> Response:
     delete_car(db, car_id, current_user)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
-

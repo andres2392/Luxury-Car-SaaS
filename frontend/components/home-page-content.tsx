@@ -5,25 +5,32 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { CarCard } from "@/components/car-card";
+import { LoadingState } from "@/components/loading-state";
+import { SectionHeading } from "@/components/section-heading";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { listCars } from "@/lib/api";
+import { getCars } from "@/lib/api";
 import type { Car } from "@/lib/types";
 
 export function HomePageContent() {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [cars, setCars] = useState<Car[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     async function loadFeaturedCars() {
+      setIsLoading(true);
       try {
-        const data = await listCars();
+        const data = await getCars();
         setCars(data.slice(0, 3));
+        setError("");
       } catch (err) {
         setError(err instanceof Error ? err.message : "Could not load featured cars.");
+      } finally {
+        setIsLoading(false);
       }
     }
 
@@ -104,20 +111,19 @@ export function HomePageContent() {
 
       <section className="space-y-6">
         <div className="flex items-end justify-between gap-4">
-          <div>
-            <p className="text-sm uppercase tracking-[0.2em] text-[var(--color-muted-foreground)]">
-              Featured Cars
-            </p>
-            <h2 className="mt-2 font-heading text-4xl tracking-[-0.04em]">
-              A curated first impression
-            </h2>
-          </div>
+          <SectionHeading
+            eyebrow="Featured Cars"
+            title="A curated first impression"
+            className="space-y-2"
+          />
           <Button variant="secondary" onClick={() => router.push("/cars")}>
             View all cars
           </Button>
         </div>
 
-        {error ? (
+        {isLoading ? (
+          <LoadingState message="Loading featured cars..." />
+        ) : error ? (
           <Card>
             <CardContent className="p-6 text-sm text-[var(--color-muted-foreground)]">
               {error}
@@ -134,4 +140,3 @@ export function HomePageContent() {
     </div>
   );
 }
-

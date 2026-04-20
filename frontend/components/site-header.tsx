@@ -1,36 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { clearAuthSession, getStoredUser } from "@/lib/auth";
-import type { User } from "@/lib/types";
+import { useAuthSession } from "@/hooks/use-auth-session";
+import { clearAuthSession, isAdmin } from "@/lib/auth";
 
 export function SiteHeader() {
-  const [isReady, setIsReady] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    setUser(getStoredUser());
-    setIsReady(true);
-
-    const handleStorageChange = () => {
-      setUser(getStoredUser());
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    window.addEventListener("focus", handleStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener("focus", handleStorageChange);
-    };
-  }, []);
+  const { isReady, user } = useAuthSession();
 
   const handleLogout = () => {
     clearAuthSession();
-    setUser(null);
     window.location.href = "/";
   };
 
@@ -45,6 +25,12 @@ export function SiteHeader() {
           <Link href="/cars" className="px-3 py-2 text-sm text-[var(--color-muted-foreground)] transition hover:text-[var(--color-foreground)]">
             Cars
           </Link>
+
+          {isReady && isAdmin(user) ? (
+            <Link href="/dashboard" className="px-3 py-2 text-sm text-[var(--color-muted-foreground)] transition hover:text-[var(--color-foreground)]">
+              Dashboard
+            </Link>
+          ) : null}
 
           {isReady && user ? (
             <>

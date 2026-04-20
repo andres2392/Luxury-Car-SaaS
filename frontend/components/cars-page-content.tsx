@@ -1,33 +1,52 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { CarCard } from "@/components/car-card";
+import { EmptyState } from "@/components/empty-state";
+import { LoadingState } from "@/components/loading-state";
+import { SectionHeading } from "@/components/section-heading";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { listCars } from "@/lib/api";
+import { getCars } from "@/lib/api";
 import type { Car } from "@/lib/types";
 
-export function CarsPageContent({ initialSearch = "" }: { initialSearch?: string }) {
+export function CarsPageContent({
+  initialSearch = "",
+  initialBrand = "",
+  initialMinPrice = "",
+  initialMaxPrice = "",
+}: {
+  initialSearch?: string;
+  initialBrand?: string;
+  initialMinPrice?: string;
+  initialMaxPrice?: string;
+}) {
+  const router = useRouter();
   const [cars, setCars] = useState<Car[]>([]);
-  const [brand, setBrand] = useState("");
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
-  const [status, setStatus] = useState("Loading cars...");
+  const [brand, setBrand] = useState(initialBrand);
+  const [minPrice, setMinPrice] = useState(initialMinPrice);
+  const [maxPrice, setMaxPrice] = useState(initialMaxPrice);
+  const [status, setStatus] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const searchTerm = initialSearch;
 
-  async function loadCars() {
-    setStatus("Loading cars...");
+  async function loadCars(nextFilters?: { brand: string; minPrice: string; maxPrice: string }) {
+    const filters = nextFilters ?? { brand, minPrice, maxPrice };
+    setIsLoading(true);
     try {
-      const data = await listCars({
-        brand,
-        min_price: minPrice,
-        max_price: maxPrice,
+      const data = await getCars({
+        brand: filters.brand,
+        min_price: filters.minPrice,
+        max_price: filters.maxPrice,
       });
       setCars(data);
-      setStatus(data.length ? "" : "No cars matched your filters.");
+      setStatus("");
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Could not load cars.");
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -46,18 +65,32 @@ export function CarsPageContent({ initialSearch = "" }: { initialSearch?: string
     );
   }, [cars, searchTerm]);
 
+  const applyFilters = () => {
+    const params = new URLSearchParams();
+    if (searchTerm.trim()) {
+      params.set("search", searchTerm.trim());
+    }
+    if (brand.trim()) {
+      params.set("brand", brand.trim());
+    }
+    if (minPrice.trim()) {
+      params.set("min_price", minPrice.trim());
+    }
+    if (maxPrice.trim()) {
+      params.set("max_price", maxPrice.trim());
+    }
+
+    router.replace(`/cars${params.toString() ? `?${params.toString()}` : ""}`);
+    void loadCars({ brand, minPrice, maxPrice });
+  };
+
   return (
     <div className="space-y-8 py-10">
-      <div className="space-y-3">
-        <p className="text-sm uppercase tracking-[0.2em] text-[var(--color-muted-foreground)]">
-          Inventory
-        </p>
-        <h1 className="font-heading text-5xl tracking-[-0.05em]">Luxury cars</h1>
-        <p className="max-w-2xl text-lg leading-8 text-[var(--color-muted-foreground)]">
-          Browse the current marketplace, filter by brand and price, and create
-          new listings when you are authenticated as a dealer or admin.
-        </p>
-      </div>
+      <SectionHeading
+        eyebrow="Inventory"
+        title="Luxury cars"
+        description="Browse the current marketplace, filter by brand and price, and explore a more connected premium catalog experience."
+      />
 
       <Card>
         <CardHeader>
@@ -69,7 +102,7 @@ export function CarsPageContent({ initialSearch = "" }: { initialSearch?: string
           <Input placeholder="Max price" type="number" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} />
           <button
             type="button"
-            onClick={() => void loadCars()}
+            onClick={applyFilters}
             className="h-11 rounded-full bg-[var(--color-foreground)] px-5 text-sm font-medium text-white"
           >
             Apply
@@ -83,12 +116,21 @@ export function CarsPageContent({ initialSearch = "" }: { initialSearch?: string
         </p>
       ) : null}
 
-      {status ? (
+      {isLoading ? (
+        <LoadingState message="Loading cars..." />
+      ) : status ? (
         <Card>
           <CardContent className="p-6 text-sm text-[var(--color-muted-foreground)]">
             {status}
           </CardContent>
         </Card>
+      ) : filteredCars.length === 0 ? (
+        <EmptyState
+          title="No matching cars"
+          description="Try widening the price range or changing the brand search to explore more inventory."
+          actionLabel="Reset filters"
+          actionHref="/cars"
+        />
       ) : (
         <div className="grid gap-6 lg:grid-cols-3">
           {filteredCars.map((car) => (

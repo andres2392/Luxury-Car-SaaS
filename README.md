@@ -1,21 +1,20 @@
 # Luxury-Car-SaaS
 
-Premium luxury car dealer SaaS foundation built as a monorepo with:
+Premium luxury car dealer SaaS platform built as a monorepo with:
 
 - `frontend`: Next.js 15 App Router + TypeScript + Tailwind CSS + shadcn/ui-style setup
 - `backend`: FastAPI + SQLAlchemy + Alembic + PostgreSQL
 - `infra`: Docker Compose for local PostgreSQL and backend
 
-This repository intentionally includes only Phase 1 and Phase 2:
+This repository currently includes:
 
-- project setup
-- database foundation
-- initial schema and migration
-- sample seed data
+- project setup and monorepo structure
+- PostgreSQL schema, models, and Alembic migrations
+- FastAPI auth and marketplace API routes
+- Next.js marketplace pages and protected admin entry points
+- shared frontend API/auth helpers and UI polish
 
-It does **not** include auth, dashboards, or full feature pages yet.
-
-## Final Folder Structure
+## Project Structure
 
 ```text
 Luxury-Car-SaaS/
@@ -89,7 +88,14 @@ Luxury-Car-SaaS/
 
 ```bash
 cd frontend
-npm install
+npm install --legacy-peer-deps
+npm run dev
+```
+
+Create frontend env if needed:
+
+```bash
+cp .env.example .env.local
 npm run dev
 ```
 
@@ -139,10 +145,12 @@ alembic upgrade head
 python -m scripts.seed
 ```
 
-## How Everything Connects
+## How Frontend And Backend Connect
 
-The frontend is a standalone Next.js app inside `frontend/`, ready for future pages and API integration. For now it provides a polished starter landing page so the UI foundation is confirmed working.
+The frontend talks to FastAPI through `NEXT_PUBLIC_API_BASE_URL`, which defaults to `http://localhost:8000`. You can override it in [frontend/.env.example](/Users/andresg/Codex%20Prj/Luxury-Car-SaaS/frontend/.env.example) by creating `frontend/.env.local`.
 
-The backend lives in `backend/` and uses FastAPI for HTTP, SQLAlchemy for models and relationships, and Alembic for schema migrations. Configuration is loaded from environment variables via `pydantic-settings`, and the database session is shared through dependency injection.
+The frontend uses a centralized API client under `frontend/lib/api/` so JSON handling, auth token attachment, and common error parsing stay in one place. Auth data is stored in localStorage and reused after refresh for protected flows like dashboard access and car creation.
 
-PostgreSQL is the system of record. The initial migration creates `users`, `dealers`, `cars`, `car_images`, and `inquiries` with indexes and foreign keys. The seed script inserts a small realistic luxury inventory so the database foundation is usable immediately for future phases.
+The backend lives in `backend/` and uses FastAPI for HTTP, SQLAlchemy for data access, and Alembic for migrations. JWT authentication protects sensitive endpoints, while service functions keep business logic out of route handlers.
+
+PostgreSQL is the system of record. The existing migration creates `users`, `dealers`, `cars`, `car_images`, and `inquiries`, and the seed script loads a starter luxury inventory so the frontend has meaningful data to display.
