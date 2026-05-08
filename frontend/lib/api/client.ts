@@ -1,6 +1,9 @@
-import { getStoredToken } from "@/lib/auth";
+import { clearAuthSession, getStoredToken } from "@/lib/auth";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ??
+  process.env.NEXT_PUBLIC_API_BASE_URL ??
+  "http://localhost:8000";
 
 export class APIError extends Error {
   status: number;
@@ -59,6 +62,11 @@ export async function apiRequest<T>(
       if (response.statusText) {
         message = response.statusText;
       }
+    }
+
+    if (options.auth && response.status === 401) {
+      clearAuthSession();
+      message = "Your session expired. Please log in again.";
     }
 
     throw new APIError(message, response.status);

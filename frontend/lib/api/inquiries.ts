@@ -19,3 +19,9 @@ export function getDashboardInquiries() {
     auth: true,
   });
 }
+
+export function getMyInquiries() {
+  return apiRequest<Inquiry[]>("/inquiries/mine", {
+    auth: true,
+  });
+}

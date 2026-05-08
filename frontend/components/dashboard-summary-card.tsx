@@ -8,11 +8,10 @@ export function DashboardSummaryCard({
   helper: string;
 }) {
   return (
-    <div className="rounded-[1.75rem] border border-white/8 bg-white/[0.04] p-5 shadow-[0_18px_50px_rgba(0,0,0,0.2)]">
-      <p className="text-xs uppercase tracking-[0.18em] text-[#7f8ea3]">{label}</p>
-      <p className="mt-4 font-heading text-5xl tracking-[-0.04em] text-white">{value}</p>
-      <p className="mt-3 text-sm leading-7 text-[#95a8c0]">{helper}</p>
+    <div className="flex min-h-[220px] flex-col border border-[#2b2d29] bg-[#1a1b18] px-5 py-6">
+      <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f968c]">{label}</p>
+      <p className="mt-4 font-heading text-5xl tracking-[-0.04em] text-[#f1eadf]">{value}</p>
+      <p className="mt-auto pt-4 text-sm leading-7 text-[#9fa496]">{helper}</p>
     </div>
   );
 }
-

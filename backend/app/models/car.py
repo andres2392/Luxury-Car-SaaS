@@ -46,6 +46,10 @@ class Car(Base):
         back_populates="car",
         cascade="all, delete-orphan",
     )
+    favorites: Mapped[list["Favorite"]] = relationship(
+        back_populates="car",
+        cascade="all, delete-orphan",
+    )
 
     @property
     def image_urls(self) -> list[str]:

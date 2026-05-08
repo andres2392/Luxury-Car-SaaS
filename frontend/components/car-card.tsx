@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import type { Car } from "@/lib/types";
@@ -11,10 +12,16 @@ function formatPrice(price: string) {
   }).format(Number(price));
 }
 
-export function CarCard({ car }: { car: Car }) {
+export function CarCard({
+  car,
+  action,
+}: {
+  car: Car;
+  action?: ReactNode;
+}) {
   return (
-    <Link href={`/cars/${car.id}`} className="block transition-transform duration-300 hover:-translate-y-1">
-      <Card className="overflow-hidden">
+    <Card className="overflow-hidden transition-transform duration-300 hover:-translate-y-1">
+      <Link href={`/cars/${car.id}`} className="block">
         <div className="aspect-[16/10] w-full bg-[linear-gradient(135deg,#f6ede0_0%,#eadcc5_100%)]">
           {car.main_image_url ? (
             <img
@@ -28,30 +35,34 @@ export function CarCard({ car }: { car: Car }) {
             </div>
           )}
         </div>
-        <CardContent className="space-y-3 p-5">
-          <div className="flex items-start justify-between gap-4">
-            <div>
+      </Link>
+      <CardContent className="space-y-4 p-5">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <Link href={`/cars/${car.id}`}>
               <p className="font-heading text-2xl tracking-[-0.03em]">{car.title}</p>
-              <p className="mt-1 text-sm text-[var(--color-muted-foreground)]">
-                {car.brand} {car.model} • {car.year}
-              </p>
-            </div>
-            <div className="text-right">
-              <p className="text-lg font-semibold text-[var(--color-accent)]">
-                {formatPrice(car.price)}
-              </p>
-              <p className="text-xs uppercase tracking-[0.12em] text-[var(--color-muted-foreground)]">
-                {car.mileage.toLocaleString()} miles
-              </p>
-            </div>
+            </Link>
+            <p className="mt-1 text-sm text-[var(--color-muted-foreground)]">
+              {car.brand} {car.model} • {car.year}
+            </p>
           </div>
+          <div className="text-right">
+            <p className="text-lg font-semibold text-[var(--color-accent)]">
+              {formatPrice(car.price)}
+            </p>
+            <p className="text-xs uppercase tracking-[0.12em] text-[var(--color-muted-foreground)]">
+              {car.mileage.toLocaleString()} miles
+            </p>
+          </div>
+        </div>
 
+        <div className="flex items-center justify-between gap-3">
           <div className="rounded-full border border-[var(--color-border)] px-3 py-2 text-xs uppercase tracking-[0.14em] text-[var(--color-muted-foreground)]">
             {car.dealer.name}
           </div>
-        </CardContent>
-      </Card>
-    </Link>
+          {action}
+        </div>
+      </CardContent>
+    </Card>
   );
 }
-

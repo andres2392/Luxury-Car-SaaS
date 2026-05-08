@@ -5,6 +5,7 @@ from decimal import Decimal
 
 from pydantic import Field
 
+from app.schemas.car_image import CarImageResponse
 from app.schemas.common import ORMBaseSchema
 from app.schemas.dealer import DealerResponse
 
@@ -48,4 +49,5 @@ class CarResponse(ORMBaseSchema):
     dealer_id: int
     created_at: datetime
     image_urls: list[str]
+    images: list[CarImageResponse]
     dealer: DealerResponse

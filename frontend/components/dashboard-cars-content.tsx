@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
-import { EmptyState } from "@/components/empty-state";
 import { LoadingState } from "@/components/loading-state";
 import { Button } from "@/components/ui/button";
 import { getMyCars } from "@/lib/api";
@@ -25,38 +24,33 @@ export function DashboardCarsContent() {
   const [minPriceFilter, setMinPriceFilter] = useState("");
   const [maxPriceFilter, setMaxPriceFilter] = useState("");
 
-  async function loadCars() {
-    try {
-      const data = await getMyCars();
-      setCars(data);
-      setStatus("");
-    } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Could not load cars.");
-    }
-  }
-
   useEffect(() => {
+    async function loadCars() {
+      try {
+        const data = await getMyCars();
+        setCars(data);
+        setStatus("");
+      } catch (error) {
+        setStatus(error instanceof Error ? error.message : "Could not load cars.");
+      }
+    }
+
     void loadCars();
   }, []);
 
   const availableBrands = useMemo(
-    () =>
-      [...new Set(cars.map((car) => car.brand))]
-        .sort((a, b) => a.localeCompare(b)),
+    () => [...new Set(cars.map((car) => car.brand))].sort((a, b) => a.localeCompare(b)),
     [cars]
   );
 
   const availableYears = useMemo(
-    () =>
-      [...new Set(cars.map((car) => car.year))]
-        .sort((a, b) => b - a),
+    () => [...new Set(cars.map((car) => car.year))].sort((a, b) => b - a),
     [cars]
   );
 
   const filteredCars = useMemo(() => {
     return cars.filter((car) => {
-      const matchesBrand =
-        brandFilter.length === 0 || brandFilter.includes(car.brand);
+      const matchesBrand = brandFilter.length === 0 || brandFilter.includes(car.brand);
       const matchesYear = !yearFilter || String(car.year) === yearFilter;
       const numericPrice = Number(car.price);
       const matchesMin = !minPriceFilter || numericPrice >= Number(minPriceFilter);
@@ -66,31 +60,27 @@ export function DashboardCarsContent() {
     });
   }, [brandFilter, cars, maxPriceFilter, minPriceFilter, yearFilter]);
 
+  function toggleBrand(brand: string) {
+    setBrandFilter((current) =>
+      current.includes(brand) ? current.filter((item) => item !== brand) : [...current, brand]
+    );
+  }
+
   if (status) {
     return <LoadingState message={status} />;
   }
 
-  function toggleBrand(brand: string) {
-    setBrandFilter((current) =>
-      current.includes(brand)
-        ? current.filter((item) => item !== brand)
-        : [...current, brand]
-    );
-  }
-
   return (
-    <div className="-m-6 text-[#101828] md:-m-8">
-      <div className="min-h-full rounded-[calc(2rem-1px)] bg-[linear-gradient(180deg,#f8fbff_0%,#edf4ff_100%)] p-4 shadow-[0_30px_90px_rgba(23,37,84,0.16)] md:p-6">
-        <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)]">
-          <aside className="rounded-[1.75rem] bg-white/88 p-6 shadow-[0_18px_50px_rgba(148,163,184,0.18)]">
+    <div className="pr-6 text-[#f1eadf] lg:pr-10 xl:pr-14">
+      <div className="min-h-full">
+        <div className="grid gap-4 xl:grid-cols-[280px_minmax(0,1fr)]">
+          <aside className="bg-[#1a1b18] p-6">
             <div className="space-y-1">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#7c8aa5]">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8f968c]">
                 Dashboard / Cars
               </p>
-              <h1 className="text-3xl font-semibold tracking-[-0.04em] text-[#0f172a]">
-                Filters
-              </h1>
-              <p className="text-sm leading-6 text-[#667085]">
+              <h1 className="text-3xl font-semibold tracking-[-0.04em] text-[#f1eadf]">Filters</h1>
+              <p className="text-sm leading-6 text-[#a7ab9f]">
                 Refine inventory with the same filters already used in the marketplace flow.
               </p>
             </div>
@@ -98,11 +88,11 @@ export function DashboardCarsContent() {
             <div className="mt-8 space-y-8">
               <section className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-base font-semibold text-[#111827]">Brand</h2>
+                  <h2 className="text-base font-semibold text-[#f1eadf]">Brand</h2>
                   {brandFilter.length > 0 ? (
                     <button
                       type="button"
-                      className="text-xs font-medium text-[#295bff]"
+                      className="text-xs font-medium text-[#f1eadf]"
                       onClick={() => setBrandFilter([])}
                     >
                       Clear
@@ -110,59 +100,55 @@ export function DashboardCarsContent() {
                   ) : null}
                 </div>
                 <div className="grid gap-3">
-                  {availableBrands.map((brand) => {
-                    const checked = brandFilter.includes(brand);
-
-                    return (
-                      <label key={brand} className="flex items-center gap-3 text-sm text-[#344054]">
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={() => toggleBrand(brand)}
-                          className="h-4 w-4 rounded border-[#c7d2fe] text-[#295bff] focus:ring-[#295bff]"
-                        />
-                        <span>{brand}</span>
-                      </label>
-                    );
-                  })}
+                  {availableBrands.map((brand) => (
+                    <label key={brand} className="flex items-center gap-3 text-sm text-[#d8d2c7]">
+                      <input
+                        type="checkbox"
+                        checked={brandFilter.includes(brand)}
+                        onChange={() => toggleBrand(brand)}
+                        className="h-4 w-4 rounded border-[#4b4c43] bg-[#171816] text-[#26352F] focus:ring-[#26352F]"
+                      />
+                      <span>{brand}</span>
+                    </label>
+                  ))}
                 </div>
               </section>
 
-              <section className="space-y-4 border-t border-[#e8eef7] pt-6">
-                <h2 className="text-base font-semibold text-[#111827]">Price range</h2>
+              <section className="space-y-4 border-t border-[#31362f] pt-6">
+                <h2 className="text-base font-semibold text-[#f1eadf]">Price range</h2>
                 <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
-                  <label className="space-y-2 text-sm text-[#667085]">
+                  <label className="space-y-2 text-sm text-[#a7ab9f]">
                     <span>Minimum</span>
                     <input
                       type="number"
                       value={minPriceFilter}
                       onChange={(event) => setMinPriceFilter(event.target.value)}
                       placeholder="10000"
-                      className="h-11 w-full rounded-2xl border border-[#dbe4f0] bg-[#f8fbff] px-4 text-sm text-[#111827] outline-none transition focus:border-[#295bff]"
+                      className="h-11 w-full border border-[#31352f] bg-[#171816] px-4 text-sm text-[#f1eadf] outline-none transition focus:border-[#f1eadf]"
                     />
                   </label>
-                  <label className="space-y-2 text-sm text-[#667085]">
+                  <label className="space-y-2 text-sm text-[#a7ab9f]">
                     <span>Maximum</span>
                     <input
                       type="number"
                       value={maxPriceFilter}
                       onChange={(event) => setMaxPriceFilter(event.target.value)}
                       placeholder="200000"
-                      className="h-11 w-full rounded-2xl border border-[#dbe4f0] bg-[#f8fbff] px-4 text-sm text-[#111827] outline-none transition focus:border-[#295bff]"
+                      className="h-11 w-full border border-[#31352f] bg-[#171816] px-4 text-sm text-[#f1eadf] outline-none transition focus:border-[#f1eadf]"
                     />
                   </label>
                 </div>
               </section>
 
-              <section className="border-t border-[#e8eef7] pt-6">
-                <div className="rounded-[1.5rem] bg-[linear-gradient(135deg,#e9f1ff_0%,#f8fbff_100%)] p-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#7c8aa5]">
+              <section className="border-t border-[#31362f] pt-6">
+                <div className="bg-[#171816] p-4">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8f968c]">
                     Inventory snapshot
                   </p>
-                  <p className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#0f172a]">
+                  <p className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#f1eadf]">
                     {filteredCars.length}
                   </p>
-                  <p className="mt-2 text-sm text-[#667085]">
+                  <p className="mt-2 text-sm text-[#a7ab9f]">
                     Active listings match your current dashboard view.
                   </p>
                 </div>
@@ -170,41 +156,41 @@ export function DashboardCarsContent() {
             </div>
           </aside>
 
-          <section className="rounded-[1.75rem] bg-white/84 p-5 shadow-[0_18px_50px_rgba(148,163,184,0.16)] md:p-6">
-            <div className="flex flex-col gap-4 border-b border-[#e8eef7] pb-5 xl:flex-row xl:items-end xl:justify-between">
+          <section className="bg-[#1a1b18] p-5 md:p-6">
+            <div className="flex flex-col gap-4 border-b border-[#31362f] pb-5 xl:flex-row xl:items-end xl:justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#7c8aa5]">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8f968c]">
                   Inventory board
                 </p>
-                <h2 className="mt-2 text-4xl font-semibold tracking-[-0.05em] text-[#0f172a]">
+                <h2 className="mt-2 text-4xl font-semibold tracking-[-0.05em] text-[#f1eadf]">
                   Compare cars, manage faster
                 </h2>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-[#667085]">
+                <p className="mt-2 max-w-2xl text-sm leading-6 text-[#a7ab9f]">
                   Review your current inventory, adjust filters, and jump straight into listing updates.
                 </p>
               </div>
 
               <Link href="/dashboard/cars/new">
-                <Button className="h-12 rounded-2xl bg-[#295bff] px-6 text-white hover:bg-[#204de2]">
+                <Button className="h-11 rounded-[0.35rem] border border-[#4b4c43] bg-[#26352F] px-5 text-[#f1eadf] shadow-none hover:bg-[#31453d]">
                   Create car
                 </Button>
               </Link>
             </div>
 
-              <div className="mt-5 grid gap-3 md:grid-cols-[minmax(0,1fr)_220px_220px]">
-              <label className="space-y-2 text-sm text-[#667085]">
+            <div className="mt-5 grid gap-3 md:grid-cols-[minmax(0,1fr)_220px_220px]">
+              <label className="space-y-2 text-sm text-[#a7ab9f]">
                 <span>Brand</span>
-                <div className="rounded-2xl border border-[#dbe4f0] bg-[#f8fbff] px-4 py-3 text-sm text-[#111827]">
+                <div className="border border-[#31352f] bg-[#171816] px-4 py-3 text-sm text-[#f1eadf]">
                   {brandFilter.length > 0 ? brandFilter.join(", ") : "All selected brands"}
                 </div>
               </label>
 
-              <label className="space-y-2 text-sm text-[#667085]">
+              <label className="space-y-2 text-sm text-[#a7ab9f]">
                 <span>Year</span>
                 <select
                   value={yearFilter}
                   onChange={(event) => setYearFilter(event.target.value)}
-                  className="h-12 w-full rounded-2xl border border-[#dbe4f0] bg-[#f8fbff] px-4 text-sm text-[#111827] outline-none transition focus:border-[#295bff]"
+                  className="h-11 w-full border border-[#31352f] bg-[#171816] px-4 text-sm text-[#f1eadf] outline-none transition focus:border-[#f1eadf]"
                 >
                   <option value="">All years</option>
                   {availableYears.map((year) => (
@@ -224,7 +210,7 @@ export function DashboardCarsContent() {
                     setMinPriceFilter("");
                     setMaxPriceFilter("");
                   }}
-                  className="h-12 w-full rounded-2xl border border-[#dbe4f0] bg-white text-sm font-medium text-[#111827] transition hover:border-[#295bff] hover:text-[#295bff]"
+                  className="h-11 w-full rounded-[0.35rem] border border-[#4b4c43] bg-transparent text-sm font-medium text-[#f1eadf] transition hover:border-[#f1eadf] hover:text-[#f1eadf]"
                 >
                   Reset filters
                 </button>
@@ -233,39 +219,50 @@ export function DashboardCarsContent() {
 
             {cars.length === 0 ? (
               <div className="mt-6">
-                <EmptyState
-                  title="No cars yet"
-                  description="Once inventory is added, your listings will appear here with quick edit and delete actions."
-                  actionLabel="Create your first car"
-                  actionHref="/dashboard/cars/new"
-                />
+                <div className="bg-[#171816] p-8">
+                  <h3 className="font-heading text-3xl tracking-[-0.03em] text-[#f1eadf]">
+                    No cars yet
+                  </h3>
+                  <p className="mt-2 max-w-xl text-sm leading-7 text-[#a7ab9f]">
+                    Once inventory is added, your listings will appear here with quick edit actions.
+                  </p>
+                  <Link href="/dashboard/cars/new">
+                    <Button className="mt-5 rounded-[0.35rem] border border-[#4b4c43] bg-[#26352F] text-[#f1eadf] shadow-none hover:bg-[#31453d]">
+                      Create your first car
+                    </Button>
+                  </Link>
+                </div>
               </div>
             ) : filteredCars.length === 0 ? (
               <div className="mt-6">
-                <EmptyState
-                  title="No cars match these filters"
-                  description="Try widening the price range or clearing a brand selection to bring listings back into view."
-                />
+                <div className="bg-[#171816] p-8">
+                  <h3 className="font-heading text-3xl tracking-[-0.03em] text-[#f1eadf]">
+                    No cars match these filters
+                  </h3>
+                  <p className="mt-2 max-w-xl text-sm leading-7 text-[#a7ab9f]">
+                    Try widening the price range or clearing a brand selection to bring listings back into view.
+                  </p>
+                </div>
               </div>
             ) : (
               <div className="mt-6 grid gap-5 md:grid-cols-2 2xl:grid-cols-3">
                 {filteredCars.map((car) => (
                   <article
                     key={car.id}
-                    className="overflow-hidden rounded-[1.75rem] border border-[#e5edf8] bg-white p-4 shadow-[0_18px_45px_rgba(148,163,184,0.14)]"
+                    className="overflow-hidden bg-[#171816] p-4"
                   >
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-xs font-semibold text-[#111827]">
-                        <span className="text-[#f4b400]">★</span>
+                      <div className="flex items-center gap-2 text-xs font-semibold text-[#f1eadf]">
+                        <span className="text-[#f1eadf]">★</span>
                         <span>{(4 + ((car.id % 10) / 10)).toFixed(1)}</span>
                       </div>
-                      <span className="rounded-full bg-[#eef4ff] px-3 py-1 text-xs font-medium uppercase tracking-[0.18em] text-[#295bff]">
+                      <span className="border border-[#4b4c43] bg-[#1e201d] px-3 py-1 text-xs font-medium uppercase tracking-[0.18em] text-[#f1eadf]">
                         {car.year}
                       </span>
                     </div>
 
                     <div className="pb-3 pt-4">
-                      <div className="overflow-hidden rounded-[1.35rem] border border-[#eef2f7] bg-white">
+                      <div className="overflow-hidden border border-[#2b302b] bg-[#1e201d]">
                         {car.main_image_url ? (
                           <img
                             src={car.main_image_url}
@@ -273,7 +270,7 @@ export function DashboardCarsContent() {
                             className="aspect-[16/10] h-full w-full object-cover"
                           />
                         ) : (
-                          <div className="flex aspect-[16/10] items-center justify-center text-sm text-[#7c8aa5]">
+                          <div className="flex aspect-[16/10] items-center justify-center text-sm text-[#8f968c]">
                             No image available
                           </div>
                         )}
@@ -282,32 +279,28 @@ export function DashboardCarsContent() {
 
                     <div className="space-y-2.5">
                       <div>
-                        <p className="text-xs uppercase tracking-[0.18em] text-[#98a2b3]">
-                          Vehicle
-                        </p>
-                        <h3 className="mt-1.5 text-lg font-semibold tracking-[-0.03em] text-[#0f172a]">
+                        <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f968c]">Vehicle</p>
+                        <h3 className="mt-1.5 text-lg font-semibold tracking-[-0.03em] text-[#f1eadf]">
                           {car.title}
                         </h3>
-                        <p className="mt-1 text-xs text-[#667085]">
+                        <p className="mt-1 text-xs text-[#a7ab9f]">
                           {car.brand} {car.model} • {car.dealer.name}
                         </p>
                       </div>
 
                       <div className="flex items-end justify-between gap-4">
                         <div>
-                          <p className="text-xs uppercase tracking-[0.18em] text-[#98a2b3]">
-                            Price
-                          </p>
-                          <p className="mt-1.5 text-base font-semibold text-[#111827]">
+                          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f968c]">Price</p>
+                          <p className="mt-1.5 text-base font-semibold text-[#f1eadf]">
                             {formatPrice(car.price)}
                           </p>
-                          <p className="mt-1 text-xs text-[#667085]">
+                          <p className="mt-1 text-xs text-[#a7ab9f]">
                             {car.mileage.toLocaleString()} miles
                           </p>
                         </div>
                         <Link
                           href={`/cars/${car.id}`}
-                          className="text-xs font-medium text-[#295bff] hover:text-[#204de2]"
+                          className="text-xs font-medium text-[#f1eadf] hover:text-[#a7ab9f]"
                         >
                           View details
                         </Link>
@@ -315,7 +308,7 @@ export function DashboardCarsContent() {
 
                       <div>
                         <Link href={`/dashboard/cars/${car.id}/edit`}>
-                          <Button className="h-10 w-full rounded-2xl bg-[#295bff] text-xs text-white hover:bg-[#204de2]">
+                          <Button className="h-10 w-full rounded-[0.35rem] border border-[#4b4c43] bg-[#26352F] text-xs text-[#f1eadf] shadow-none hover:bg-[#31453d]">
                             Edit
                           </Button>
                         </Link>

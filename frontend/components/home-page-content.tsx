@@ -4,6 +4,7 @@ import {
   ArrowLeft,
   ArrowRight,
   ChevronRight,
+  ExternalLink,
   Gem,
   Scale,
   ShieldCheck,
@@ -18,13 +19,11 @@ import { getCars } from "@/lib/api";
 import type { Car } from "@/lib/types";
 
 const heroImageUrl =
-  "/homepage/luxury-generated-hero.png";
+  "/homepage/custom-bentley-hero.png";
 const certifiedImageUrl =
   "/homepage/certified-showroom.png";
-const showroomImageUrl =
-  "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1400&q=85";
 const sellImageUrl =
-  "/luxury-gallery/hotel-arrival.png";
+  "/luxury-gallery/mountain-coupe.png";
 
 const showcaseCars = [
   {
@@ -89,13 +88,6 @@ const showcaseCars = [
   },
 ];
 
-const experiencePoints = [
-  "Appointment-only showroom access",
-  "Specialist finance introductions",
-  "Worldwide enclosed delivery coordination",
-  "Private concierge support before and after purchase",
-];
-
 const luxuryBrands = [
   { name: "Ferrari", mark: "FERRARI", style: "tracking-[0.34em]" },
   { name: "Lamborghini", mark: "L", style: "font-serif text-2xl" },
@@ -140,6 +132,31 @@ const lifestyleGallery = [
   },
 ];
 
+const footerColumns = [
+  {
+    title: "Models",
+    links: ["Ferrari", "Lamborghini", "McLaren", "Porsche", "Rolls-Royce", "Aston Martin"],
+  },
+  {
+    title: "Your Collection",
+    links: ["Service and Maintenance", "Ownership Support", "Technology", "Finance Services", "Accessories"],
+  },
+  {
+    title: "Lifestyle",
+    links: ["Experiences", "Architecture and Design", "Automotive", "Audio"],
+  },
+  {
+    title: "About",
+    links: ["News", "Environmental Foundation", "Beyond 100+", "History and Heritage", "People and Expertise", "Factory Tours"],
+  },
+  {
+    title: "Corporate",
+    links: ["Sitemap", "Contact Us", "Terms and Conditions", "Privacy Policy", "Cookies Policy", "Cookie Settings", "Recalls", "Battery Passport"],
+  },
+];
+
+const footerSocialLinks = ["f", "X", "yt", "p", "ig", "tt", "in"];
+
 export function HomePageContent() {
   const router = useRouter();
   const [cars, setCars] = useState<Car[]>([]);
@@ -159,9 +176,18 @@ export function HomePageContent() {
 
   return (
     <div className="bg-[linear-gradient(180deg,#010101_0%,#0A0E0C_22%,#26352F_42%,#26352F_58%,#26352F_70%,#0A0E0C_84%,#010101_100%)] text-[#F5F5F2]">
-      <section className="relative min-h-[66vh] overflow-hidden bg-[#010101]">
-        <div className="mx-auto grid min-h-[66vh] max-w-[1440px] lg:grid-cols-[0.47fr_0.53fr]">
-          <div className="relative z-20 flex items-center px-6 py-16 sm:px-10 md:py-20 lg:px-12 xl:pl-20">
+      <section className="relative min-h-[72vh] overflow-hidden bg-[#010101]">
+        <img
+          src={heroImageUrl}
+          alt="Bentley-inspired exotic car in a modern architectural setting"
+          className="absolute inset-0 h-full w-full object-cover object-[62%_center] opacity-100 [filter:brightness(1.12)_contrast(1.08)_saturate(1.03)]"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.96)_0%,rgba(0,0,0,0.88)_28%,rgba(0,0,0,0.62)_43%,rgba(0,0,0,0.28)_58%,rgba(0,0,0,0.08)_75%,rgba(0,0,0,0.02)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_50%,rgba(255,220,170,0.14),transparent_38%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,14,12,0.04)_0%,rgba(10,14,12,0)_42%,rgba(10,14,12,0.1)_100%)]" />
+
+        <div className="relative mx-auto flex min-h-[72vh] max-w-[1440px]">
+          <div className="relative z-20 flex items-center px-6 py-16 sm:px-10 md:py-20 lg:w-[52%] lg:px-12 xl:pl-20">
             <div className="max-w-xl">
               <p className="text-[10px] font-semibold uppercase tracking-[0.34em] text-[#F5F5F2]">
                 Curated Exotic Automobiles
@@ -177,7 +203,8 @@ export function HomePageContent() {
 
               <div className="mt-8 flex max-w-xl flex-col gap-3 sm:flex-row">
                 <Button
-                  className="h-10 rounded-none bg-[#BFA46A] px-6 text-sm text-[#010101] shadow-none hover:bg-[#c9b176]"
+                  variant="secondary"
+                  className="h-10 rounded-none border-white/24 bg-transparent px-6 text-sm text-[#F5F5F2] shadow-none hover:bg-white/8 hover:text-[#F5F5F2]"
                   onClick={() => router.push("/cars")}
                 >
                   Search Inventory
@@ -186,23 +213,12 @@ export function HomePageContent() {
                 <Button
                   asChild
                   variant="secondary"
-                  className="h-10 rounded-none border-[#BFA46A]/24 bg-transparent px-6 text-sm text-[#F5F5F2] shadow-none hover:bg-[#BFA46A]/10"
+                  className="h-10 rounded-none border-white/24 bg-transparent px-6 text-sm text-[#F5F5F2] shadow-none hover:bg-white/8 hover:text-[#F5F5F2]"
                 >
                   <Link href="#sell">Sell Your Vehicle</Link>
                 </Button>
               </div>
             </div>
-          </div>
-
-          <div className="relative min-h-[330px] overflow-hidden lg:min-h-[66vh]">
-            <img
-              src={heroImageUrl}
-              alt="Bentley-inspired exotic car in a modern architectural setting"
-              className="h-full w-full scale-[1.08] object-cover object-[66%_center] opacity-90 lg:scale-[1.12] lg:object-[70%_center]"
-            />
-            <div className="absolute inset-0 bg-[linear-gradient(90deg,#010101_0%,rgba(1,1,1,0.84)_10%,rgba(1,1,1,0.2)_34%,rgba(1,1,1,0.06)_100%)]" />
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,14,12,0.22)_0%,rgba(10,14,12,0.04)_48%,rgba(10,14,12,0.5)_100%)]" />
-            <div className="absolute left-0 top-0 hidden h-full w-28 bg-[#010101] [clip-path:polygon(0_0,46%_0,100%_100%,0_100%)] lg:block" />
           </div>
         </div>
       </section>
@@ -286,9 +302,9 @@ export function HomePageContent() {
             <Button
               asChild
               variant="secondary"
-              className="mt-10 h-11 rounded-none border-[#BFA46A]/22 bg-transparent px-7 text-sm text-[#F5F5F2] shadow-none hover:bg-[#BFA46A]/10 hover:text-[#F5F5F2]"
+              className="mt-10 h-11 rounded-none border-white/24 bg-transparent px-7 text-sm text-[#F5F5F2] shadow-none hover:bg-white/8 hover:text-[#F5F5F2]"
             >
-              <Link href="#experience">Learn More About Our Program</Link>
+              <Link href="#inventory">Learn More About Our Program</Link>
             </Button>
           </div>
         </div>
@@ -362,7 +378,7 @@ export function HomePageContent() {
           </div>
           <Button
             variant="secondary"
-            className="w-fit rounded-none border-transparent bg-[#BFA46A] text-[#010101] shadow-none hover:bg-[#c9b176]"
+            className="w-fit rounded-none border-white/24 bg-transparent text-[#F5F5F2] shadow-none hover:bg-white/8 hover:text-[#F5F5F2]"
             onClick={() => router.push("/cars")}
           >
             Browse all inventory
@@ -431,31 +447,34 @@ export function HomePageContent() {
             );
           })}
         </div>
+
       </section>
 
+      <div className="text-[#F2EEE6]">
       <section
         id="sell"
-        className="overflow-hidden text-[#F5F5F2]"
+        className="relative overflow-hidden"
       >
-        <div className="relative mx-auto grid max-w-[1440px] gap-10 px-6 pb-10 pt-16 sm:px-10 md:pb-14 md:pt-24 lg:grid-cols-[0.43fr_0.57fr] lg:items-center lg:px-12 xl:px-20">
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[linear-gradient(180deg,rgba(10,14,12,0.92)_0%,rgba(10,14,12,0)_100%)]" />
-          <div className="pointer-events-none absolute bottom-0 left-0 h-56 w-2/3 bg-[radial-gradient(circle_at_30%_80%,rgba(95,95,85,0.14),transparent_58%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(14,18,16,0)_0%,rgba(14,18,16,0.12)_12%,rgba(22,33,28,0.42)_30%,rgba(35,49,42,0.76)_62%,#3F4F47_100%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_76%_38%,rgba(199,179,138,0.06),transparent_24%),radial-gradient(circle_at_22%_26%,rgba(255,246,230,0.03),transparent_22%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(14,18,16,0.08)_0%,rgba(22,33,28,0.06)_34%,rgba(35,49,42,0.08)_72%,rgba(63,79,71,0.12)_100%)]" />
 
-          <div className="relative z-10 max-w-xl">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.34em] text-[#F5F5F2]">
+        <div className="relative mx-auto grid min-h-[540px] max-w-[1440px] gap-10 px-6 pb-20 pt-12 sm:px-10 md:pb-24 md:pt-16 lg:grid-cols-[0.42fr_0.58fr] lg:items-center lg:px-12 xl:px-20">
+          <div className="relative z-10 max-w-md lg:pl-2">
+            <p className="text-[10px] font-medium uppercase tracking-[0.4em] text-[#C7B38A]/88">
               Sell / Consign
             </p>
-            <h2 className="mt-5 max-w-lg font-heading text-4xl leading-[0.96] tracking-[-0.04em] text-[#F5F5F2] sm:text-5xl">
-              Looking to Sell Your Exotic?
+            <h2 className="mt-5 max-w-[9.5ch] font-heading text-4xl leading-[0.98] tracking-[-0.04em] text-[#F2EEE6] sm:text-5xl">
+              Best SoFlo collection.
             </h2>
-            <div className="mt-6 h-px w-16 bg-[#F5F5F2]/60" />
-            <p className="mt-6 max-w-xl text-sm leading-7 text-[#C8C8C2]/68">
-              Receive a private valuation from our specialist team, with discreet
-              market guidance for Ferrari, Lamborghini, McLaren, Porsche, Rolls-Royce,
-              Aston Martin, Bugatti, and collector-grade inventory.
+            <div className="mt-6 h-px w-14 bg-[#C7B38A]/34" />
+            <p className="mt-7 max-w-[31rem] text-sm leading-7 text-[#DAD5CB]/74">
+              Present your vehicle through a more discreet editorial process, with specialist valuation,
+              tailored market positioning, and a buyer network shaped around collector-grade automobiles.
             </p>
             <Button
-              className="mt-8 h-11 rounded-none bg-[#BFA46A] px-7 text-sm text-[#010101] shadow-none hover:bg-[#c9b176]"
+              variant="secondary"
+              className="mt-8 h-9 rounded-none border-[#C7B38A]/58 bg-transparent px-5 text-xs uppercase tracking-[0.2em] text-[#F2EEE6] shadow-none transition duration-300 hover:border-[#C7B38A]/78 hover:bg-white/4 hover:text-[#F2EEE6]"
               onClick={() => router.push("/cars")}
             >
               Request Valuation
@@ -463,51 +482,81 @@ export function HomePageContent() {
             </Button>
           </div>
 
-          <div className="relative min-h-[360px] overflow-hidden lg:min-h-[560px]">
+          <div className="relative min-h-[400px] lg:min-h-[520px]">
             <img
               src={sellImageUrl}
-              alt="Black exotic coupe in a warm private showroom"
-              className="h-full w-full object-cover object-center opacity-90 transition duration-700 hover:scale-[1.015]"
+              alt="Luxury Bentley-style motor car in a warm architectural showroom"
+              className="absolute inset-x-0 bottom-0 top-6 h-[calc(100%-1.5rem)] w-full object-cover object-[50%_center] opacity-[0.97] lg:top-8 lg:h-[calc(100%-2rem)]"
             />
-            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,14,12,0.74)_0%,rgba(10,14,12,0.1)_38%,rgba(95,95,85,0.16)_100%)]" />
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,14,12,0.14)_0%,rgba(10,14,12,0.02)_48%,rgba(10,14,12,0.74)_100%)]" />
+            <div className="absolute inset-y-0 left-0 w-14 bg-[linear-gradient(90deg,rgba(18,23,20,0.34)_0%,rgba(18,23,20,0.12)_48%,transparent_100%)]" />
+            <div className="absolute inset-y-0 right-0 w-12 bg-[linear-gradient(270deg,rgba(18,23,20,0.26)_0%,rgba(18,23,20,0.08)_44%,transparent_100%)]" />
+            <div className="absolute inset-x-0 top-0 h-10 bg-[linear-gradient(180deg,rgba(18,23,20,0.22)_0%,rgba(18,23,20,0.06)_42%,transparent_100%)]" />
+            <div className="absolute inset-x-0 bottom-0 h-10 bg-[linear-gradient(0deg,rgba(18,23,20,0.18)_0%,rgba(18,23,20,0.05)_42%,transparent_100%)]" />
           </div>
         </div>
 
       </section>
 
-      <section id="experience">
-        <div className="mx-auto grid max-w-[1240px] gap-10 px-6 py-16 sm:px-10 md:py-22 lg:grid-cols-[1.12fr_0.88fr] lg:items-center lg:px-12">
-          <div className="aspect-[16/10] overflow-hidden bg-[#394E46]/45">
-            <img
-              src={showroomImageUrl}
-              alt="Black exotic car in a private showroom setting"
-              className="h-full w-full object-cover opacity-85"
-            />
+      <footer className="bg-[#354F44] text-[#F2EEE6]">
+        <div className="mx-auto max-w-[1440px] px-6 pb-8 pt-12 sm:px-10 lg:px-12 xl:px-20">
+          <div className="text-center">
+            <Link href="/" className="mx-auto inline-flex flex-col items-center gap-1">
+              <span className="font-heading text-3xl leading-none tracking-[0.04em]">LA</span>
+              <span className="text-[10px] font-semibold uppercase tracking-[0.24em]">Luxury Auto</span>
+            </Link>
           </div>
 
-          <div className="lg:pl-8">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[#F5F5F2]">
-              Private Client Experience
-            </p>
-            <h2 className="mt-4 max-w-xl font-heading text-4xl leading-[0.98] tracking-[-0.04em] text-[#F5F5F2] sm:text-5xl">
-              Concierge support for every stage.
-            </h2>
-            <p className="mt-5 max-w-xl text-sm leading-7 text-[#C8C8C2]/62">
-              Financing introductions, enclosed delivery, appointment-only viewing,
-              and specialist aftercare for private clients and collection managers.
-            </p>
-            <ul className="mt-8 space-y-3 text-sm text-[#C8C8C2]/72">
-              {experiencePoints.map((point) => (
-                <li key={point} className="flex gap-3">
-                  <span className="mt-[0.65rem] h-px w-5 shrink-0 bg-[#F5F5F2]/34" />
-                  <span>{point}</span>
-                </li>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-8">
+            {footerSocialLinks.map((item) => (
+              <Link
+                key={item}
+                href="/"
+                aria-label={`Social link ${item}`}
+                className="flex h-5 min-w-5 items-center justify-center text-[11px] font-semibold uppercase tracking-[0.05em] text-[#F2EEE6]/88 transition hover:text-white"
+              >
+                {item}
+              </Link>
+            ))}
+          </div>
+
+          <div className="mt-12 border-t border-[#F2EEE6]/72 pt-10">
+            <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
+              {footerColumns.map((column) => (
+                <div key={column.title}>
+                  <h3 className="text-lg font-light tracking-[0.04em] text-[#F2EEE6]">
+                    {column.title}
+                  </h3>
+                  <div className="mt-7 space-y-5">
+                    {column.links.map((item) => (
+                      <Link
+                        key={item}
+                        href="/cars"
+                        className="flex items-center gap-3 text-[11px] leading-4 text-[#F2EEE6]/84 transition hover:text-white"
+                      >
+                        {column.title === "Models" ? null : (
+                          <ExternalLink className="h-3 w-3 shrink-0" strokeWidth={1.6} />
+                        )}
+                        {item}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
+          </div>
+
+          <div className="mt-12 border-t border-[#F2EEE6]/72 pt-8">
+            <div className="text-xs leading-6 text-[#F2EEE6]/82">
+              <p>© Copyright Luxury Auto 2026</p>
+              <p className="mt-6 max-w-3xl">
+                Registered office: Miami, Florida. Premium inventory presentation for rare,
+                refined, and collector-grade automobiles.
+              </p>
+            </div>
           </div>
         </div>
-      </section>
+      </footer>
+      </div>
 
     </div>
   );

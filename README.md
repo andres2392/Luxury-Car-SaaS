@@ -12,6 +12,8 @@ This repository currently includes:
 - PostgreSQL schema, models, and Alembic migrations
 - FastAPI auth, marketplace API routes, and role-based dashboard permissions
 - Next.js marketplace pages plus an admin/dealer dashboard MVP
+- customer account pages with saved cars and personal inquiry history
+- dashboard image uploads through the backend into Supabase Storage
 - shared frontend API/auth helpers and UI polish
 
 ## Project Structure
@@ -150,17 +152,17 @@ Luxury-Car-SaaS/
 ```bash
 cd frontend
 npm install --legacy-peer-deps
-npm run dev
-```
-
-Create frontend env if needed:
-
-```bash
 cp .env.example .env.local
 npm run dev
 ```
 
-Frontend runs at [http://localhost:3000](http://localhost:3000).
+Frontend reads the backend from:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+
+Frontend usually runs at [http://localhost:3000](http://localhost:3000), but Next.js may pick another open port during local development.
 
 ### 2. Backend locally with a Python virtual environment
 
@@ -206,15 +208,33 @@ alembic upgrade head
 python -m scripts.seed
 ```
 
+### 5. Supabase Storage for car uploads
+
+The dashboard create/edit listing flow now uploads vehicle images through the FastAPI backend into Supabase Storage.
+
+Set these values in `backend/.env` before testing image uploads:
+
+```env
+SUPABASE_URL=
+SUPABASE_SERVICE_ROLE_KEY=
+SUPABASE_STORAGE_BUCKET=car-images
+```
+
+Important:
+
+- uploads happen from the backend, not the browser
+- PostgreSQL stores only image URLs and metadata
+- the Supabase service role key must never be exposed to the frontend
+
 ## How Frontend And Backend Connect
 
-The frontend talks to FastAPI through `NEXT_PUBLIC_API_BASE_URL`, which defaults to `http://localhost:8000`. You can override it in [frontend/.env.example](/Users/andresg/Codex%20Prj/Luxury-Car-SaaS/frontend/.env.example) by creating `frontend/.env.local`.
+The frontend talks to FastAPI through `NEXT_PUBLIC_API_URL`, which defaults to `http://localhost:8000`. You can override it in [frontend/.env.example](/Users/andresg/Codex%20Prj/Luxury-Car-SaaS/frontend/.env.example) by creating `frontend/.env.local`.
 
 The frontend uses a centralized API client under `frontend/lib/api/` so JSON handling, auth token attachment, and common error parsing stay in one place. Auth data is stored in localStorage and reused after refresh for protected flows like dashboard access and car creation.
 
 The backend lives in `backend/` and uses FastAPI for HTTP, SQLAlchemy for data access, and Alembic for migrations. JWT authentication protects sensitive endpoints, while service functions keep business logic out of route handlers.
 
-PostgreSQL is the system of record. The existing migration creates `users`, `dealers`, `cars`, `car_images`, and `inquiries`, and the seed script loads a starter luxury inventory so the frontend has meaningful data to display.
+PostgreSQL is the system of record. The existing migrations create `users`, `dealers`, `cars`, `car_images`, `inquiries`, and `favorites`, and the seed script loads a larger luxury inventory catalog so the frontend has meaningful data to display.
 
 ## Dashboard Access
 
@@ -232,7 +252,13 @@ New signups are always created as `customer`, except for the reserved admin emai
 
 - `ADMIN_EMAIL=admin@luxury.owner`
 
-That email becomes the application admin when it signs up. Dealers are expected to be provisioned later through the admin flow, but the seed data already includes dealerships and cars so the dashboard inventory views can be tested.
+That email becomes the application admin when it signs up. Dealers are expected to be provisioned later through the admin flow.
+
+Current seed behavior:
+
+- all seeded cars are normalized to one dealer: `Aurelius Motor Gallery`
+- the catalog includes the original seed inventory plus 25 additional luxury cars
+- the seed reuses the existing image URLs already in the project
 
 Suggested Phase 6 flow:
 
@@ -242,3 +268,62 @@ Suggested Phase 6 flow:
 4. Create a car from `/dashboard/cars/new`
 5. Edit or delete an existing car from `/dashboard/cars`
 6. Visit `/dashboard/inquiries` to review incoming leads
+
+### Dashboard image upload flow
+
+The dashboard listing editor supports drag-and-drop or click-to-browse uploads.
+
+- create flow: create the car first, then upload images to `/cars/{car_id}/images`
+- edit flow: upload directly into the existing car
+- uploaded images can be removed
+- one uploaded image can be marked as featured
+- the featured image updates `cars.main_image_url`
+
+## Customer Account Features
+
+Authenticated users can save cars and revisit them later from the account area.
+
+- `POST /favorites/{car_id}` saves a car for the current user
+- `DELETE /favorites/{car_id}` removes a saved car
+- `GET /favorites` returns the current user's saved cars
+- `GET /inquiries/mine` returns inquiries submitted while logged in
+
+Account pages:
+
+- `/account`
+- `/account/favorites`
+- `/account/inquiries`
+
+Suggested Phase 7 flow:
+
+1. Sign up or log in as a customer account
+2. Browse `/cars` and click `Save` on one or more listings
+3. Open `/account/favorites` to confirm the saved cars appear
+4. Open a car detail page and submit an inquiry while signed in
+5. Visit `/account/inquiries` to confirm the inquiry appears in your history
+
+## Useful API Endpoints
+
+Cars:
+
+- `GET /cars`
+- `GET /cars/{id}`
+- `GET /cars/mine`
+- `POST /cars`
+- `PUT /cars/{id}`
+- `DELETE /cars/{id}`
+- `POST /cars/{id}/images`
+- `DELETE /cars/{id}/images/{image_id}`
+- `PATCH /cars/{id}/images/{image_id}/featured`
+
+Favorites:
+
+- `GET /favorites`
+- `POST /favorites/{car_id}`
+- `DELETE /favorites/{car_id}`
+
+Inquiries:
+
+- `POST /inquiries`
+- `GET /inquiries`
+- `GET /inquiries/mine`

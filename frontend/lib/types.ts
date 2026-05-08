@@ -28,7 +28,15 @@ export interface Car {
   dealer_id: number;
   created_at: string;
   image_urls: string[];
+  images: CarImage[];
   dealer: Dealer;
+}
+
+export interface CarImage {
+  id: number;
+  car_id: number;
+  image_url: string;
+  created_at: string;
 }
 
 export interface Inquiry {
@@ -38,9 +46,16 @@ export interface Inquiry {
   name: string;
   email: string;
   message: string;
+  state: string;
   created_at: string;
   car_title?: string | null;
   dealer_name?: string | null;
+}
+
+export interface FavoriteActionResponse {
+  car_id: number;
+  is_saved: boolean;
+  message: string;
 }
 
 export interface AuthResponse {

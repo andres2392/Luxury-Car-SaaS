@@ -1,9 +1,17 @@
 from __future__ import annotations
 
+from uuid import uuid4
+
 from fastapi import HTTPException, status
 from sqlalchemy import Select, select
 from sqlalchemy.orm import Session, joinedload
 
+from app.core.storage import (
+    delete_image_object,
+    extract_storage_path,
+    upload_image_bytes,
+    validate_image_filename,
+)
 from app.models.car import Car
 from app.models.car_image import CarImage
 from app.models.dealer import Dealer
@@ -143,3 +151,70 @@ def delete_car(db: Session, car_id: int, current_user: User) -> None:
 
     db.delete(car)
     db.commit()
+
+
+def upload_car_images(
+    db: Session,
+    car_id: int,
+    files: list[tuple[str | None, str | None, bytes]],
+    current_user: User,
+) -> list[CarImage]:
+    car = _get_manageable_car(db, car_id, current_user)
+    uploaded_images: list[CarImage] = []
+
+    for filename, content_type, content in files:
+        suffix = validate_image_filename(filename)
+        unique_name = f"{uuid4().hex}{suffix}"
+        storage_path = f"dealers/{car.dealer_id}/cars/{car.id}/{unique_name}"
+        public_url = upload_image_bytes(storage_path, content, content_type)
+        image = CarImage(car_id=car.id, image_url=public_url)
+        db.add(image)
+        db.flush()
+        uploaded_images.append(image)
+
+        if not car.main_image_url:
+            car.main_image_url = public_url
+
+    db.commit()
+    for image in uploaded_images:
+        db.refresh(image)
+
+    return uploaded_images
+
+
+def delete_car_image(db: Session, car_id: int, image_id: int, current_user: User) -> None:
+    car = _get_manageable_car(db, car_id, current_user)
+    image = db.scalar(select(CarImage).where(CarImage.id == image_id, CarImage.car_id == car.id))
+
+    if image is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Car image not found.")
+
+    storage_path = extract_storage_path(image.image_url)
+    if storage_path:
+        delete_image_object(storage_path)
+
+    was_featured = car.main_image_url == image.image_url
+    db.delete(image)
+    db.flush()
+
+    if was_featured:
+        next_image = db.scalar(
+            select(CarImage)
+            .where(CarImage.car_id == car.id)
+            .order_by(CarImage.created_at.asc(), CarImage.id.asc())
+        )
+        car.main_image_url = next_image.image_url if next_image else None
+
+    db.commit()
+
+
+def set_featured_car_image(db: Session, car_id: int, image_id: int, current_user: User) -> Car:
+    car = _get_manageable_car(db, car_id, current_user)
+    image = db.scalar(select(CarImage).where(CarImage.id == image_id, CarImage.car_id == car.id))
+
+    if image is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Car image not found.")
+
+    car.main_image_url = image.image_url
+    db.commit()
+    return get_car_by_id(db, car.id)

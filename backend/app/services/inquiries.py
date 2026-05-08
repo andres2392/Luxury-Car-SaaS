@@ -22,6 +22,7 @@ def create_inquiry(db: Session, payload: InquiryCreate, current_user: User | Non
         name=payload.name,
         email=payload.email,
         message=payload.message,
+        state=payload.state,
     )
     db.add(inquiry)
     db.commit()
@@ -59,3 +60,14 @@ def get_inquiries_for_dashboard(db: Session, current_user: User) -> list[Inquiry
         )
 
     return list(db.scalars(query.where(Dealer.id == dealer.id)).all())
+
+
+def get_my_inquiries(db: Session, current_user: User) -> list[Inquiry]:
+    return list(
+        db.scalars(
+            select(Inquiry)
+            .where(Inquiry.user_id == current_user.id)
+            .options(joinedload(Inquiry.car).joinedload(Car.dealer))
+            .order_by(Inquiry.created_at.desc())
+        ).all()
+    )

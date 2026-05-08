@@ -1,18 +1,22 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query, Response, status
+from fastapi import APIRouter, Depends, File, Query, Response, UploadFile, status
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, require_dashboard_user, require_dealer_or_admin
+from app.schemas.car_image import CarImageResponse
 from app.models.user import User
 from app.schemas.car import CarCreate, CarResponse, CarUpdate
 from app.services.cars import (
     create_car,
     delete_car,
+    delete_car_image,
     get_car_by_id,
     get_cars,
     get_cars_for_dashboard,
+    set_featured_car_image,
     update_car,
+    upload_car_images,
 )
 
 router = APIRouter(prefix="/cars", tags=["cars"])
@@ -69,3 +73,38 @@ def delete_car_route(
 ) -> Response:
     delete_car(db, car_id, current_user)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.post("/{car_id}/images", response_model=list[CarImageResponse], status_code=201)
+async def upload_car_images_route(
+    car_id: int,
+    db: Annotated[Session, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_dealer_or_admin)],
+    files: Annotated[list[UploadFile], File(...)],
+) -> list[CarImageResponse]:
+    payloads: list[tuple[str | None, str | None, bytes]] = []
+    for file in files:
+        payloads.append((file.filename, file.content_type, await file.read()))
+
+    return upload_car_images(db, car_id, payloads, current_user)
+
+
+@router.delete("/{car_id}/images/{image_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_car_image_route(
+    car_id: int,
+    image_id: int,
+    db: Annotated[Session, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_dealer_or_admin)],
+) -> Response:
+    delete_car_image(db, car_id, image_id, current_user)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.patch("/{car_id}/images/{image_id}/featured", response_model=CarResponse)
+def set_featured_car_image_route(
+    car_id: int,
+    image_id: int,
+    db: Annotated[Session, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_dealer_or_admin)],
+) -> CarResponse:
+    return set_featured_car_image(db, car_id, image_id, current_user)

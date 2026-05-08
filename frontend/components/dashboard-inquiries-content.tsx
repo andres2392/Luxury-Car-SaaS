@@ -36,7 +36,7 @@ export function DashboardInquiriesContent() {
         eyebrow="Dashboard / Inquiries"
         title="Customer inquiries"
         description="Review the latest customer messages tied to your current role scope."
-        className="text-white"
+        className="text-[#f1eadf]"
       />
 
       {inquiries.length === 0 ? (
@@ -45,32 +45,32 @@ export function DashboardInquiriesContent() {
           description="When customers reach out from your inventory pages, their messages will appear here."
         />
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {inquiries.map((inquiry) => (
-            <div key={inquiry.id} className="rounded-[1.75rem] border border-white/8 bg-white/[0.04] p-5">
+            <div key={inquiry.id} className="bg-[#1a1b18] p-5">
               <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.18em] text-[#7f8ea3]">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f968c]">
                     {inquiry.dealer_name ?? "Dealership"}
                   </p>
-                  <h3 className="mt-2 font-heading text-3xl tracking-[-0.03em] text-white">
+                  <h3 className="mt-2 font-heading text-3xl tracking-[-0.03em] text-[#f1eadf]">
                     {inquiry.car_title ?? `Car #${inquiry.car_id}`}
                   </h3>
                 </div>
-                <p className="text-sm text-[#8ea0b9]">
+                <p className="text-sm text-[#a7ab9f]">
                   {new Date(inquiry.created_at).toLocaleString()}
                 </p>
               </div>
 
               <div className="mt-5 grid gap-4 md:grid-cols-[1fr_1fr]">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.14em] text-[#7f8ea3]">Sender</p>
-                  <p className="mt-2 text-sm font-medium text-white">{inquiry.name}</p>
-                  <p className="mt-1 text-sm text-[#8ea0b9]">{inquiry.email}</p>
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-[#8f968c]">Sender</p>
+                  <p className="mt-2 text-sm font-medium text-[#f1eadf]">{inquiry.name}</p>
+                  <p className="mt-1 text-sm text-[#a7ab9f]">{inquiry.email}</p>
                 </div>
                 <div>
-                  <p className="text-xs uppercase tracking-[0.14em] text-[#7f8ea3]">Message</p>
-                  <p className="mt-2 text-sm leading-7 text-[#d6dfeb]">{inquiry.message}</p>
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-[#8f968c]">Message</p>
+                  <p className="mt-2 text-sm leading-7 text-[#d8d2c7]">{inquiry.message}</p>
                 </div>
               </div>
             </div>
@@ -80,4 +80,3 @@ export function DashboardInquiriesContent() {
     </div>
   );
 }
-
