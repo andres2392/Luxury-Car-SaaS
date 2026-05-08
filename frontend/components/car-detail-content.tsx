@@ -72,6 +72,10 @@ export function CarDetailContent({ carId }: { carId: string }) {
   const [activeImageIndex, setActiveImageIndex] = useState<number | null>(null);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [carId]);
+
+  useEffect(() => {
     async function loadCar() {
       try {
         const data = await getCarById(carId);

@@ -198,6 +198,7 @@ export function CarsPageContent({
   function goToPage(page: number) {
     const nextPage = Math.min(Math.max(page, 1), totalPages);
     setCurrentPage(nextPage);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   return (
@@ -318,6 +319,7 @@ export function CarsPageContent({
                     <Link
                       key={car.id}
                       href={`/cars/${car.id}`}
+                      scroll
                       className="group flex h-full flex-col overflow-hidden border border-[#DDD7CC] bg-white transition-colors hover:border-[#C5B48A]"
                     >
                       <div className="relative aspect-[16/10] overflow-hidden bg-[#F5F2EC]">
@@ -366,7 +368,7 @@ export function CarsPageContent({
                             <MapPin className="h-4 w-4 text-[#3D4C45]" />
                             {buildLocation(car)}
                           </div>
-                          <span className="mt-5 inline-flex h-11 items-center gap-2 border border-[#DDD7CC] px-5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#3D4C45] transition group-hover:border-[#3D4C45] group-hover:text-[#111111]">
+                          <span className="mt-5 inline-flex h-11 items-center gap-2 px-5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#3D4C45] transition group-hover:text-[#111111]">
                             View Details
                             <ChevronRight className="h-4 w-4" />
                           </span>
