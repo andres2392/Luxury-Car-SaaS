@@ -20,3 +20,10 @@ backend/**/*.pyc
 # Logs
 *.log
 
+# Local-only Docker setup
+docker-compose.yml
+infra/docker-compose.yml
+backend/Dockerfile
+frontend/Dockerfile
+frontend/.dockerignore
+backend/.dockerignore
