@@ -9,6 +9,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -19,11 +20,11 @@ import { getCars } from "@/lib/api";
 import type { Car } from "@/lib/types";
 
 const heroImageUrl =
-  "/homepage/custom-hero-mustang.png";
+  "/images/hero/custom-hero-mustang.webp";
 const certifiedImageUrl =
-  "/collector/carrera-gt-gallery.png";
+  "/images/gallery/carrera-gt-gallery.webp";
 const sellImageUrl =
-  "/collector/sell-consign-lounge.png";
+  "/images/services/sell-consign-lounge.webp";
 
 const showcaseCars = [
   {
@@ -33,7 +34,7 @@ const showcaseCars = [
     mileage: "8,420 mi",
     price: "$389,500",
     location: "Private Collection Miami",
-    image: "/collector/analog-icons-garage.png",
+    image: "/images/hero/collector-icons-garage.webp",
     accent: "from-[#31463D] via-[#183028] to-[#090909]",
   },
   {
@@ -43,7 +44,7 @@ const showcaseCars = [
     mileage: "21,300 mi",
     price: "$315,000",
     location: "Greenwich, CT",
-    image: "/collector/analog-detail.png",
+    image: "/images/gallery/analog-detail.webp",
     accent: "from-[#31463D] via-[#183028] to-[#090909]",
   },
   {
@@ -53,7 +54,7 @@ const showcaseCars = [
     mileage: "6,180 mi",
     price: "$1,275,000",
     location: "Newport Beach, CA",
-    image: "/collector/carrera-gt-gallery.png",
+    image: "/images/gallery/carrera-gt-gallery.webp",
     accent: "from-[#31463D] via-[#183028] to-[#090909]",
   },
   {
@@ -63,7 +64,7 @@ const showcaseCars = [
     mileage: "14,900 mi",
     price: "$279,000",
     location: "Monterey, CA",
-    image: "/collector/heritage-defender-gallery.png",
+    image: "/images/gallery/heritage-defender-gallery.webp",
     accent: "from-[#31463D] via-[#183028] to-[#090909]",
   },
   {
@@ -73,7 +74,7 @@ const showcaseCars = [
     mileage: "18,200 mi",
     price: "$142,500",
     location: "Palm Beach, FL",
-    image: "/collector/carrera-gt-gallery.png",
+    image: "/images/gallery/carrera-gt-gallery.webp",
     accent: "from-[#31463D] via-[#183028] to-[#090909]",
   },
   {
@@ -83,7 +84,7 @@ const showcaseCars = [
     mileage: "31,400 mi",
     price: "$168,000",
     location: "Dallas, TX",
-    image: "/collector/heritage-defender-gallery.png",
+    image: "/images/gallery/heritage-defender-gallery.webp",
     accent: "from-[#31463D] via-[#183028] to-[#090909]",
   },
 ];
@@ -138,19 +139,19 @@ const collectorServices = [
 
 const lifestyleGallery = [
   {
-    src: "/collector/heritage-defender-gallery.png",
+    src: "/images/gallery/heritage-defender-gallery.webp",
     alt: "Heritage collector vehicles in a warm private garage",
   },
   {
-    src: "/collector/analog-detail.png",
+    src: "/images/gallery/analog-detail.webp",
     alt: "Analog-era sports car detail with warm cinematic shadows",
   },
   {
-    src: "/collector/carrera-gt-gallery.png",
+    src: "/images/gallery/carrera-gt-gallery.webp",
     alt: "Carrera GT inspired collector car in an architectural gallery",
   },
   {
-    src: "/collector/analog-icons-garage.png",
+    src: "/images/hero/collector-icons-garage.webp",
     alt: "Ferrari Testarossa inspired icon beside an air-cooled Porsche",
   },
 ];
@@ -200,9 +201,12 @@ export function HomePageContent() {
   return (
     <div className="bg-[linear-gradient(180deg,#090909_0%,#090909_18%,#10211B_30%,#183028_58%,#10211B_82%,#090909_100%)] text-[#F3EFE7]">
       <section className="relative min-h-[72vh] overflow-hidden bg-[#090909]">
-        <img
+        <Image
           src={heroImageUrl}
           alt="Bentley-inspired exotic car in a modern architectural setting"
+          fill
+          priority
+          sizes="100vw"
           className="absolute inset-0 h-full w-full object-cover object-[62%_center] opacity-100 [filter:brightness(1.1)_contrast(1.06)_saturate(0.95)_sepia(0.05)]"
         />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(9,9,9,0.97)_0%,rgba(9,9,9,0.9)_28%,rgba(9,9,9,0.64)_43%,rgba(9,9,9,0.3)_58%,rgba(9,9,9,0.08)_75%,rgba(9,9,9,0.02)_100%)]" />
@@ -268,16 +272,20 @@ export function HomePageContent() {
         <div className="mx-auto grid max-w-[1240px] gap-16 lg:grid-cols-[1.04fr_0.96fr] lg:items-center">
           <div className="relative min-h-[390px] md:min-h-[560px]">
             <figure className="absolute right-0 top-0 h-[64%] w-[68%] overflow-hidden bg-[#183028]">
-              <img
+              <Image
                 src={lifestyleGallery[1].src}
                 alt={lifestyleGallery[1].alt}
+                fill
+                sizes="(min-width: 1024px) 420px, 68vw"
                 className="h-full w-full object-cover opacity-86 transition duration-700 hover:scale-[1.02]"
               />
             </figure>
             <figure className="absolute bottom-0 left-0 h-[64%] w-[82%] overflow-hidden bg-[#183028]">
-              <img
+              <Image
                 src={certifiedImageUrl}
                 alt="Luxury grand touring car in a dark private showroom with warm architectural lighting"
+                fill
+                sizes="(min-width: 1024px) 510px, 82vw"
                 className="h-full w-full object-cover opacity-92 transition duration-700 hover:scale-[1.02]"
               />
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(1,1,1,0)_0%,rgba(1,1,1,0.16)_62%,rgba(1,1,1,0.46)_100%)]" />
@@ -380,7 +388,7 @@ export function HomePageContent() {
               {
                 item: lifestyleGallery[0],
                 className:
-                  "lg:absolute lg:left-0 lg:top-[170px] lg:z-10 lg:h-[330px] lg:w-[440px]",
+                  "lg:absolute lg:left-[70px] lg:top-[145px] lg:z-10 lg:h-[330px] lg:w-[440px]",
                 imageClass: "min-h-[260px] lg:min-h-0 lg:object-[50%_center]",
               },
               {
@@ -392,7 +400,7 @@ export function HomePageContent() {
               {
                 item: lifestyleGallery[1],
                 className:
-                  "lg:absolute lg:right-0 lg:top-[170px] lg:z-10 lg:h-[330px] lg:w-[440px]",
+                  "lg:absolute lg:right-[70px] lg:top-[145px] lg:z-10 lg:h-[330px] lg:w-[440px]",
                 imageClass: "min-h-[260px] lg:min-h-0 lg:object-[50%_center]",
               },
             ].map(({ item, className, imageClass }) => (
@@ -400,9 +408,11 @@ export function HomePageContent() {
                 key={`${item.src}-${className}`}
                 className={`group relative overflow-hidden border border-[#C2A878]/10 bg-[#183028]/72 shadow-[0_18px_46px_rgba(0,0,0,0.14)] ${className}`}
               >
-                <img
+                <Image
                   src={item.src}
                   alt={item.alt}
+                  fill
+                  sizes="(min-width: 1024px) 440px, 100vw"
                   className={`h-full w-full object-cover opacity-92 transition duration-700 group-hover:scale-[1.014] group-hover:opacity-100 ${imageClass}`}
                 />
               </figure>
@@ -450,9 +460,11 @@ export function HomePageContent() {
                   <div
                     className={`relative aspect-[16/10] overflow-hidden bg-gradient-to-br ${car.accent}`}
                   >
-                    <img
+                    <Image
                       src={car.image}
                       alt={apiCar?.title || car.model}
+                      fill
+                      sizes="(min-width: 1024px) 390px, 100vw"
                       className="h-full w-full object-cover opacity-100 transition duration-700 group-hover:scale-[1.025]"
                     />
                     <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(1,1,1,0.04)_0%,rgba(1,1,1,0.2)_100%)]" />
@@ -533,11 +545,15 @@ export function HomePageContent() {
           </div>
 
           <div className="relative min-h-[400px] lg:min-h-[520px]">
-            <img
-              src={sellImageUrl}
-              alt="Luxury Bentley-style motor car in a warm architectural showroom"
-              className="absolute inset-x-0 bottom-0 top-6 h-[calc(100%-1.5rem)] w-full object-cover object-[50%_center] opacity-[0.97] lg:top-8 lg:h-[calc(100%-2rem)]"
-            />
+            <div className="absolute inset-x-0 bottom-0 top-6 overflow-hidden lg:top-8">
+              <Image
+                src={sellImageUrl}
+                alt="Luxury Bentley-style motor car in a warm architectural showroom"
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="h-full w-full object-cover object-[50%_center] opacity-[0.97]"
+              />
+            </div>
             <div className="absolute inset-y-0 left-0 w-14 bg-[linear-gradient(90deg,rgba(16,33,27,0.3)_0%,rgba(16,33,27,0.1)_48%,transparent_100%)]" />
             <div className="absolute inset-y-0 right-0 w-12 bg-[linear-gradient(270deg,rgba(16,33,27,0.22)_0%,rgba(16,33,27,0.08)_44%,transparent_100%)]" />
             <div className="absolute inset-x-0 top-0 h-10 bg-[linear-gradient(180deg,rgba(16,33,27,0.18)_0%,rgba(16,33,27,0.05)_42%,transparent_100%)]" />

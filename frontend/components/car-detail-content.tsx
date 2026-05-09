@@ -59,11 +59,10 @@ function inferInteriorColor(car: Car) {
 }
 
 const fallbackGallery = [
-  "/luxury-gallery/detail-atelier.png",
-  "/luxury-gallery/private-showroom.png",
-  "/luxury-gallery/mountain-coupe.png",
-  "/luxury-gallery/hotel-arrival.png",
-  "/homepage/bentley-inspired-hero.png",
+  "/images/hero/collector-icons-garage.webp",
+  "/images/gallery/carrera-gt-gallery.webp",
+  "/images/gallery/heritage-defender-gallery.webp",
+  "/images/gallery/analog-detail.webp",
 ];
 
 export function CarDetailContent({ carId }: { carId: string }) {

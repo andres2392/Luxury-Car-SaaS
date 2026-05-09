@@ -8,11 +8,10 @@ import { getCars } from "@/lib/api";
 import type { Car } from "@/lib/types";
 
 const fallbackImages = [
-  "/homepage/bentley-inspired-hero.png",
-  "/luxury-gallery/private-showroom.png",
-  "/luxury-gallery/detail-atelier.png",
-  "/luxury-gallery/mountain-coupe.png",
-  "/luxury-gallery/hotel-arrival.png",
+  "/images/hero/collector-icons-garage.webp",
+  "/images/gallery/carrera-gt-gallery.webp",
+  "/images/gallery/heritage-defender-gallery.webp",
+  "/images/gallery/analog-detail.webp",
 ];
 
 const carsPerPage = 15;

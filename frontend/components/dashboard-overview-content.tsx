@@ -18,7 +18,7 @@ const fallbackInventory = [
     dealer: "Private Collection Miami",
     price: "$389,500",
     mileage: "8,420 mi",
-    image: "/collector/analog-icons-garage.png",
+    image: "/images/hero/collector-icons-garage.webp",
   },
   {
     id: 2,
@@ -26,7 +26,7 @@ const fallbackInventory = [
     dealer: "Motorflow Newport",
     price: "$1,275,000",
     mileage: "6,180 mi",
-    image: "/collector/carrera-gt-gallery.png",
+    image: "/images/gallery/carrera-gt-gallery.webp",
   },
   {
     id: 3,
@@ -34,7 +34,7 @@ const fallbackInventory = [
     dealer: "Motorflow Greenwich",
     price: "$168,000",
     mileage: "31,400 mi",
-    image: "/collector/heritage-defender-gallery.png",
+    image: "/images/gallery/heritage-defender-gallery.webp",
   },
 ];
 

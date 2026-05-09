@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -51,9 +52,12 @@ export function AuthForm() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_72%_34%,rgba(194,168,120,0.12),transparent_32%),radial-gradient(circle_at_18%_78%,rgba(37,64,54,0.42),transparent_34%)]" />
       <div className="relative mx-auto grid min-h-[calc(100vh-73px)] max-w-[1440px] lg:grid-cols-[0.52fr_0.48fr]">
         <div className="relative hidden overflow-hidden lg:block">
-          <img
-            src="/collector/analog-icons-garage.png"
+          <Image
+            src="/images/hero/collector-icons-garage.webp"
             alt="Collector vehicles in a private architectural garage"
+            fill
+            priority
+            sizes="52vw"
             className="absolute inset-0 h-full w-full object-cover object-[56%_center] opacity-86 [filter:brightness(1.02)_contrast(1.06)_saturate(0.94)_sepia(0.04)]"
           />
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,5,5,0.04)_0%,rgba(5,5,5,0.1)_46%,#050505_100%)]" />
