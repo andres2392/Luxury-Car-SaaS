@@ -41,7 +41,7 @@ export interface CarImage {
 
 export interface Inquiry {
   id: number;
-  car_id: number;
+  car_id: number | null;
   user_id: number | null;
   name: string;
   email: string;
@@ -50,6 +50,14 @@ export interface Inquiry {
   created_at: string;
   car_title?: string | null;
   dealer_name?: string | null;
+  phone?: string | null;
+  location?: string | null;
+  inquiry_type?: string | null;
+  vehicle_of_interest?: string | null;
+  budget_range?: string | null;
+  preferred_contact_method?: string | null;
+  timeline?: string | null;
+  message_body?: string | null;
 }
 
 export interface AuthResponse {

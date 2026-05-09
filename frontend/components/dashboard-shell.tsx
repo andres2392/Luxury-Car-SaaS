@@ -12,9 +12,25 @@ import { clearAuthSession } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
 const dashboardLinks = [
-  { href: "/dashboard", label: "Overview" },
-  { href: "/dashboard/cars", label: "Inventory" },
-  { href: "/dashboard/inquiries", label: "Inquiries" },
+  { href: "/dashboard", label: "Overview", isActive: (pathname: string) => pathname === "/dashboard" },
+  {
+    href: "/dashboard/cars",
+    label: "Inventory",
+    isActive: (pathname: string) =>
+      pathname === "/dashboard/cars" ||
+      (pathname.startsWith("/dashboard/cars/") && pathname !== "/dashboard/cars/new"),
+  },
+  {
+    href: "/dashboard/inquiries",
+    label: "Inquiries",
+    isActive: (pathname: string) =>
+      pathname === "/dashboard/inquiries" || pathname.startsWith("/dashboard/inquiries/"),
+  },
+  {
+    href: "/dashboard/cars/new",
+    label: "Upload",
+    isActive: (pathname: string) => pathname === "/dashboard/cars/new",
+  },
 ];
 
 export function DashboardShell({ children }: { children: ReactNode }) {
@@ -23,7 +39,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const accountName = user?.email?.split("@")[0]?.replace(/[._-]+/g, " ") ?? "Dealer";
   const displayName = accountName.replace(/\b\w/g, (character) => character.toUpperCase());
   const navItemClass =
-    "block rounded-[0.2rem] border border-transparent px-3.5 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] transition";
+    "block w-full rounded-[0.2rem] border border-transparent px-7 py-2 text-left text-[11px] font-semibold uppercase tracking-[0.2em] transition";
 
   const handleLogout = () => {
     clearAuthSession();
@@ -33,7 +49,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   return (
     <ProtectedContent access="manage-cars">
       <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(194,168,120,0.08),transparent_24%),linear-gradient(180deg,#090909_0%,#10211B_26%,#183028_64%,#10211B_100%)]">
-        <div className="grid min-h-screen bg-[linear-gradient(180deg,rgba(9,9,9,0.9)_0%,rgba(16,33,27,0.82)_48%,rgba(24,48,40,0.82)_100%)] lg:grid-cols-[236px_minmax(0,1fr)]">
+        <div className="grid min-h-screen bg-[linear-gradient(180deg,rgba(9,9,9,0.9)_0%,rgba(16,33,27,0.82)_48%,rgba(24,48,40,0.82)_100%)] lg:grid-cols-[220px_minmax(0,1fr)]">
           <aside className="flex min-h-full flex-col border-r border-white/6 bg-[linear-gradient(180deg,rgba(9,9,9,0.72)_0%,rgba(16,33,27,0.52)_100%)] text-[#f3efe7] backdrop-blur-sm">
             <div className="px-7 py-8">
               <Link href="/" aria-label="Trilogy Garage home" className="inline-flex">
@@ -41,10 +57,9 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               </Link>
             </div>
 
-            <nav className="space-y-2 px-5 py-5">
+            <nav className="grid gap-2 px-5 py-5">
               {dashboardLinks.map((link) => {
-                const isActive =
-                  pathname === link.href || pathname.startsWith(`${link.href}/`);
+                const isActive = link.isActive(pathname);
 
                 return (
                   <Link
@@ -61,36 +76,13 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   </Link>
                 );
               })}
-
-              <Link
-                href="/dashboard/cars/new"
-                className={cn(navItemClass, "mt-5 text-[#8E8A83] hover:text-[#f3efe7]")}
-              >
-                Upload
-              </Link>
             </nav>
 
-            <div className="mt-auto px-5 py-6">
-              <div className="border border-white/6 bg-white/[0.03] px-4 py-4 backdrop-blur-sm">
-                <p className="text-[10px] uppercase tracking-[0.16em] text-[#8E8A83]">Signed in as</p>
-                <p className="mt-2 text-sm font-medium text-[#f3efe7]">{displayName}</p>
-                <p className="mt-1 text-xs uppercase tracking-[0.14em] text-[#8E8A83]">
-                  {user?.role} operations
-                </p>
-              </div>
-
-              <Button
-                variant="secondary"
-                className="mt-4 h-10 w-full rounded-[0.2rem] border border-[#C2A878]/28 bg-transparent text-[#f3efe7] hover:bg-white/[0.04]"
-                onClick={handleLogout}
-              >
-                Sign out
-              </Button>
-            </div>
+            <div className="mt-auto" />
           </aside>
 
           <div className="bg-[linear-gradient(180deg,rgba(9,9,9,0.04)_0%,rgba(16,33,27,0.08)_42%,rgba(24,48,40,0.12)_100%)] text-[#f3efe7]">
-            <div className="flex justify-end px-8 py-5 lg:px-14 xl:px-20">
+            <div className="flex justify-end px-4 py-5 lg:px-4">
               <div className="flex items-center gap-5 text-[#8E8A83]">
                 <div className="hidden pr-5 text-right lg:block">
                   <p className="text-[10px] uppercase tracking-[0.18em] text-[#8E8A83]">Last synced</p>
@@ -107,10 +99,17 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                     </p>
                   </div>
                 </div>
+                <Button
+                  variant="secondary"
+                  className="h-10 rounded-[0.2rem] border border-[#C2A878]/28 bg-transparent px-4 text-[#f3efe7] hover:bg-white/[0.04]"
+                  onClick={handleLogout}
+                >
+                  Sign out
+                </Button>
               </div>
             </div>
 
-            <div className="px-8 pb-10 pt-4 md:pb-12 lg:px-14 xl:px-20">{children}</div>
+            <div className="px-4 pb-10 pt-4 md:pb-12">{children}</div>
           </div>
         </div>
       </div>

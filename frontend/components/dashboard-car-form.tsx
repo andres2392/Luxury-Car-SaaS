@@ -323,7 +323,7 @@ export function DashboardCarForm({ mode, carId }: DashboardCarFormProps) {
   const imageCount = carImages.length + pendingImages.length;
 
   return (
-    <form id="dashboard-car-form" className="text-white" onSubmit={handleSubmit}>
+    <form id="dashboard-car-form" className="pr-6 text-white lg:pr-10 xl:pr-14" onSubmit={handleSubmit}>
       <input
         ref={fileInputRef}
         type="file"

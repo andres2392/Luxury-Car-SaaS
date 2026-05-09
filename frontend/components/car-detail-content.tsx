@@ -185,8 +185,8 @@ export function CarDetailContent({ carId }: { carId: string }) {
       return;
     }
 
-    const subject = encodeURIComponent(`Enquiry for ${car.title}`);
-    window.location.href = `mailto:${car.dealer.contact_email}?subject=${subject}`;
+    const vehicle = encodeURIComponent(car.title || `${car.year} ${car.brand} ${car.model}`);
+    window.location.href = `/inquiry?car_id=${car.id}&vehicle=${vehicle}`;
   }
 
   return (
@@ -266,7 +266,7 @@ export function CarDetailContent({ carId }: { carId: string }) {
         <div className="mx-auto flex max-w-4xl flex-col items-stretch justify-center gap-3 sm:flex-row sm:gap-4">
           <Button
             type="button"
-            className="h-11 rounded-none border border-[#34483F] bg-[#34483F] px-9 text-[10px] uppercase tracking-[0.3em] text-white shadow-none transition duration-300 hover:bg-[#25362F]"
+            className="h-11 rounded-none border border-[#DDD7CC] bg-[#FEFDFC] px-9 text-[10px] uppercase tracking-[0.3em] text-[#111111] shadow-none transition duration-300 hover:border-[#3D4C45] hover:bg-[#F5F2EC] hover:text-[#111111]"
             onClick={handleEnquire}
           >
             Enquire to Buy

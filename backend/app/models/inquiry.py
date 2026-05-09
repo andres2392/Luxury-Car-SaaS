@@ -12,10 +12,10 @@ class Inquiry(Base):
     __tablename__ = "inquiries"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    car_id: Mapped[int] = mapped_column(
+    car_id: Mapped[int | None] = mapped_column(
         ForeignKey("cars.id", ondelete="CASCADE"),
         index=True,
-        nullable=False,
+        nullable=True,
     )
     user_id: Mapped[int | None] = mapped_column(
         ForeignKey("users.id", ondelete="SET NULL"),
@@ -32,7 +32,7 @@ class Inquiry(Base):
         nullable=False,
     )
 
-    car: Mapped["Car"] = relationship(back_populates="inquiries")
+    car: Mapped["Car | None"] = relationship(back_populates="inquiries")
     user: Mapped["User | None"] = relationship(back_populates="inquiries")
 
     @property
@@ -44,3 +44,50 @@ class Inquiry(Base):
         if self.car is None or self.car.dealer is None:
             return None
         return self.car.dealer.name
+
+    def _parsed_message_lines(self) -> dict[str, str]:
+        details: dict[str, str] = {}
+        for line in self.message.splitlines():
+            if not line.strip():
+                break
+            key, separator, value = line.partition(":")
+            if separator:
+                details[key.strip().lower()] = value.strip()
+        return details
+
+    @property
+    def phone(self) -> str | None:
+        return self._parsed_message_lines().get("phone")
+
+    @property
+    def location(self) -> str | None:
+        return self._parsed_message_lines().get("location")
+
+    @property
+    def inquiry_type(self) -> str | None:
+        return self._parsed_message_lines().get("inquiry type")
+
+    @property
+    def vehicle_of_interest(self) -> str | None:
+        value = self._parsed_message_lines().get("vehicle of interest")
+        return None if value in {None, "Open / not specified"} else value
+
+    @property
+    def budget_range(self) -> str | None:
+        value = self._parsed_message_lines().get("budget range")
+        return None if value in {None, "Not provided"} else value
+
+    @property
+    def preferred_contact_method(self) -> str | None:
+        value = self._parsed_message_lines().get("preferred contact method")
+        return None if value in {None, "Not provided"} else value
+
+    @property
+    def timeline(self) -> str | None:
+        value = self._parsed_message_lines().get("timeline")
+        return None if value in {None, "Not provided"} else value
+
+    @property
+    def message_body(self) -> str:
+        parts = self.message.split("\n\n", 1)
+        return parts[1].strip() if len(parts) > 1 else self.message

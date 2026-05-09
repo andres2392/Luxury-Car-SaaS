@@ -13,6 +13,11 @@ export {
 } from "@/lib/api/cars";
 export { getDealers } from "@/lib/api/dealers";
 export {
+  bulkDeleteInquiries,
+  bulkUpdateInquiryState,
+  deleteInquiry,
+  createPublicInquiry,
   getDashboardInquiries,
   updateInquiryState,
 } from "@/lib/api/inquiries";
+export type { PublicInquiryPayload } from "@/lib/api/inquiries";

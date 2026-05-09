@@ -14,7 +14,6 @@ export function SiteHeader() {
   const isHomePage = pathname === "/";
   const isInventoryPage = pathname === "/cars";
   const isVehicleDetailPage = pathname.startsWith("/cars/");
-  const isCarsPage = pathname === "/cars";
 
   const handleLogout = () => {
     clearAuthSession();
@@ -46,6 +45,9 @@ export function SiteHeader() {
             <Link href="#experience" className="px-3 py-2 text-sm text-[#f3efe7] transition hover:text-white">
               About
             </Link>
+            <Link href="/inquiry" className="px-3 py-2 text-sm text-[#f3efe7] transition hover:text-white">
+              Inquiry
+            </Link>
           </nav>
 
           <div className="hidden w-28 lg:block" />
@@ -69,8 +71,8 @@ export function SiteHeader() {
           </Link>
 
           <Link
-            href="#vehicle-enquiry"
-            className="justify-self-end border border-[#3D4C45] bg-[#3D4C45] px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.24em] text-white transition hover:bg-[#2f3d37]"
+            href="/inquiry"
+            className="justify-self-end border border-[#DDD7CC] bg-[#FEFDFC] px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#111111] transition hover:border-[#3D4C45] hover:bg-[#F5F2EC]"
           >
             Make Inquiry
           </Link>
@@ -93,7 +95,7 @@ export function SiteHeader() {
 
           <div className="flex items-center justify-end gap-3">
             <Link
-              href={isCarsPage ? "/cars#inventory" : "#vehicle-enquiry"}
+              href="/inquiry"
               className="border border-[#DDD7CC] bg-[#FEFDFC] px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#111111] transition hover:border-[#3D4C45] hover:bg-[#F5F2EC]"
             >
               Make Inquiry
@@ -114,6 +116,9 @@ export function SiteHeader() {
         <nav className="flex items-center gap-3">
           <Link href="/cars" className="px-3 py-2 text-sm text-[#f3efe7] transition hover:text-white">
             Cars
+          </Link>
+          <Link href="/inquiry" className="px-3 py-2 text-sm text-[#f3efe7] transition hover:text-white">
+            Inquiry
           </Link>
 
           {isReady && canManageCars(user) ? (

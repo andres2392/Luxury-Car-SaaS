@@ -31,11 +31,13 @@ const footerSocialLinks = ["f", "X", "yt", "p", "ig", "tt", "in"];
 export function SiteFooter({
   variant = "light",
 }: {
-  variant?: "light" | "dark" | "detail" | "ivory";
+  variant?: "light" | "dark" | "detail" | "ivory" | "inquiry";
 }) {
-  const isDark = variant === "dark";
+  const isDark = variant === "dark" || variant === "inquiry";
   const wrapperClass =
-    variant === "dark"
+    variant === "inquiry"
+      ? "bg-[#090909] text-[#F3EFE7]"
+      : variant === "dark"
       ? "bg-[linear-gradient(180deg,#183028_0%,#10211B_100%)] text-[#F3EFE7]"
       : variant === "detail"
         ? "bg-[#FEFDFC] text-[#111111]"

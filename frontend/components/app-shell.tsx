@@ -100,6 +100,16 @@ export function AppShell({ children }: { children: ReactNode }) {
     );
   }
 
+  if (pathname === "/inquiry") {
+    return (
+      <div className="min-h-screen bg-[#090909]">
+        <SiteHeader />
+        <main>{children}</main>
+        <SiteFooter variant="inquiry" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen">
       <SiteHeader />

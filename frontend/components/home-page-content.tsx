@@ -537,7 +537,7 @@ export function HomePageContent() {
             <Button
               variant="secondary"
               className="mt-8 h-9 rounded-none border-[#C2A878]/52 bg-transparent px-5 text-xs uppercase tracking-[0.2em] text-[#F3EFE7] shadow-none transition duration-300 hover:border-[#C2A878]/72 hover:bg-white/4 hover:text-[#F3EFE7]"
-              onClick={() => router.push("/cars")}
+              onClick={() => router.push("/inquiry")}
             >
               Request Valuation
               <ArrowRight className="h-4 w-4" />

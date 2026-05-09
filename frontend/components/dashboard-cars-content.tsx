@@ -22,6 +22,7 @@ export function DashboardCarsContent() {
   const [cars, setCars] = useState<Car[]>([]);
   const [status, setStatus] = useState("Loading cars...");
   const [brandFilter, setBrandFilter] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [yearFilter, setYearFilter] = useState("");
   const [minPriceFilter, setMinPriceFilter] = useState("");
   const [maxPriceFilter, setMaxPriceFilter] = useState("");
@@ -52,16 +53,23 @@ export function DashboardCarsContent() {
   );
 
   const filteredCars = useMemo(() => {
+    const normalizedSearch = searchQuery.trim().toLowerCase();
+
     return cars.filter((car) => {
       const matchesBrand = brandFilter.length === 0 || brandFilter.includes(car.brand);
       const matchesYear = !yearFilter || String(car.year) === yearFilter;
       const numericPrice = Number(car.price);
       const matchesMin = !minPriceFilter || numericPrice >= Number(minPriceFilter);
       const matchesMax = !maxPriceFilter || numericPrice <= Number(maxPriceFilter);
+      const matchesSearch =
+        !normalizedSearch ||
+        [car.title, car.brand, car.model, String(car.year), car.dealer.name].some((value) =>
+          value.toLowerCase().includes(normalizedSearch)
+        );
 
-      return matchesBrand && matchesYear && matchesMin && matchesMax;
+      return matchesSearch && matchesBrand && matchesYear && matchesMin && matchesMax;
     });
-  }, [brandFilter, cars, maxPriceFilter, minPriceFilter, yearFilter]);
+  }, [brandFilter, cars, maxPriceFilter, minPriceFilter, searchQuery, yearFilter]);
 
   const totalPages = Math.max(1, Math.ceil(filteredCars.length / carsPerPage));
   const visiblePage = Math.min(currentPage, totalPages);
@@ -76,13 +84,6 @@ export function DashboardCarsContent() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function toggleBrand(brand: string) {
-    setCurrentPage(1);
-    setBrandFilter((current) =>
-      current.includes(brand) ? current.filter((item) => item !== brand) : [...current, brand]
-    );
-  }
-
   if (status) {
     return <LoadingState message={status} />;
   }
@@ -90,114 +91,29 @@ export function DashboardCarsContent() {
   return (
     <div className="pr-6 text-[#f1eadf] lg:pr-10 xl:pr-14">
       <div className="min-h-full">
-        <div className="grid gap-4 xl:grid-cols-[280px_minmax(0,1fr)]">
-          <aside className="bg-[#1a1b18] p-6">
-            <div className="space-y-1">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8f968c]">
-                Dashboard / Inventory
-              </p>
-              <h1 className="text-3xl font-semibold tracking-[-0.04em] text-[#f1eadf]">Filters</h1>
-              <p className="text-sm leading-6 text-[#a7ab9f]">
-                Refine inventory with the same filters already used in the marketplace flow.
-              </p>
-            </div>
-
-            <div className="mt-8 space-y-8">
-              <section className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-base font-semibold text-[#f1eadf]">Brand</h2>
-                  {brandFilter.length > 0 ? (
-                    <button
-                      type="button"
-                      className="text-xs font-medium text-[#f1eadf]"
-                      onClick={() => {
-                        setCurrentPage(1);
-                        setBrandFilter([]);
-                      }}
-                    >
-                      Clear
-                    </button>
-                  ) : null}
-                </div>
-                <div className="grid gap-3">
-                  {availableBrands.map((brand) => (
-                    <label key={brand} className="flex items-center gap-3 text-sm text-[#d8d2c7]">
-                      <input
-                        type="checkbox"
-                        checked={brandFilter.includes(brand)}
-                        onChange={() => toggleBrand(brand)}
-                        className="h-4 w-4 rounded border-[#4b4c43] bg-[#171816] text-[#26352F] focus:ring-[#26352F]"
-                      />
-                      <span>{brand}</span>
-                    </label>
-                  ))}
-                </div>
-              </section>
-
-              <section className="space-y-4 border-t border-[#31362f] pt-6">
-                <h2 className="text-base font-semibold text-[#f1eadf]">Price range</h2>
-                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
-                  <label className="space-y-2 text-sm text-[#a7ab9f]">
-                    <span>Minimum</span>
-                    <input
-                      type="number"
-                      value={minPriceFilter}
-                      onChange={(event) => {
-                        setCurrentPage(1);
-                        setMinPriceFilter(event.target.value);
-                      }}
-                      placeholder="10000"
-                      className="h-11 w-full border border-[#31352f] bg-[#171816] px-4 text-sm text-[#f1eadf] outline-none transition focus:border-[#f1eadf]"
-                    />
-                  </label>
-                  <label className="space-y-2 text-sm text-[#a7ab9f]">
-                    <span>Maximum</span>
-                    <input
-                      type="number"
-                      value={maxPriceFilter}
-                      onChange={(event) => {
-                        setCurrentPage(1);
-                        setMaxPriceFilter(event.target.value);
-                      }}
-                      placeholder="200000"
-                      className="h-11 w-full border border-[#31352f] bg-[#171816] px-4 text-sm text-[#f1eadf] outline-none transition focus:border-[#f1eadf]"
-                    />
-                  </label>
-                </div>
-              </section>
-
-              <section className="border-t border-[#31362f] pt-6">
-                <div className="bg-[#171816] p-4">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8f968c]">
-                    Inventory snapshot
-                  </p>
-                  <p className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-[#f1eadf]">
-                    {filteredCars.length}
-                  </p>
-                  <p className="mt-2 text-sm text-[#a7ab9f]">
-                    Active listings match your current dashboard view.
-                  </p>
-                </div>
-              </section>
-            </div>
-          </aside>
-
+        <div>
           <section className="bg-[#1a1b18] p-5 md:p-6">
-            <div className="flex flex-col gap-4 border-b border-[#31362f] pb-5 xl:flex-row xl:items-end xl:justify-between">
-              <div>
+            <div className="grid gap-4 border-b border-[#31362f] pb-5 xl:grid-cols-[minmax(0,1fr)_auto] xl:items-end">
+              <div className="min-w-0">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#8f968c]">
                   Inventory board
                 </p>
-                <h2 className="mt-2 text-4xl font-semibold tracking-[-0.05em] text-[#f1eadf]">
-                  Compare cars, manage faster
-                </h2>
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-[#a7ab9f]">
-                  Review your current inventory, adjust filters, and jump straight into listing updates.
-                </p>
+                <div className="mt-3">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(event) => {
+                      setCurrentPage(1);
+                      setSearchQuery(event.target.value);
+                    }}
+                    placeholder="Search by name, model, make, dealer, or year"
+                    className="h-11 w-full border-0 border-b border-[#4b4c43] bg-transparent px-0 text-sm text-[#f1eadf] outline-none placeholder:text-[#8f968c] focus:border-[#C2A878]"
+                  />
+                </div>
               </div>
 
-              <Link href="/dashboard/cars/new">
-                <Button className="h-11 rounded-[0.35rem] border border-[#4b4c43] bg-[#26352F] px-5 text-[#f1eadf] shadow-none hover:bg-[#31453d]">
+              <Link href="/dashboard/cars/new" className="xl:justify-self-end">
+                <Button className="h-11 whitespace-nowrap rounded-[0.35rem] border border-[#4b4c43] bg-[#26352F] px-5 text-[#f1eadf] shadow-none hover:bg-[#31453d]">
                   Create car
                 </Button>
               </Link>
@@ -206,9 +122,21 @@ export function DashboardCarsContent() {
             <div className="mt-5 grid gap-3 md:grid-cols-[minmax(0,1fr)_220px_220px]">
               <label className="space-y-2 text-sm text-[#a7ab9f]">
                 <span>Brand</span>
-                <div className="border border-[#31352f] bg-[#171816] px-4 py-3 text-sm text-[#f1eadf]">
-                  {brandFilter.length > 0 ? brandFilter.join(", ") : "All selected brands"}
-                </div>
+                <select
+                  value={brandFilter[0] ?? ""}
+                  onChange={(event) => {
+                    setCurrentPage(1);
+                    setBrandFilter(event.target.value ? [event.target.value] : []);
+                  }}
+                  className="h-11 w-full border border-[#31352f] bg-[#171816] px-4 text-sm text-[#f1eadf] outline-none transition focus:border-[#f1eadf]"
+                >
+                  <option value="">All brands</option>
+                  {availableBrands.map((brand) => (
+                    <option key={brand} value={brand}>
+                      {brand}
+                    </option>
+                  ))}
+                </select>
               </label>
 
               <label className="space-y-2 text-sm text-[#a7ab9f]">
@@ -235,6 +163,7 @@ export function DashboardCarsContent() {
                   type="button"
                   onClick={() => {
                     setBrandFilter([]);
+                    setSearchQuery("");
                     setYearFilter("");
                     setMinPriceFilter("");
                     setMaxPriceFilter("");
@@ -276,11 +205,11 @@ export function DashboardCarsContent() {
               </div>
             ) : (
               <>
-                <div className="mt-6 grid gap-5 md:grid-cols-2 2xl:grid-cols-3">
+                <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {paginatedCars.map((car) => (
                     <article
                       key={car.id}
-                      className="overflow-hidden bg-[#171816] p-4"
+                      className="flex h-full min-h-[470px] flex-col overflow-hidden bg-[#171816] p-4"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 text-xs font-semibold text-[#f1eadf]">
@@ -308,8 +237,8 @@ export function DashboardCarsContent() {
                         </div>
                       </div>
 
-                      <div className="space-y-2.5">
-                        <div>
+                      <div className="flex flex-1 flex-col space-y-2.5">
+                        <div className="min-h-[88px]">
                           <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f968c]">Vehicle</p>
                           <h3 className="mt-1.5 text-lg font-semibold tracking-[-0.03em] text-[#f1eadf]">
                             {car.title}
@@ -319,7 +248,7 @@ export function DashboardCarsContent() {
                           </p>
                         </div>
 
-                        <div>
+                        <div className="mt-auto">
                           <div className="flex items-end justify-between gap-4">
                             <div>
                               <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f968c]">Price</p>

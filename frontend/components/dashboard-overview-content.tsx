@@ -1,12 +1,11 @@
 "use client";
 
-import { MessageSquare, Plus, Upload, Users } from "lucide-react";
+import { ArrowRight, MessageSquare, Plus, Upload, Users } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { DashboardSummaryCard } from "@/components/dashboard-summary-card";
 import { LoadingState } from "@/components/loading-state";
-import { SectionHeading } from "@/components/section-heading";
 import { useAuthSession } from "@/hooks/use-auth-session";
 import { getDashboardInquiries, getMyCars } from "@/lib/api";
 import type { Car, Inquiry } from "@/lib/types";
@@ -38,37 +37,6 @@ const fallbackInventory = [
   },
 ];
 
-const pipelineColumns = [
-  {
-    label: "New",
-    inquiries: [
-      ["Bentley Flying Spur", "James Richardson", "€280,000"],
-      ["Rolls-Royce Ghost", "Sarah Al-Fayed", "€365,000"],
-    ],
-  },
-  {
-    label: "Contacted",
-    inquiries: [
-      ["Bentley Bentayga", "Marcus Chen", "€195,000"],
-      ["Aston Martin DBX", "Isabella Rossi", "€210,000"],
-    ],
-  },
-  {
-    label: "Negotiating",
-    inquiries: [
-      ["Continental GT", "Alexander Volkov", "€245,000"],
-      ["Phantom EWB", "Victoria Sterling", "€485,000"],
-    ],
-  },
-  {
-    label: "Closed",
-    inquiries: [
-      ["DB11 Volante", "Thomas Müller", "€215,000"],
-      ["Mulsanne", "Catherine Laurent", "€325,000"],
-    ],
-  },
-];
-
 const quickActions = [
   {
     label: "Add Vehicle",
@@ -92,12 +60,41 @@ const quickActions = [
   },
 ];
 
+const pipelineStates = [
+  { key: "new", label: "New" },
+  { key: "contacted", label: "Contacted" },
+  { key: "negotiating", label: "Negotiating" },
+  { key: "reserved", label: "Reserved" },
+];
+
 function formatDashboardPrice(price: string) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     maximumFractionDigits: 0,
   }).format(Number(price));
+}
+
+function formatDateTime(value: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(new Date(value));
+}
+
+function inquiryVehicleLabel(inquiry: Inquiry) {
+  return inquiry.vehicle_of_interest || inquiry.car_title || "General inquiry";
+}
+
+function inquiryMessagePreview(inquiry: Inquiry) {
+  const message = inquiry.message_body?.trim() || inquiry.message;
+  return message.length > 110 ? `${message.slice(0, 110).trim()}...` : message;
+}
+
+function pipelineStateFor(inquiry: Inquiry) {
+  return inquiry.state?.toLowerCase() || "new";
 }
 
 export function DashboardOverviewContent() {
@@ -129,17 +126,10 @@ export function DashboardOverviewContent() {
   }
 
   return (
-    <div className="space-y-8">
-      <SectionHeading
-        eyebrow="Dashboard"
-        title="Operations Dashboard"
-        description={
-          user?.role === "admin"
-            ? "Monitor all dealership inventory and active lead flow from one premium control center."
-            : "Track your dealership inventory and recent buyer activity in one place."
-        }
-        className="text-[#F3EFE7]"
-      />
+    <div className="space-y-5 pr-6 lg:pr-10 xl:pr-14">
+      <p className="text-[10px] uppercase tracking-[0.2em] text-[#C2A878]">
+        Dashboard
+      </p>
 
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         <DashboardSummaryCard
@@ -210,33 +200,63 @@ export function DashboardOverviewContent() {
       </section>
 
       <section className="border border-white/6 bg-white/[0.03] p-6 backdrop-blur-sm md:p-8">
-        <h2 className="font-heading text-3xl tracking-[-0.03em] text-[#F3EFE7]">
-          Inquiry Pipeline
-        </h2>
+        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.2em] text-[#C2A878]">Inquiry Pipeline</p>
+            <h2 className="mt-3 font-heading text-3xl tracking-[-0.03em] text-[#F3EFE7]">
+              Latest customer inquiries
+            </h2>
+          </div>
+          <Link
+            href="/dashboard/inquiries"
+            className="inline-flex h-10 items-center justify-center gap-2 border border-[#C2A878]/28 px-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#F3EFE7] transition hover:border-[#C2A878]/56"
+          >
+            More
+            <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
+          </Link>
+        </div>
 
         <div className="mt-9 grid gap-5 xl:grid-cols-4">
-          {pipelineColumns.map((column) => (
-            <div key={column.label}>
-              <div className="flex items-center justify-between border-b border-white/6 pb-5">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#C2A878]/72">
-                  {column.label}
-                </p>
-                <span className="text-[10px] text-[#C2A878]/72">{column.inquiries.length}</span>
-              </div>
+          {pipelineStates.map((state) => {
+            const stateInquiries = inquiries
+              .filter((inquiry) => pipelineStateFor(inquiry) === state.key)
+              .slice(0, 2);
+            const slots = [stateInquiries[0] ?? null, stateInquiries[1] ?? null];
 
-              <div className="mt-5 space-y-4">
-                {column.inquiries.map(([vehicle, client, value]) => (
-                  <article key={`${column.label}-${vehicle}`} className="border border-white/6 bg-[#0f1412]/72 p-5">
-                    <p className="text-sm font-semibold text-[#F3EFE7]">{vehicle}</p>
-                    <p className="mt-4 text-xs text-[#C2A878]/68">{client}</p>
-                    <div className="mt-4 border-t border-white/6 pt-4">
-                      <p className="font-heading text-base text-[#F3EFE7]">{value}</p>
-                    </div>
-                  </article>
-                ))}
+            return (
+              <div key={state.key}>
+                <div className="flex items-center justify-between border-b border-white/6 pb-5">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#C2A878]/72">
+                    {state.label}
+                  </p>
+                  <span className="text-[10px] text-[#C2A878]/72">{stateInquiries.length}</span>
+                </div>
+
+                <div className="mt-5 space-y-4">
+                  {slots.map((inquiry, index) =>
+                    inquiry ? (
+                      <article key={inquiry.id} className="min-h-[168px] border border-white/6 bg-[#0f1412]/72 p-5">
+                        <p className="text-sm font-semibold text-[#F3EFE7]">{inquiryVehicleLabel(inquiry)}</p>
+                        <p className="mt-4 text-xs text-[#C2A878]/68">{inquiry.name}</p>
+                        <p className="mt-2 text-xs leading-5 text-[#8E8A83]">{inquiryMessagePreview(inquiry)}</p>
+                        <div className="mt-4 border-t border-white/6 pt-4">
+                          <p className="text-[10px] uppercase tracking-[0.16em] text-[#8E8A83]">
+                            {formatDateTime(inquiry.created_at)}
+                          </p>
+                        </div>
+                      </article>
+                    ) : (
+                      <div
+                        key={`${state.key}-empty-${index}`}
+                        className="min-h-[168px]"
+                        aria-label={`Empty ${state.label} inquiry slot`}
+                      />
+                    )
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
