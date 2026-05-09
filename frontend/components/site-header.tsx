@@ -36,12 +36,6 @@ export function SiteHeader() {
             <Link href="/cars" className="px-3 py-2 text-sm text-[#f3efe7] transition hover:text-white">
               Inventory
             </Link>
-            <Link href="#sell" className="px-3 py-2 text-sm text-[#f3efe7] transition hover:text-white">
-              Sell Your Car
-            </Link>
-            <Link href="#experience" className="px-3 py-2 text-sm text-[#f3efe7] transition hover:text-white">
-              Financing
-            </Link>
             <Link href="#experience" className="px-3 py-2 text-sm text-[#f3efe7] transition hover:text-white">
               About
             </Link>
