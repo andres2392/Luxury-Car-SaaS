@@ -15,6 +15,40 @@ export class APIError extends Error {
   }
 }
 
+export function formatAPIErrorDetail(detail: unknown): string {
+  if (typeof detail === "string") {
+    return detail;
+  }
+
+  if (Array.isArray(detail)) {
+    return detail
+      .map((item) => {
+        if (typeof item === "string") {
+          return item;
+        }
+
+        if (item && typeof item === "object") {
+          const record = item as { msg?: unknown; loc?: unknown };
+          const message = typeof record.msg === "string" ? record.msg : JSON.stringify(item);
+          const location = Array.isArray(record.loc)
+            ? record.loc.filter((part) => part !== "body").join(".")
+            : "";
+
+          return location ? `${location}: ${message}` : message;
+        }
+
+        return String(item);
+      })
+      .join(" ");
+  }
+
+  if (detail && typeof detail === "object") {
+    return JSON.stringify(detail);
+  }
+
+  return "";
+}
+
 function buildUrl(path: string) {
   return `${API_BASE_URL}${path}`;
 }
@@ -54,9 +88,10 @@ export async function apiRequest<T>(
     let message = "Something went wrong. Please try again.";
 
     try {
-      const errorData = (await response.json()) as { detail?: string };
-      if (errorData.detail) {
-        message = errorData.detail;
+      const errorData = (await response.json()) as { detail?: unknown };
+      const detail = formatAPIErrorDetail(errorData.detail);
+      if (detail) {
+        message = detail;
       }
     } catch {
       if (response.statusText) {

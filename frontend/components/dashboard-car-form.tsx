@@ -634,6 +634,18 @@ export function DashboardCarForm({ mode, carId }: DashboardCarFormProps) {
           ) : null}
         </aside>
       </div>
+
+      {mode === "create" ? (
+        <div className="flex justify-end border-t border-white/6 pt-2">
+          <Button
+            type="submit"
+            className="h-10 rounded-[0.2rem] border border-[#C2A878]/28 bg-transparent px-8 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#f3efe7] hover:bg-white/[0.04]"
+            disabled={isSubmitting || isUploading}
+          >
+            {isSubmitting ? "Saving..." : "Save"}
+          </Button>
+        </div>
+      ) : null}
     </form>
   );
 }

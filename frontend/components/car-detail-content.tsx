@@ -265,7 +265,7 @@ export function CarDetailContent({ carId }: { carId: string }) {
         </div>
       </section>
 
-      <section className="px-5 pb-16 text-center sm:px-8 lg:px-12">
+      <section id="vehicle-enquiry" className="px-5 pb-16 text-center sm:px-8 lg:px-12">
         <div className="mx-auto flex max-w-4xl flex-col items-stretch justify-center gap-3 sm:flex-row sm:gap-4">
           <Button
             type="button"

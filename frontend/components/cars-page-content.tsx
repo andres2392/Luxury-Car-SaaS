@@ -203,7 +203,7 @@ export function CarsPageContent({
 
   return (
     <div className="min-h-screen bg-[#FEFDFC] text-[#111111]">
-      <section className="bg-[#FEFDFC]">
+      <section id="inventory" className="bg-[#FEFDFC]">
         <div className="mx-auto max-w-[1620px] px-7 pb-4 pt-2 sm:px-12 lg:px-16">
           <div className="grid gap-8 lg:grid-cols-[240px_minmax(0,1fr)] lg:items-center">
             <div className="flex h-11 items-center -translate-y-0.5">

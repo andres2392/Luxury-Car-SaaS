@@ -1,5 +1,11 @@
 import { getStoredToken } from "@/lib/auth";
-import { API_BASE_URL, APIError, apiRequest, buildQueryString } from "@/lib/api/client";
+import {
+  API_BASE_URL,
+  APIError,
+  apiRequest,
+  buildQueryString,
+  formatAPIErrorDetail,
+} from "@/lib/api/client";
 import type { Car, CarFilters, CarImage, CarPayload } from "@/lib/types";
 
 export function getCars(filters: CarFilters = {}) {
@@ -65,7 +71,7 @@ export function uploadCarImages(
     };
 
     request.onload = () => {
-      const response = request.response as CarImage[] | { detail?: string } | null;
+      const response = request.response as CarImage[] | { detail?: unknown } | null;
       if (request.status >= 200 && request.status < 300 && Array.isArray(response)) {
         resolve(response);
         return;
@@ -73,7 +79,7 @@ export function uploadCarImages(
 
       const message =
         response && !Array.isArray(response) && response.detail
-          ? response.detail
+          ? formatAPIErrorDetail(response.detail)
           : "Image upload failed.";
       reject(new APIError(message, request.status || 500));
     };

@@ -5,8 +5,8 @@ import { AppShell } from "@/components/app-shell";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Luxury-Car-SaaS",
-  description: "Premium foundation for a luxury car dealer SaaS platform.",
+  title: "Trilogy Garage",
+  description: "The private garage for collector-grade luxury automobiles.",
 };
 
 export default function RootLayout({

@@ -14,27 +14,27 @@ import type { Car, Inquiry } from "@/lib/types";
 const fallbackInventory = [
   {
     id: 1,
-    title: "Bentley Flying Spur",
-    dealer: "Bentley Minneapolis",
-    price: "€280,000",
-    mileage: "11,240 mi",
-    image: "/luxury-gallery/hotel-arrival.png",
+    title: "Ferrari 512 TR",
+    dealer: "Private Collection Miami",
+    price: "$389,500",
+    mileage: "8,420 mi",
+    image: "/collector/analog-icons-garage.png",
   },
   {
     id: 2,
-    title: "Aston Martin DBX",
-    dealer: "Prestige Motor Collection",
-    price: "€210,000",
-    mileage: "8,920 mi",
-    image: "/luxury-gallery/private-showroom.png",
+    title: "Porsche Carrera GT",
+    dealer: "Motorflow Newport",
+    price: "$1,275,000",
+    mileage: "6,180 mi",
+    image: "/collector/carrera-gt-gallery.png",
   },
   {
     id: 3,
-    title: "Continental GT",
+    title: "Defender 110 Heritage",
     dealer: "Motorflow Greenwich",
-    price: "€245,000",
-    mileage: "6,180 mi",
-    image: "/homepage/luxury-generated-hero.png",
+    price: "$168,000",
+    mileage: "31,400 mi",
+    image: "/collector/heritage-defender-gallery.png",
   },
 ];
 
@@ -135,10 +135,10 @@ export function DashboardOverviewContent() {
         title="Operations Dashboard"
         description={
           user?.role === "admin"
-            ? "Monitor all dealership inventory and customer demand from one premium control center."
+            ? "Monitor all dealership inventory and active lead flow from one premium control center."
             : "Track your dealership inventory and recent buyer activity in one place."
         }
-        className="text-[#f1eadf]"
+        className="text-[#F3EFE7]"
       />
 
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
@@ -150,7 +150,7 @@ export function DashboardOverviewContent() {
         <DashboardSummaryCard
           label="Active inquiries"
           value={inquiries.length}
-          helper={user?.role === "admin" ? "Every customer inquiry across all dealers." : "Inquiries tied to your inventory."}
+          helper={user?.role === "admin" ? "Every inbound inquiry across all dealers." : "Inquiries tied to your inventory."}
         />
         <DashboardSummaryCard
           label="Vehicles sold"
@@ -164,15 +164,15 @@ export function DashboardOverviewContent() {
         />
       </div>
 
-      <section className="border border-[#2b302b] bg-[#171916] p-6">
+      <section className="border border-white/6 bg-white/[0.03] p-6 backdrop-blur-sm">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-[#BFA46A]">Recent Inventory</p>
-            <h2 className="mt-3 font-heading text-3xl tracking-[-0.03em] text-[#f1eadf]">
+            <p className="text-[10px] uppercase tracking-[0.2em] text-[#C2A878]">Recent Inventory</p>
+            <h2 className="mt-3 font-heading text-3xl tracking-[-0.03em] text-[#F3EFE7]">
               Latest showroom additions
             </h2>
           </div>
-          <p className="max-w-md text-sm leading-6 text-[#9fa496]">
+          <p className="max-w-md text-sm leading-6 text-[#8E8A83]">
             A quick view of the newest collector-grade opportunities in your inventory.
           </p>
         </div>
@@ -187,8 +187,8 @@ export function DashboardOverviewContent() {
             const image = "main_image_url" in car ? car.main_image_url || fallback.image : car.image;
 
             return (
-              <article key={car.id} className="group bg-[#10120f]">
-                <div className="aspect-[16/10] overflow-hidden bg-[#26352F]">
+              <article key={car.id} className="group border border-white/6 bg-[#0f1412]/72">
+                <div className="aspect-[16/10] overflow-hidden bg-[#183028]">
                   <img
                     src={image}
                     alt={title}
@@ -196,11 +196,11 @@ export function DashboardOverviewContent() {
                   />
                 </div>
                 <div className="p-5">
-                  <p className="text-base font-semibold text-[#f1eadf]">{title}</p>
-                  <p className="mt-2 text-xs text-[#BFA46A]/72">{dealer}</p>
-                  <div className="mt-5 flex items-end justify-between border-t border-[#1d221d] pt-4">
-                    <p className="font-heading text-xl text-[#f1eadf]">{price}</p>
-                    <p className="text-xs uppercase tracking-[0.14em] text-[#8f968c]">{mileage}</p>
+                  <p className="text-base font-semibold text-[#F3EFE7]">{title}</p>
+                  <p className="mt-2 text-xs text-[#C2A878]/72">{dealer}</p>
+                  <div className="mt-5 flex items-end justify-between border-t border-white/6 pt-4">
+                    <p className="font-heading text-xl text-[#F3EFE7]">{price}</p>
+                    <p className="text-xs uppercase tracking-[0.14em] text-[#8E8A83]">{mileage}</p>
                   </div>
                 </div>
               </article>
@@ -209,28 +209,28 @@ export function DashboardOverviewContent() {
         </div>
       </section>
 
-      <section className="border border-[#2b302b] bg-[#171916] p-6 md:p-8">
-        <h2 className="font-heading text-3xl tracking-[-0.03em] text-[#f1eadf]">
+      <section className="border border-white/6 bg-white/[0.03] p-6 backdrop-blur-sm md:p-8">
+        <h2 className="font-heading text-3xl tracking-[-0.03em] text-[#F3EFE7]">
           Inquiry Pipeline
         </h2>
 
         <div className="mt-9 grid gap-5 xl:grid-cols-4">
           {pipelineColumns.map((column) => (
             <div key={column.label}>
-              <div className="flex items-center justify-between border-b border-[#242824] pb-5">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#BFA46A]/72">
+              <div className="flex items-center justify-between border-b border-white/6 pb-5">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#C2A878]/72">
                   {column.label}
                 </p>
-                <span className="text-[10px] text-[#BFA46A]/72">{column.inquiries.length}</span>
+                <span className="text-[10px] text-[#C2A878]/72">{column.inquiries.length}</span>
               </div>
 
               <div className="mt-5 space-y-4">
                 {column.inquiries.map(([vehicle, client, value]) => (
-                  <article key={`${column.label}-${vehicle}`} className="bg-[#10120f] p-5">
-                    <p className="text-sm font-semibold text-[#f1eadf]">{vehicle}</p>
-                    <p className="mt-4 text-xs text-[#BFA46A]/68">{client}</p>
-                    <div className="mt-4 border-t border-[#1d221d] pt-4">
-                      <p className="font-heading text-base text-[#e8d7ae]">{value}</p>
+                  <article key={`${column.label}-${vehicle}`} className="border border-white/6 bg-[#0f1412]/72 p-5">
+                    <p className="text-sm font-semibold text-[#F3EFE7]">{vehicle}</p>
+                    <p className="mt-4 text-xs text-[#C2A878]/68">{client}</p>
+                    <div className="mt-4 border-t border-white/6 pt-4">
+                      <p className="font-heading text-base text-[#F3EFE7]">{value}</p>
                     </div>
                   </article>
                 ))}
@@ -241,7 +241,7 @@ export function DashboardOverviewContent() {
       </section>
 
       <section className="pt-2">
-        <h2 className="font-heading text-3xl tracking-[-0.03em] text-[#f1eadf]">
+        <h2 className="font-heading text-3xl tracking-[-0.03em] text-[#F3EFE7]">
           Quick Actions
         </h2>
 
@@ -253,10 +253,10 @@ export function DashboardOverviewContent() {
               <Link
                 key={action.label}
                 href={action.href}
-                className="group flex min-h-[84px] flex-col items-center justify-center border border-[#2b302b] bg-[#171916] px-4 text-center transition hover:border-[#BFA46A]/42 hover:bg-[#1a1d19]"
+                className="group flex min-h-[84px] flex-col items-center justify-center border border-white/6 bg-white/[0.03] px-4 text-center transition hover:border-[#C2A878]/28 hover:bg-white/[0.05]"
               >
-                <Icon className="h-4 w-4 text-[#BFA46A]/72 transition group-hover:text-[#BFA46A]" strokeWidth={1.5} />
-                <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f1eadf]">
+                <Icon className="h-4 w-4 text-[#C2A878]/72 transition group-hover:text-[#C2A878]" strokeWidth={1.5} />
+                <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#F3EFE7]">
                   {action.label}
                 </p>
               </Link>

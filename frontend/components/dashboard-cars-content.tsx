@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { getMyCars } from "@/lib/api";
 import type { Car } from "@/lib/types";
 
+const carsPerPage = 6;
+
 function formatPrice(price: string) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -23,6 +25,7 @@ export function DashboardCarsContent() {
   const [yearFilter, setYearFilter] = useState("");
   const [minPriceFilter, setMinPriceFilter] = useState("");
   const [maxPriceFilter, setMaxPriceFilter] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     async function loadCars() {
@@ -60,6 +63,22 @@ export function DashboardCarsContent() {
     });
   }, [brandFilter, cars, maxPriceFilter, minPriceFilter, yearFilter]);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [brandFilter, maxPriceFilter, minPriceFilter, yearFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredCars.length / carsPerPage));
+  const paginatedCars = filteredCars.slice(
+    (currentPage - 1) * carsPerPage,
+    currentPage * carsPerPage
+  );
+
+  function goToPage(page: number) {
+    const nextPage = Math.min(Math.max(page, 1), totalPages);
+    setCurrentPage(nextPage);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   function toggleBrand(brand: string) {
     setBrandFilter((current) =>
       current.includes(brand) ? current.filter((item) => item !== brand) : [...current, brand]
@@ -77,7 +96,7 @@ export function DashboardCarsContent() {
           <aside className="bg-[#1a1b18] p-6">
             <div className="space-y-1">
               <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8f968c]">
-                Dashboard / Cars
+                Dashboard / Inventory
               </p>
               <h1 className="text-3xl font-semibold tracking-[-0.04em] text-[#f1eadf]">Filters</h1>
               <p className="text-sm leading-6 text-[#a7ab9f]">
@@ -245,78 +264,118 @@ export function DashboardCarsContent() {
                 </div>
               </div>
             ) : (
-              <div className="mt-6 grid gap-5 md:grid-cols-2 2xl:grid-cols-3">
-                {filteredCars.map((car) => (
-                  <article
-                    key={car.id}
-                    className="overflow-hidden bg-[#171816] p-4"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-xs font-semibold text-[#f1eadf]">
-                        <span className="text-[#f1eadf]">★</span>
-                        <span>{(4 + ((car.id % 10) / 10)).toFixed(1)}</span>
-                      </div>
-                      <span className="border border-[#4b4c43] bg-[#1e201d] px-3 py-1 text-xs font-medium uppercase tracking-[0.18em] text-[#f1eadf]">
-                        {car.year}
-                      </span>
-                    </div>
-
-                    <div className="pb-3 pt-4">
-                      <div className="overflow-hidden border border-[#2b302b] bg-[#1e201d]">
-                        {car.main_image_url ? (
-                          <img
-                            src={car.main_image_url}
-                            alt={car.title}
-                            className="aspect-[16/10] h-full w-full object-cover"
-                          />
-                        ) : (
-                          <div className="flex aspect-[16/10] items-center justify-center text-sm text-[#8f968c]">
-                            No image available
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="space-y-2.5">
-                      <div>
-                        <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f968c]">Vehicle</p>
-                        <h3 className="mt-1.5 text-lg font-semibold tracking-[-0.03em] text-[#f1eadf]">
-                          {car.title}
-                        </h3>
-                        <p className="mt-1 text-xs text-[#a7ab9f]">
-                          {car.brand} {car.model} • {car.dealer.name}
-                        </p>
+              <>
+                <div className="mt-6 grid gap-5 md:grid-cols-2 2xl:grid-cols-3">
+                  {paginatedCars.map((car) => (
+                    <article
+                      key={car.id}
+                      className="overflow-hidden bg-[#171816] p-4"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-xs font-semibold text-[#f1eadf]">
+                          <span className="text-[#f1eadf]">★</span>
+                          <span>{(4 + ((car.id % 10) / 10)).toFixed(1)}</span>
+                        </div>
+                        <span className="border border-[#4b4c43] bg-[#1e201d] px-3 py-1 text-xs font-medium uppercase tracking-[0.18em] text-[#f1eadf]">
+                          {car.year}
+                        </span>
                       </div>
 
-                      <div className="flex items-end justify-between gap-4">
+                      <div className="pb-3 pt-4">
+                        <div className="overflow-hidden border border-[#2b302b] bg-[#1e201d]">
+                          {car.main_image_url ? (
+                            <img
+                              src={car.main_image_url}
+                              alt={car.title}
+                              className="aspect-[16/10] h-full w-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex aspect-[16/10] items-center justify-center text-sm text-[#8f968c]">
+                              No image available
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="space-y-2.5">
                         <div>
-                          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f968c]">Price</p>
-                          <p className="mt-1.5 text-base font-semibold text-[#f1eadf]">
-                            {formatPrice(car.price)}
-                          </p>
+                          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f968c]">Vehicle</p>
+                          <h3 className="mt-1.5 text-lg font-semibold tracking-[-0.03em] text-[#f1eadf]">
+                            {car.title}
+                          </h3>
                           <p className="mt-1 text-xs text-[#a7ab9f]">
-                            {car.mileage.toLocaleString()} miles
+                            {car.brand} {car.model} • {car.dealer.name}
                           </p>
                         </div>
-                        <Link
-                          href={`/cars/${car.id}`}
-                          className="text-xs font-medium text-[#f1eadf] hover:text-[#a7ab9f]"
-                        >
-                          View details
-                        </Link>
-                      </div>
 
-                      <div>
-                        <Link href={`/dashboard/cars/${car.id}/edit`}>
-                          <Button className="h-10 w-full rounded-[0.35rem] border border-[#4b4c43] bg-[#26352F] text-xs text-[#f1eadf] shadow-none hover:bg-[#31453d]">
-                            Edit
-                          </Button>
-                        </Link>
+                        <div>
+                          <div className="flex items-end justify-between gap-4">
+                            <div>
+                              <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f968c]">Price</p>
+                              <p className="mt-1.5 text-base font-semibold text-[#f1eadf]">
+                                {formatPrice(car.price)}
+                              </p>
+                              <p className="mt-1 text-xs text-[#a7ab9f]">
+                                {car.mileage.toLocaleString()} miles
+                              </p>
+                            </div>
+                            <Link
+                              href={`/cars/${car.id}`}
+                              className="text-xs font-medium text-[#f1eadf] hover:text-[#a7ab9f]"
+                            >
+                              View details
+                            </Link>
+                          </div>
+                        </div>
+
+                        <div>
+                          <Link href={`/dashboard/cars/${car.id}/edit`}>
+                            <Button className="h-10 w-full rounded-[0.35rem] border border-[#4b4c43] bg-[#26352F] text-xs text-[#f1eadf] shadow-none hover:bg-[#31453d]">
+                              Edit
+                            </Button>
+                          </Link>
+                        </div>
                       </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
+                    </article>
+                  ))}
+                </div>
+
+                <div className="mt-8 flex flex-col items-center justify-between gap-5 border-t border-[#31362f] pt-6 sm:flex-row">
+                  <p className="text-sm text-[#a7ab9f]">
+                    Showing {(currentPage - 1) * carsPerPage + 1}-
+                    {Math.min(currentPage * carsPerPage, filteredCars.length)} of{" "}
+                    {filteredCars.length} vehicles
+                  </p>
+
+                  <div className="flex items-center gap-2">
+                    {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+                      <button
+                        key={page}
+                        type="button"
+                        onClick={() => goToPage(page)}
+                        className={`flex h-10 w-10 items-center justify-center border text-sm transition ${
+                          currentPage === page
+                            ? "border-[#C2A878]/58 bg-[#C2A878]/14 text-[#f1eadf]"
+                            : "border-[#4b4c43] bg-[#171816] text-[#a7ab9f] hover:border-[#C2A878]/42 hover:text-[#f1eadf]"
+                        }`}
+                        aria-label={`Go to page ${page}`}
+                        aria-current={currentPage === page ? "page" : undefined}
+                      >
+                        {page}
+                      </button>
+                    ))}
+
+                    <button
+                      type="button"
+                      onClick={() => goToPage(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className="h-10 border border-[#4b4c43] bg-[#171816] px-4 text-xs font-semibold uppercase tracking-[0.16em] text-[#f1eadf] transition hover:border-[#C2A878]/42 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              </>
             )}
           </section>
         </div>

@@ -1,4 +1,5 @@
 from functools import lru_cache
+from urllib.parse import quote_plus
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -17,11 +18,8 @@ class Settings(BaseSettings):
     postgres_port: int = Field(default=5432, alias="POSTGRES_PORT")
     postgres_db: str = Field(default="luxury_car_saas", alias="POSTGRES_DB")
     postgres_user: str = Field(default="luxury_admin", alias="POSTGRES_USER")
-    postgres_password: str = Field(default="luxury_password", alias="POSTGRES_PASSWORD")
-    database_url: str = Field(
-        default="postgresql+psycopg://luxury_admin:luxury_password@localhost:5432/luxury_car_saas",
-        alias="DATABASE_URL",
-    )
+    postgres_password: str = Field(default="", alias="POSTGRES_PASSWORD")
+    database_url: str | None = Field(default=None, alias="DATABASE_URL")
     secret_key: str = Field(default="change-this-in-production", alias="SECRET_KEY")
     access_token_expire_minutes: int = Field(default=60, alias="ACCESS_TOKEN_EXPIRE_MINUTES")
     backend_cors_origins: str = Field(default="http://localhost:3000", alias="BACKEND_CORS_ORIGINS")
@@ -29,6 +27,19 @@ class Settings(BaseSettings):
     supabase_url: str | None = Field(default=None, alias="SUPABASE_URL")
     supabase_service_role_key: str | None = Field(default=None, alias="SUPABASE_SERVICE_ROLE_KEY")
     supabase_storage_bucket: str = Field(default="car-images", alias="SUPABASE_STORAGE_BUCKET")
+
+    @property
+    def sqlalchemy_database_url(self) -> str:
+        if self.database_url:
+            return self.database_url
+
+        username = quote_plus(self.postgres_user)
+        password = quote_plus(self.postgres_password)
+        credentials = f"{username}:{password}" if password else username
+        return (
+            f"postgresql+psycopg://{credentials}@"
+            f"{self.postgres_server}:{self.postgres_port}/{self.postgres_db}"
+        )
 
 
 @lru_cache

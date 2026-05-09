@@ -35,14 +35,14 @@ export function DashboardInquiriesContent() {
       <SectionHeading
         eyebrow="Dashboard / Inquiries"
         title="Customer inquiries"
-        description="Review the latest customer messages tied to your current role scope."
+        description="Review the latest inbound messages tied to your current role scope."
         className="text-[#f1eadf]"
       />
 
       {inquiries.length === 0 ? (
         <EmptyState
           title="No inquiries yet"
-          description="When customers reach out from your inventory pages, their messages will appear here."
+          description="When visitors reach out from your inventory pages, their messages will appear here."
         />
       ) : (
         <div className="space-y-3">

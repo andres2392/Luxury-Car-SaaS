@@ -1,5 +1,5 @@
 export { APIError, API_BASE_URL } from "@/lib/api/client";
-export { loginUser, signupUser } from "@/lib/api/auth";
+export { loginUser } from "@/lib/api/auth";
 export {
   createCar,
   deleteCar,
@@ -12,5 +12,4 @@ export {
   uploadCarImages,
 } from "@/lib/api/cars";
 export { getDealers } from "@/lib/api/dealers";
-export { getFavorites, removeFavorite, saveFavorite } from "@/lib/api/favorites";
 export { createInquiry, getDashboardInquiries, getMyInquiries } from "@/lib/api/inquiries";

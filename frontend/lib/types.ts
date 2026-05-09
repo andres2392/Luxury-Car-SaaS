@@ -1,4 +1,4 @@
-export type UserRole = "admin" | "dealer" | "customer";
+export type UserRole = "admin" | "dealer";
 
 export interface User {
   id: number;
@@ -50,12 +50,6 @@ export interface Inquiry {
   created_at: string;
   car_title?: string | null;
   dealer_name?: string | null;
-}
-
-export interface FavoriteActionResponse {
-  car_id: number;
-  is_saved: boolean;
-  message: string;
 }
 
 export interface AuthResponse {

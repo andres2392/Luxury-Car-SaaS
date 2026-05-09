@@ -12,7 +12,6 @@ from app.db.base_class import Base
 class UserRole(str, enum.Enum):
     ADMIN = "admin"
     DEALER = "dealer"
-    CUSTOMER = "customer"
 
 
 class User(Base):
@@ -38,10 +37,5 @@ class User(Base):
 
     inquiries: Mapped[list["Inquiry"]] = relationship(
         back_populates="user",
-        passive_deletes=True,
-    )
-    favorites: Mapped[list["Favorite"]] = relationship(
-        back_populates="user",
-        cascade="all, delete-orphan",
         passive_deletes=True,
     )

@@ -8,10 +8,10 @@ import { LoadingState } from "@/components/loading-state";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { useAuthSession } from "@/hooks/use-auth-session";
-import { canManageCars, isAdmin } from "@/lib/auth";
+import { isAdmin } from "@/lib/auth";
 
 function isAuthRoute(pathname: string) {
-  return pathname === "/login" || pathname === "/signup";
+  return pathname === "/login";
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -20,8 +20,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { isReady, user } = useAuthSession();
 
   const dashboardRoute = pathname.startsWith("/dashboard");
-  const accountRoute = pathname.startsWith("/account");
-  const adminOutsideDashboard = isReady && isAdmin(user) && !dashboardRoute && !accountRoute;
+  const adminOutsideDashboard = isReady && isAdmin(user) && !dashboardRoute;
   const loggedInOnAuthPage = isReady && user && isAuthRoute(pathname);
 
   useEffect(() => {
@@ -29,28 +28,20 @@ export function AppShell({ children }: { children: ReactNode }) {
       return;
     }
 
-    if (isAdmin(user) && !dashboardRoute && !accountRoute) {
+    if (isAdmin(user) && !dashboardRoute) {
       router.replace("/dashboard");
       return;
     }
 
     if (user && isAuthRoute(pathname)) {
-      router.replace(canManageCars(user) ? "/dashboard" : "/cars");
+      router.replace("/dashboard");
     }
-  }, [accountRoute, dashboardRoute, isReady, pathname, router, user]);
+  }, [dashboardRoute, isReady, pathname, router, user]);
 
-  if (!isReady && (dashboardRoute || accountRoute)) {
-    if (dashboardRoute) {
-      return (
-        <div className="min-h-screen bg-[#121310] text-white">
-          <LoadingState message="Opening dashboard..." />
-        </div>
-      );
-    }
-
+  if (!isReady && dashboardRoute) {
     return (
-      <div className="min-h-screen bg-[#05070b] px-6 py-10 text-white sm:px-10 lg:px-12">
-        <LoadingState message="Opening account..." />
+      <div className="min-h-screen bg-[#121310] text-white">
+        <LoadingState message="Opening dashboard..." />
       </div>
     );
   }
@@ -67,16 +58,6 @@ export function AppShell({ children }: { children: ReactNode }) {
     return (
       <div className="min-h-screen bg-[#121310]">
         {children}
-        <SiteFooter variant="dark" />
-      </div>
-    );
-  }
-
-  if (accountRoute) {
-    return (
-      <div className="min-h-screen bg-[#05070b]">
-        <div className="px-6 py-8 sm:px-8 lg:px-10">{children}</div>
-        <SiteFooter variant="dark" />
       </div>
     );
   }
@@ -90,19 +71,28 @@ export function AppShell({ children }: { children: ReactNode }) {
     );
   }
 
+  if (isAuthRoute(pathname)) {
+    return (
+      <div className="min-h-screen bg-[#050505]">
+        <SiteHeader />
+        <main>{children}</main>
+      </div>
+    );
+  }
+
   if (pathname.startsWith("/cars/")) {
     return (
       <div className="min-h-screen bg-[#FAF8F4]">
         <SiteHeader />
         <main>{children}</main>
-        <SiteFooter variant="light" />
+        <SiteFooter variant="detail" />
       </div>
     );
   }
 
-  if (pathname === "/cars" || pathname === "/cars-detail") {
+  if (pathname === "/cars") {
     return (
-      <div className="min-h-screen bg-[#FAF8F4]">
+      <div className="min-h-screen bg-[#F4F1EA]">
         <SiteHeader />
         <main>{children}</main>
         <SiteFooter variant="light" />

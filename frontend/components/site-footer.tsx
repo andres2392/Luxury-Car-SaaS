@@ -1,6 +1,8 @@
 import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 
+import { BrandLogo } from "@/components/brand-logo";
+
 const footerColumns = [
   {
     title: "Models",
@@ -26,24 +28,32 @@ const footerColumns = [
 
 const footerSocialLinks = ["f", "X", "yt", "p", "ig", "tt", "in"];
 
-export function SiteFooter({ variant = "light" }: { variant?: "light" | "dark" }) {
+export function SiteFooter({
+  variant = "light",
+}: {
+  variant?: "light" | "dark" | "detail" | "ivory";
+}) {
   const isDark = variant === "dark";
-  const wrapperClass = isDark
-    ? "bg-[#354F44] text-[#F2EEE6]"
-    : "border-t border-[#DDD7CC] bg-[#FEFDFC] text-[#171717]";
-  const dividerClass = isDark ? "border-[#F2EEE6]/72" : "border-[#D8D0C4]";
-  const mutedClass = isDark ? "text-[#F2EEE6]/82" : "text-[#6E6A63]";
+  const wrapperClass =
+    variant === "dark"
+      ? "bg-[linear-gradient(180deg,#183028_0%,#10211B_100%)] text-[#F3EFE7]"
+      : variant === "detail"
+        ? "bg-[#FAF8F4] text-[#111111]"
+        : variant === "ivory"
+          ? "bg-[#FEFDFC] text-[#111111]"
+          : "bg-[#F4F1EA] text-[#111111]";
+  const dividerClass = isDark ? "border-[#C2A878]/28" : "border-[#D9D2C6]";
+  const mutedClass = isDark ? "text-[#8E8A83]" : "text-[#6F6A63]";
   const linkClass = isDark
-    ? "text-[#F2EEE6]/84 hover:text-white"
-    : "text-[#3f453f] hover:text-[#171717]";
+    ? "text-[#8E8A83] hover:text-[#F3EFE7]"
+    : "text-[#6F6A63] hover:text-[#111111]";
 
   return (
     <footer className={wrapperClass}>
       <div className="mx-auto max-w-[1440px] px-6 pb-8 pt-12 sm:px-10 lg:px-12 xl:px-20">
         <div className="text-center">
-          <Link href="/" className="mx-auto inline-flex flex-col items-center gap-1">
-            <span className="font-heading text-3xl leading-none tracking-[0.04em]">LA</span>
-            <span className="text-[10px] font-semibold uppercase tracking-[0.24em]">Luxury Auto</span>
+          <Link href="/" aria-label="Trilogy Garage home" className="mx-auto inline-flex">
+            <BrandLogo className="h-28 w-48" imageClassName="object-contain" />
           </Link>
         </div>
 
@@ -86,7 +96,7 @@ export function SiteFooter({ variant = "light" }: { variant?: "light" | "dark" }
 
         <div className={`mt-12 border-t ${dividerClass} pt-8`}>
           <div className={`text-xs leading-6 ${mutedClass}`}>
-            <p>© Copyright Luxury Auto 2026</p>
+            <p>© Copyright Trilogy Garage 2026</p>
             <p className="mt-6 max-w-3xl">
               Registered office: Miami, Florida. Premium inventory presentation for rare,
               refined, and collector-grade automobiles.

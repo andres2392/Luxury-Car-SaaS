@@ -5,6 +5,3 @@ from app.models.inquiry import Inquiry
 from app.models.user import User, UserRole
 
 __all__ = ["User", "UserRole", "Dealer", "Car", "CarImage", "Inquiry"]
-from app.models.favorite import Favorite
-
-__all__ = ["Favorite"]

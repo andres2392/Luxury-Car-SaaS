@@ -13,7 +13,7 @@ export default async function EditCarDashboardPage({
     <div className="space-y-8">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <SectionHeading
-          eyebrow="Dashboard / Cars"
+          eyebrow="Dashboard / Inventory"
           title="Edit listing"
           description="Update the car details and keep the inventory presentation current."
           className="text-white"
