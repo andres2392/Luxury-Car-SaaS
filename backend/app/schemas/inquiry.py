@@ -10,9 +10,8 @@ from app.schemas.common import ORMBaseSchema
 class InquiryCreate(ORMBaseSchema):
     car_id: int
     name: str = Field(min_length=2, max_length=255)
-    email: str
-    message: str = Field(min_length=5)
-    state: str = Field(default="new", max_length=50)
+    email: str = Field(min_length=3, max_length=255, pattern=r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+    message: str = Field(min_length=5, max_length=4000)
 
 
 class InquiryResponse(ORMBaseSchema):
@@ -26,3 +25,7 @@ class InquiryResponse(ORMBaseSchema):
     created_at: datetime
     car_title: str | None = None
     dealer_name: str | None = None
+
+
+class InquiryUpdate(ORMBaseSchema):
+    state: str = Field(max_length=50)

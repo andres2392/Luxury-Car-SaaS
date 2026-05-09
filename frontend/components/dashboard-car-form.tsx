@@ -1,5 +1,6 @@
 "use client";
 
+import { ImageIcon, Star, UploadCloud } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -319,58 +320,240 @@ export function DashboardCarForm({ mode, carId }: DashboardCarFormProps) {
     );
   }
 
+  const imageCount = carImages.length + pendingImages.length;
+
   return (
-    <form id="dashboard-car-form" className="space-y-6 text-white" onSubmit={handleSubmit}>
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
-        <div className="space-y-6">
-          <section className="rounded-[1.1rem] border border-[#3a4038] bg-[#1e201d] p-6">
-            <div className="space-y-2">
-              <Label htmlFor="title" className="text-sm font-medium text-white">
-                Car name
-              </Label>
-              <Input
-                id="title"
-                value={form.title}
-                onChange={(e) => setForm({ ...form, title: e.target.value })}
-                className="h-12 rounded-xl border-[#3a4038] bg-[#171816] text-[#f1eadf] placeholder:text-[#8f968c] focus:border-[#f1eadf]"
-              />
+    <form id="dashboard-car-form" className="text-white" onSubmit={handleSubmit}>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+        multiple
+        className="hidden"
+        onChange={(event) => {
+          void handleFilesSelected(event.target.files);
+          event.target.value = "";
+        }}
+      />
+
+      <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_430px] xl:items-start">
+        <main className="space-y-5">
+          <section className="border border-white/6 bg-[#151916]/74 p-6 sm:p-7">
+            <div className="flex items-end justify-between gap-6 border-b border-white/8 pb-5">
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#C2A878]/78">
+                  Vehicle Information
+                </p>
+                <h3 className="mt-2 font-heading text-3xl leading-tight tracking-[-0.035em] text-[#f3efe7]">
+                  Core identity
+                </h3>
+              </div>
+              <p className="hidden max-w-[16rem] text-right text-xs leading-5 text-[#8f968c] sm:block">
+                Name the car like a collector listing, not a database record.
+              </p>
+            </div>
+
+            <div className="mt-6 grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
+              <div className="space-y-2">
+                <Label htmlFor="title" className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8f968c]">
+                  Car name
+                </Label>
+                <Input
+                  id="title"
+                  value={form.title}
+                  onChange={(e) => setForm({ ...form, title: e.target.value })}
+                  placeholder="1994 Ferrari 512 TR"
+                  className="h-12 rounded-none border-0 border-b border-white/12 bg-transparent px-0 text-lg text-[#f1eadf] shadow-none placeholder:text-[#4f574f] focus:border-[#C2A878] focus-visible:ring-0"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="model" className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8f968c]">
+                  Model
+                </Label>
+                <Input
+                  id="model"
+                  value={form.model}
+                  onChange={(e) => setForm({ ...form, model: e.target.value })}
+                  placeholder="512 TR"
+                  className="h-12 rounded-none border-0 border-b border-white/12 bg-transparent px-0 text-lg text-[#f1eadf] shadow-none placeholder:text-[#4f574f] focus:border-[#C2A878] focus-visible:ring-0"
+                />
+              </div>
+            </div>
+          </section>
+
+          <section className="border border-white/6 bg-[#151916]/58 p-6 sm:p-7">
+            <div className="border-b border-white/8 pb-5">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#C2A878]/78">
+                Presentation
+              </p>
+              <h3 className="mt-2 font-heading text-3xl leading-tight tracking-[-0.035em] text-[#f3efe7]">
+                Editorial story
+              </h3>
             </div>
 
             <div className="mt-6 space-y-2">
-              <Label htmlFor="description" className="text-sm font-medium text-white">
+              <Label htmlFor="description" className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8f968c]">
                 Description
               </Label>
               <Textarea
                 id="description"
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
-                className="min-h-[240px] rounded-xl border-[#3a4038] bg-[#171816] text-[#f1eadf] placeholder:text-[#8f968c] focus:border-[#f1eadf]"
+                placeholder="Describe provenance, specification, condition, and the emotional character of the vehicle."
+                className="min-h-[150px] rounded-none border border-white/10 bg-[#101310]/82 p-4 text-sm leading-7 text-[#f1eadf] shadow-none placeholder:text-[#5e665d] focus:border-[#C2A878] focus-visible:ring-0"
               />
             </div>
           </section>
 
-          <section className="rounded-[1.1rem] border border-[#3a4038] bg-[#1e201d] p-6">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <h3 className="text-xl font-semibold text-white">Images</h3>
-                <p className="mt-1 text-sm text-[#a7ab9f]">
-                  Upload gallery images directly from your device and choose one featured hero image.
-                </p>
-              </div>
+          <section className="border border-white/6 bg-[#151916]/50 p-6 sm:p-7">
+            <div className="border-b border-white/8 pb-5">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#C2A878]/78">
+                Specifications
+              </p>
+              <h3 className="mt-2 font-heading text-3xl leading-tight tracking-[-0.035em] text-[#f3efe7]">
+                Collector facts
+              </h3>
             </div>
 
-            <div className="mt-6">
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
-                multiple
-                className="hidden"
-                onChange={(event) => {
-                  void handleFilesSelected(event.target.files);
-                  event.target.value = "";
-                }}
-              />
+            <div className="mt-6 grid gap-5 sm:grid-cols-3">
+              <div className="space-y-2">
+                <Label htmlFor="year" className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8f968c]">
+                  Year
+                </Label>
+                <Input
+                  id="year"
+                  type="number"
+                  value={form.year}
+                  onChange={(e) => setForm({ ...form, year: e.target.value })}
+                  className="h-11 rounded-none border-0 border-b border-white/12 bg-transparent px-0 text-[#f1eadf] shadow-none focus:border-[#C2A878] focus-visible:ring-0"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="mileage" className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8f968c]">
+                  Mileage
+                </Label>
+                <Input
+                  id="mileage"
+                  type="number"
+                  value={form.mileage}
+                  onChange={(e) => setForm({ ...form, mileage: e.target.value })}
+                  className="h-11 rounded-none border-0 border-b border-white/12 bg-transparent px-0 text-[#f1eadf] shadow-none focus:border-[#C2A878] focus-visible:ring-0"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="price" className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8f968c]">
+                  Price
+                </Label>
+                <Input
+                  id="price"
+                  type="number"
+                  value={form.price}
+                  onChange={(e) => setForm({ ...form, price: e.target.value })}
+                  className="h-11 rounded-none border-0 border-b border-white/12 bg-transparent px-0 text-[#f1eadf] shadow-none focus:border-[#C2A878] focus-visible:ring-0"
+                />
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <aside className="xl:sticky xl:top-24">
+          <div className="space-y-5 border border-white/8 bg-[#101310]/92 p-5 backdrop-blur-xl">
+            <section className="border-b border-white/8 pb-5">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#C2A878]/78">
+                    Publishing
+                  </p>
+                  <h3 className="mt-2 font-heading text-2xl tracking-[-0.03em] text-[#f3efe7]">
+                    Listing control
+                  </h3>
+                </div>
+                <Button
+                  type="submit"
+                  className="h-10 rounded-none border border-[#C2A878]/36 bg-transparent px-5 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#f3efe7] shadow-none hover:bg-white/[0.05]"
+                  disabled={isSubmitting || isUploading}
+                >
+                  {isSubmitting ? "Saving..." : mode === "create" ? "Publish" : "Save"}
+                </Button>
+              </div>
+              {error ? (
+                <p className="mt-4 border border-red-400/18 bg-red-500/10 p-3 text-sm text-red-200">
+                  {error}
+                </p>
+              ) : null}
+            </section>
+
+            <section className="border-b border-white/8 pb-5">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#8f968c]">
+                Organization
+              </p>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
+                {isUserAdmin ? (
+                  <div className="space-y-2">
+                    <Label htmlFor="dealer_id" className="text-[10px] uppercase tracking-[0.2em] text-[#8f968c]">
+                      Dealer
+                    </Label>
+                    <select
+                      id="dealer_id"
+                      value={form.dealer_id}
+                      onChange={(e) => setForm({ ...form, dealer_id: e.target.value })}
+                      className="flex h-10 w-full border border-white/10 bg-[#151916] px-3 text-sm text-[#f1eadf] outline-none transition focus:border-[#C2A878]"
+                    >
+                      <option value="">Select dealer</option>
+                      {dealers.map((dealer) => (
+                        <option key={dealer.id} value={dealer.id}>
+                          {dealer.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <Label className="text-[10px] uppercase tracking-[0.2em] text-[#8f968c]">
+                      Dealer
+                    </Label>
+                    <div className="flex h-10 items-center border border-white/10 bg-[#151916] px-3 text-sm text-[#a7ab9f]">
+                      Assigned from your dealer account
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-2">
+                  <Label htmlFor="brand" className="text-[10px] uppercase tracking-[0.2em] text-[#8f968c]">
+                    Brand
+                  </Label>
+                  <select
+                    id="brand"
+                    value={form.brand}
+                    onChange={(e) => setForm({ ...form, brand: e.target.value })}
+                    className="flex h-10 w-full border border-white/10 bg-[#151916] px-3 text-sm text-[#f1eadf] outline-none transition focus:border-[#C2A878]"
+                  >
+                    <option value="">Select brand</option>
+                    {brandOptions.map((brand) => (
+                      <option key={brand} value={brand}>
+                        {brand}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#8f968c]">
+                    Media Gallery
+                  </p>
+                  <p className="mt-1 text-sm text-[#f3efe7]">
+                    {imageCount ? `${imageCount} image${imageCount === 1 ? "" : "s"} curated` : "No images yet"}
+                  </p>
+                </div>
+                <ImageIcon className="h-5 w-5 text-[#C2A878]/70" strokeWidth={1.4} />
+              </div>
 
               <button
                 type="button"
@@ -393,259 +576,124 @@ export function DashboardCarForm({ mode, carId }: DashboardCarFormProps) {
                   void handleFilesSelected(event.dataTransfer.files);
                 }}
                 className={cn(
-                  "flex min-h-[210px] w-full flex-col items-center justify-center border border-dashed px-6 py-10 text-center transition",
+                  "mt-4 flex min-h-[150px] w-full flex-col items-center justify-center border border-dashed px-5 py-7 text-center transition",
                   isDragging
-                    ? "border-[#f1eadf] bg-[#20211e]"
-                    : "border-[#3a4038] bg-[#171816] hover:border-[#f1eadf]"
+                    ? "border-[#C2A878] bg-[#1a211d]"
+                    : "border-white/14 bg-[#151916] hover:border-[#C2A878]/70 hover:bg-[#171d19]"
                 )}
               >
-                <p className="text-lg font-medium text-[#f1eadf]">Drop vehicle images here</p>
-                <p className="mt-2 text-sm text-[#a7ab9f]">or click to browse files</p>
-                <p className="mt-4 text-xs uppercase tracking-[0.16em] text-[#8f968c]">
-                  JPG, JPEG, PNG, WEBP
+                <UploadCloud className="h-7 w-7 text-[#C2A878]/76" strokeWidth={1.35} />
+                <p className="mt-4 text-sm font-medium text-[#f1eadf]">Curate vehicle photography</p>
+                <p className="mt-2 max-w-[15rem] text-xs leading-5 text-[#8f968c]">
+                  Drop images here or browse. Hero, details, provenance, and interior moments.
                 </p>
               </button>
-            </div>
 
-            {isUploading ? (
-              <div className="mt-4 space-y-2">
-                <p className="text-sm text-[#f1eadf]">
-                  Uploading vehicle images... {uploadProgress}%
-                </p>
-                <div className="h-1.5 bg-[#171816]">
-                  <div
-                    className="h-full bg-[#f1eadf] transition-all"
-                    style={{ width: `${uploadProgress}%` }}
-                  />
-                </div>
-              </div>
-            ) : null}
-
-            {uploadError ? (
-              <p className="mt-4 text-sm text-red-300">{uploadError}</p>
-            ) : null}
-
-            <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {carImages.map((image) => {
-                const isFeatured = image.image_url === mainImageUrl;
-
-                return (
-                  <div key={image.id} className="overflow-hidden rounded-[1rem] border border-[#3a4038] bg-[#171816]">
-                    <img
-                      src={image.image_url}
-                      alt="Vehicle upload preview"
-                      className="aspect-[4/3] h-full w-full object-cover"
+              {isUploading ? (
+                <div className="mt-4 space-y-2">
+                  <p className="text-xs uppercase tracking-[0.18em] text-[#f1eadf]">
+                    Uploading {uploadProgress}%
+                  </p>
+                  <div className="h-1 bg-white/8">
+                    <div
+                      className="h-full bg-[#C2A878] transition-all"
+                      style={{ width: `${uploadProgress}%` }}
                     />
-                    <div className="space-y-3 p-4">
-                      <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f968c]">
-                        {isFeatured ? "Featured image" : "Gallery image"}
-                      </p>
-                      <div className="flex gap-2">
-                        <Button
+                  </div>
+                </div>
+              ) : null}
+
+              {uploadError ? (
+                <p className="mt-4 text-sm text-red-300">{uploadError}</p>
+              ) : null}
+
+              <div className="mt-5 grid gap-3">
+                {carImages.map((image) => {
+                  const isFeatured = image.image_url === mainImageUrl;
+
+                  return (
+                    <div key={image.id} className="group overflow-hidden border border-white/8 bg-[#151916]">
+                      <div className="relative aspect-[16/10] overflow-hidden">
+                        <img
+                          src={image.image_url}
+                          alt="Vehicle upload preview"
+                          className="h-full w-full object-cover opacity-90 transition duration-500 group-hover:scale-[1.02] group-hover:opacity-100"
+                        />
+                        {isFeatured ? (
+                          <div className="absolute left-3 top-3 inline-flex items-center gap-2 bg-[#101310]/80 px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] text-[#f3efe7] backdrop-blur-md">
+                            <Star className="h-3 w-3 text-[#C2A878]" fill="currentColor" />
+                            Featured
+                          </div>
+                        ) : null}
+                      </div>
+                      <div className="grid grid-cols-2 border-t border-white/8 text-[10px] uppercase tracking-[0.16em]">
+                        <button
                           type="button"
-                          variant="secondary"
-                          className="h-9 flex-1 rounded-[0.35rem] border border-[#4b4c43] bg-transparent text-xs text-[#f1eadf] hover:bg-[#262822]"
+                          className="border-r border-white/8 px-3 py-3 text-[#f1eadf] transition hover:bg-white/[0.04] disabled:text-[#8f968c]"
                           onClick={() => void handleSetFeaturedUploadedImage(image)}
                           disabled={isFeatured}
                         >
-                          {isFeatured ? "Featured" : "Mark featured"}
-                        </Button>
-                        <Button
+                          {isFeatured ? "Selected" : "Feature"}
+                        </button>
+                        <button
                           type="button"
-                          variant="secondary"
-                          className="h-9 flex-1 rounded-[0.35rem] border border-[#4b4c43] bg-transparent text-xs text-[#f1eadf] hover:bg-[#262822]"
+                          className="px-3 py-3 text-[#d7b4a8] transition hover:bg-white/[0.04]"
                           onClick={() => void handleRemoveUploadedImage(image)}
                         >
                           Remove
-                        </Button>
+                        </button>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
 
-              {pendingImages.map((image) => {
-                const isFeatured = featuredPendingId === image.id;
+                {pendingImages.map((image) => {
+                  const isFeatured = featuredPendingId === image.id;
 
-                return (
-                  <div key={image.id} className="overflow-hidden rounded-[1rem] border border-[#3a4038] bg-[#171816]">
-                    <img
-                      src={image.previewUrl}
-                      alt="Pending vehicle upload"
-                      className="aspect-[4/3] h-full w-full object-cover"
-                    />
-                    <div className="space-y-3 p-4">
-                      <p className="text-[10px] uppercase tracking-[0.16em] text-[#8f968c]">
-                        {isFeatured ? "Featured on save" : "Ready to upload"}
-                      </p>
-                      <div className="flex gap-2">
-                        <Button
+                  return (
+                    <div key={image.id} className="group overflow-hidden border border-white/8 bg-[#151916]">
+                      <div className="relative aspect-[16/10] overflow-hidden">
+                        <img
+                          src={image.previewUrl}
+                          alt="Pending vehicle upload"
+                          className="h-full w-full object-cover opacity-90 transition duration-500 group-hover:scale-[1.02] group-hover:opacity-100"
+                        />
+                        <div className="absolute left-3 top-3 inline-flex items-center gap-2 bg-[#101310]/80 px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] text-[#f3efe7] backdrop-blur-md">
+                          <Star className="h-3 w-3 text-[#C2A878]" fill={isFeatured ? "currentColor" : "none"} />
+                          {isFeatured ? "Featured on save" : "Pending"}
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 border-t border-white/8 text-[10px] uppercase tracking-[0.16em]">
+                        <button
                           type="button"
-                          variant="secondary"
-                          className="h-9 flex-1 rounded-[0.35rem] border border-[#4b4c43] bg-transparent text-xs text-[#f1eadf] hover:bg-[#262822]"
+                          className="border-r border-white/8 px-3 py-3 text-[#f1eadf] transition hover:bg-white/[0.04] disabled:text-[#8f968c]"
                           onClick={() => setFeaturedPendingId(image.id)}
                           disabled={isFeatured}
                         >
-                          {isFeatured ? "Featured" : "Mark featured"}
-                        </Button>
-                        <Button
+                          {isFeatured ? "Selected" : "Feature"}
+                        </button>
+                        <button
                           type="button"
-                          variant="secondary"
-                          className="h-9 flex-1 rounded-[0.35rem] border border-[#4b4c43] bg-transparent text-xs text-[#f1eadf] hover:bg-[#262822]"
+                          className="px-3 py-3 text-[#d7b4a8] transition hover:bg-white/[0.04]"
                           onClick={() => handleRemovePendingImage(image.id)}
                         >
                           Remove
-                        </Button>
+                        </button>
                       </div>
                     </div>
+                  );
+                })}
+
+                {imageCount === 0 ? (
+                  <div className="flex aspect-[16/10] items-center justify-center border border-dashed border-white/10 bg-[#151916] px-6 text-center text-sm leading-6 text-[#8f968c]">
+                    Gallery previews will appear here as a cinematic listing sequence.
                   </div>
-                );
-              })}
-
-              {carImages.length === 0 && pendingImages.length === 0 ? (
-                <div className="flex aspect-[4/3] items-center justify-center rounded-[1rem] border border-dashed border-[#3a4038] bg-[#171816] px-6 text-center text-sm text-[#a7ab9f]">
-                  Upload previews will appear here once you drop or browse files.
-                </div>
-              ) : null}
-            </div>
-          </section>
-        </div>
-
-        <aside className="space-y-6">
-          <section className="rounded-[1.1rem] border border-[#3a4038] bg-[#1e201d] p-5">
-            <h3 className="text-lg font-semibold text-white">Organization</h3>
-            <div className="mt-5 space-y-4">
-              {isUserAdmin ? (
-                <div className="space-y-2">
-                  <Label htmlFor="dealer_id" className="text-xs uppercase tracking-[0.16em] text-[#8f968c]">
-                    Dealer
-                  </Label>
-                  <select
-                    id="dealer_id"
-                    value={form.dealer_id}
-                    onChange={(e) => setForm({ ...form, dealer_id: e.target.value })}
-                    className={cn(
-                      "flex h-11 w-full rounded-xl border border-[#3a4038] bg-[#171816] px-4 text-sm text-[#f1eadf] outline-none",
-                      "focus:border-[#f1eadf]"
-                    )}
-                  >
-                    <option value="">Select dealer</option>
-                    {dealers.map((dealer) => (
-                      <option key={dealer.id} value={dealer.id}>
-                        {dealer.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <Label className="text-xs uppercase tracking-[0.16em] text-[#8f968c]">
-                    Dealer
-                  </Label>
-                  <div className="flex h-11 items-center rounded-xl border border-[#3a4038] bg-[#171816] px-4 text-sm text-[#a7ab9f]">
-                    Assigned from your dealer account
-                  </div>
-                </div>
-              )}
-
-              <div className="space-y-2">
-                <Label htmlFor="brand" className="text-xs uppercase tracking-[0.16em] text-[#8f968c]">
-                  Brand
-                </Label>
-                <select
-                  id="brand"
-                  value={form.brand}
-                  onChange={(e) => setForm({ ...form, brand: e.target.value })}
-                  className="flex h-11 w-full rounded-xl border border-[#3a4038] bg-[#171816] px-4 text-sm text-[#f1eadf] outline-none transition focus:border-[#f1eadf]"
-                >
-                  <option value="">Select brand</option>
-                  {brandOptions.map((brand) => (
-                    <option key={brand} value={brand}>
-                      {brand}
-                    </option>
-                  ))}
-                </select>
+                ) : null}
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="model" className="text-xs uppercase tracking-[0.16em] text-[#8f968c]">
-                  Model
-                </Label>
-                <Input
-                  id="model"
-                  value={form.model}
-                  onChange={(e) => setForm({ ...form, model: e.target.value })}
-                  className="h-11 rounded-xl border-[#3a4038] bg-[#171816] text-sm text-[#f1eadf] placeholder:text-[#8f968c] focus:border-[#f1eadf]"
-                />
-              </div>
-            </div>
-          </section>
-
-          <section className="rounded-[1.1rem] border border-[#3a4038] bg-[#1e201d] p-5">
-            <h3 className="text-lg font-semibold text-white">Pricing and specs</h3>
-            <div className="mt-5 space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="price" className="text-xs uppercase tracking-[0.16em] text-[#8f968c]">
-                  Price
-                </Label>
-                <Input
-                  id="price"
-                  type="number"
-                  value={form.price}
-                  onChange={(e) => setForm({ ...form, price: e.target.value })}
-                  className="h-11 rounded-xl border-[#3a4038] bg-[#171816] text-sm text-[#f1eadf] placeholder:text-[#8f968c] focus:border-[#f1eadf]"
-                />
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
-                <div className="space-y-2">
-                  <Label htmlFor="year" className="text-xs uppercase tracking-[0.16em] text-[#8f968c]">
-                    Year
-                  </Label>
-                  <Input
-                    id="year"
-                    type="number"
-                    value={form.year}
-                    onChange={(e) => setForm({ ...form, year: e.target.value })}
-                    className="h-11 rounded-xl border-[#3a4038] bg-[#171816] text-sm text-[#f1eadf] placeholder:text-[#8f968c] focus:border-[#f1eadf]"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="mileage" className="text-xs uppercase tracking-[0.16em] text-[#8f968c]">
-                    Mileage
-                  </Label>
-                  <Input
-                    id="mileage"
-                    type="number"
-                    value={form.mileage}
-                    onChange={(e) => setForm({ ...form, mileage: e.target.value })}
-                    className="h-11 rounded-xl border-[#3a4038] bg-[#171816] text-sm text-[#f1eadf] placeholder:text-[#8f968c] focus:border-[#f1eadf]"
-                  />
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {error ? (
-            <section className="rounded-[1.1rem] border border-red-500/20 bg-red-500/10 p-5 text-sm text-red-200">
-              {error}
             </section>
-          ) : null}
+          </div>
         </aside>
       </div>
-
-      {mode === "create" ? (
-        <div className="flex justify-end border-t border-white/6 pt-2">
-          <Button
-            type="submit"
-            className="h-10 rounded-[0.2rem] border border-[#C2A878]/28 bg-transparent px-8 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#f3efe7] hover:bg-white/[0.04]"
-            disabled={isSubmitting || isUploading}
-          >
-            {isSubmitting ? "Saving..." : "Save"}
-          </Button>
-        </div>
-      ) : null}
     </form>
   );
 }

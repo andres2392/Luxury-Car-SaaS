@@ -1,7 +1,7 @@
 """remove favorites table
 
 Revision ID: 20260508_0003
-Revises: 20260423_0002
+Revises: 20260507_0003
 Create Date: 2026-05-08 00:00:00.000000
 """
 
@@ -11,7 +11,7 @@ from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = "20260508_0003"
-down_revision: str | None = "20260423_0002"
+down_revision: str | None = "20260507_0003"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 

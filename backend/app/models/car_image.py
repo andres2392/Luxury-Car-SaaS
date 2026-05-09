@@ -18,6 +18,7 @@ class CarImage(Base):
         nullable=False,
     )
     image_url: Mapped[str] = mapped_column(String(500), nullable=False)
+    storage_path: Mapped[str | None] = mapped_column(String(500), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
@@ -25,4 +26,3 @@ class CarImage(Base):
     )
 
     car: Mapped["Car"] = relationship(back_populates="images")
-

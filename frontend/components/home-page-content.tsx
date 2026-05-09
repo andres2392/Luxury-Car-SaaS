@@ -388,7 +388,7 @@ export function HomePageContent() {
               {
                 item: lifestyleGallery[0],
                 className:
-                  "lg:absolute lg:left-[70px] lg:top-[145px] lg:z-10 lg:h-[330px] lg:w-[440px]",
+                  "lg:absolute lg:left-0 lg:top-[145px] lg:z-10 lg:h-[330px] lg:w-[420px]",
                 imageClass: "min-h-[260px] lg:min-h-0 lg:object-[50%_center]",
               },
               {
@@ -400,7 +400,7 @@ export function HomePageContent() {
               {
                 item: lifestyleGallery[1],
                 className:
-                  "lg:absolute lg:right-[70px] lg:top-[145px] lg:z-10 lg:h-[330px] lg:w-[440px]",
+                  "lg:absolute lg:right-0 lg:top-[145px] lg:z-10 lg:h-[330px] lg:w-[420px]",
                 imageClass: "min-h-[260px] lg:min-h-0 lg:object-[50%_center]",
               },
             ].map(({ item, className, imageClass }) => (

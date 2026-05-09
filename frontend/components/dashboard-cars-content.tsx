@@ -63,14 +63,11 @@ export function DashboardCarsContent() {
     });
   }, [brandFilter, cars, maxPriceFilter, minPriceFilter, yearFilter]);
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [brandFilter, maxPriceFilter, minPriceFilter, yearFilter]);
-
   const totalPages = Math.max(1, Math.ceil(filteredCars.length / carsPerPage));
+  const visiblePage = Math.min(currentPage, totalPages);
   const paginatedCars = filteredCars.slice(
-    (currentPage - 1) * carsPerPage,
-    currentPage * carsPerPage
+    (visiblePage - 1) * carsPerPage,
+    visiblePage * carsPerPage
   );
 
   function goToPage(page: number) {
@@ -80,6 +77,7 @@ export function DashboardCarsContent() {
   }
 
   function toggleBrand(brand: string) {
+    setCurrentPage(1);
     setBrandFilter((current) =>
       current.includes(brand) ? current.filter((item) => item !== brand) : [...current, brand]
     );
@@ -112,7 +110,10 @@ export function DashboardCarsContent() {
                     <button
                       type="button"
                       className="text-xs font-medium text-[#f1eadf]"
-                      onClick={() => setBrandFilter([])}
+                      onClick={() => {
+                        setCurrentPage(1);
+                        setBrandFilter([]);
+                      }}
                     >
                       Clear
                     </button>
@@ -141,7 +142,10 @@ export function DashboardCarsContent() {
                     <input
                       type="number"
                       value={minPriceFilter}
-                      onChange={(event) => setMinPriceFilter(event.target.value)}
+                      onChange={(event) => {
+                        setCurrentPage(1);
+                        setMinPriceFilter(event.target.value);
+                      }}
                       placeholder="10000"
                       className="h-11 w-full border border-[#31352f] bg-[#171816] px-4 text-sm text-[#f1eadf] outline-none transition focus:border-[#f1eadf]"
                     />
@@ -151,7 +155,10 @@ export function DashboardCarsContent() {
                     <input
                       type="number"
                       value={maxPriceFilter}
-                      onChange={(event) => setMaxPriceFilter(event.target.value)}
+                      onChange={(event) => {
+                        setCurrentPage(1);
+                        setMaxPriceFilter(event.target.value);
+                      }}
                       placeholder="200000"
                       className="h-11 w-full border border-[#31352f] bg-[#171816] px-4 text-sm text-[#f1eadf] outline-none transition focus:border-[#f1eadf]"
                     />
@@ -208,7 +215,10 @@ export function DashboardCarsContent() {
                 <span>Year</span>
                 <select
                   value={yearFilter}
-                  onChange={(event) => setYearFilter(event.target.value)}
+                  onChange={(event) => {
+                    setCurrentPage(1);
+                    setYearFilter(event.target.value);
+                  }}
                   className="h-11 w-full border border-[#31352f] bg-[#171816] px-4 text-sm text-[#f1eadf] outline-none transition focus:border-[#f1eadf]"
                 >
                   <option value="">All years</option>
@@ -228,6 +238,7 @@ export function DashboardCarsContent() {
                     setYearFilter("");
                     setMinPriceFilter("");
                     setMaxPriceFilter("");
+                    setCurrentPage(1);
                   }}
                   className="h-11 w-full rounded-[0.35rem] border border-[#4b4c43] bg-transparent text-sm font-medium text-[#f1eadf] transition hover:border-[#f1eadf] hover:text-[#f1eadf]"
                 >
@@ -342,8 +353,8 @@ export function DashboardCarsContent() {
 
                 <div className="mt-8 flex flex-col items-center justify-between gap-5 border-t border-[#31362f] pt-6 sm:flex-row">
                   <p className="text-sm text-[#a7ab9f]">
-                    Showing {(currentPage - 1) * carsPerPage + 1}-
-                    {Math.min(currentPage * carsPerPage, filteredCars.length)} of{" "}
+                    Showing {(visiblePage - 1) * carsPerPage + 1}-
+                    {Math.min(visiblePage * carsPerPage, filteredCars.length)} of{" "}
                     {filteredCars.length} vehicles
                   </p>
 
@@ -354,12 +365,12 @@ export function DashboardCarsContent() {
                         type="button"
                         onClick={() => goToPage(page)}
                         className={`flex h-10 w-10 items-center justify-center border text-sm transition ${
-                          currentPage === page
+                          visiblePage === page
                             ? "border-[#C2A878]/58 bg-[#C2A878]/14 text-[#f1eadf]"
                             : "border-[#4b4c43] bg-[#171816] text-[#a7ab9f] hover:border-[#C2A878]/42 hover:text-[#f1eadf]"
                         }`}
                         aria-label={`Go to page ${page}`}
-                        aria-current={currentPage === page ? "page" : undefined}
+                        aria-current={visiblePage === page ? "page" : undefined}
                       >
                         {page}
                       </button>
@@ -367,8 +378,8 @@ export function DashboardCarsContent() {
 
                     <button
                       type="button"
-                      onClick={() => goToPage(currentPage + 1)}
-                      disabled={currentPage === totalPages}
+                      onClick={() => goToPage(visiblePage + 1)}
+                      disabled={visiblePage === totalPages}
                       className="h-10 border border-[#4b4c43] bg-[#171816] px-4 text-xs font-semibold uppercase tracking-[0.16em] text-[#f1eadf] transition hover:border-[#C2A878]/42 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                       Next

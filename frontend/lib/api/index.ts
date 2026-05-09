@@ -12,4 +12,7 @@ export {
   uploadCarImages,
 } from "@/lib/api/cars";
 export { getDealers } from "@/lib/api/dealers";
-export { createInquiry, getDashboardInquiries, getMyInquiries } from "@/lib/api/inquiries";
+export {
+  getDashboardInquiries,
+  updateInquiryState,
+} from "@/lib/api/inquiries";

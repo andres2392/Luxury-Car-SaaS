@@ -38,10 +38,10 @@ export function SiteFooter({
     variant === "dark"
       ? "bg-[linear-gradient(180deg,#183028_0%,#10211B_100%)] text-[#F3EFE7]"
       : variant === "detail"
-        ? "bg-[#FAF8F4] text-[#111111]"
+        ? "bg-[#FEFDFC] text-[#111111]"
         : variant === "ivory"
           ? "bg-[#FEFDFC] text-[#111111]"
-          : "bg-[#F4F1EA] text-[#111111]";
+          : "bg-[#FEFDFC] text-[#111111]";
   const dividerClass = isDark ? "border-[#C2A878]/28" : "border-[#D9D2C6]";
   const mutedClass = isDark ? "text-[#8E8A83]" : "text-[#6F6A63]";
   const linkClass = isDark

@@ -9,8 +9,8 @@ from sqlalchemy.orm import Session, joinedload
 from app.core.storage import (
     delete_image_object,
     extract_storage_path,
+    optimize_image_bytes,
     upload_image_bytes,
-    validate_image_filename,
 )
 from app.models.car import Car
 from app.models.car_image import CarImage
@@ -114,7 +114,7 @@ def create_car(db: Session, payload: CarCreate, current_user: User) -> Car:
     db.flush()
 
     for image_url in payload.image_urls:
-        db.add(CarImage(car_id=car.id, image_url=image_url))
+        db.add(CarImage(car_id=car.id, image_url=image_url, storage_path=None))
 
     db.commit()
     return get_car_by_id(db, car.id)
@@ -140,7 +140,7 @@ def update_car(db: Session, car_id: int, payload: CarUpdate, current_user: User)
     if payload.image_urls is not None:
         car.images.clear()
         for image_url in payload.image_urls:
-            car.images.append(CarImage(image_url=image_url))
+            car.images.append(CarImage(image_url=image_url, storage_path=None))
 
     db.commit()
     return get_car_by_id(db, car.id)
@@ -162,12 +162,25 @@ def upload_car_images(
     car = _get_manageable_car(db, car_id, current_user)
     uploaded_images: list[CarImage] = []
 
-    for filename, content_type, content in files:
-        suffix = validate_image_filename(filename)
-        unique_name = f"{uuid4().hex}{suffix}"
-        storage_path = f"dealers/{car.dealer_id}/cars/{car.id}/{unique_name}"
-        public_url = upload_image_bytes(storage_path, content, content_type)
-        image = CarImage(car_id=car.id, image_url=public_url)
+    for index, (filename, content_type, content) in enumerate(files):
+        make_featured_ready = (not car.main_image_url and index == 0) or index == 0
+        optimized_image = optimize_image_bytes(
+            filename=filename,
+            content_type=content_type,
+            data=content,
+            storage_directory=f"dealers/{car.dealer_id}/cars/{car.id}/{uuid4().hex}",
+            make_featured_ready=make_featured_ready,
+        )
+        public_url = upload_image_bytes(
+            optimized_image["storage_path"],
+            optimized_image["data"],
+            optimized_image["content_type"],
+        )
+        image = CarImage(
+            car_id=car.id,
+            image_url=public_url,
+            storage_path=optimized_image["storage_path"],
+        )
         db.add(image)
         db.flush()
         uploaded_images.append(image)
@@ -189,7 +202,7 @@ def delete_car_image(db: Session, car_id: int, image_id: int, current_user: User
     if image is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Car image not found.")
 
-    storage_path = extract_storage_path(image.image_url)
+    storage_path = image.storage_path or extract_storage_path(image.image_url)
     if storage_path:
         delete_image_object(storage_path)
 

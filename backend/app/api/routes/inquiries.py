@@ -3,10 +3,14 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user, get_db, get_optional_current_user, require_dashboard_user
+from app.api.deps import get_db, get_optional_current_user, require_dashboard_user
 from app.models.user import User
-from app.schemas.inquiry import InquiryCreate, InquiryResponse
-from app.services.inquiries import create_inquiry, get_inquiries_for_dashboard, get_my_inquiries
+from app.schemas.inquiry import InquiryCreate, InquiryResponse, InquiryUpdate
+from app.services.inquiries import (
+    create_inquiry,
+    get_inquiries_for_dashboard,
+    update_inquiry_state,
+)
 
 router = APIRouter(prefix="/inquiries", tags=["inquiries"])
 
@@ -28,9 +32,11 @@ def list_inquiries(
     return get_inquiries_for_dashboard(db, current_user)
 
 
-@router.get("/mine", response_model=list[InquiryResponse])
-def list_my_inquiries(
+@router.patch("/{inquiry_id}", response_model=InquiryResponse)
+def update_inquiry_route(
+    inquiry_id: int,
+    payload: InquiryUpdate,
     db: Annotated[Session, Depends(get_db)],
-    current_user: Annotated[User, Depends(get_current_user)],
-) -> list[InquiryResponse]:
-    return get_my_inquiries(db, current_user)
+    current_user: Annotated[User, Depends(require_dashboard_user)],
+) -> InquiryResponse:
+    return update_inquiry_state(db, inquiry_id, payload.state, current_user)

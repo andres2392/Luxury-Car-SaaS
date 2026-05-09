@@ -2,16 +2,14 @@
 
 import {
   ArrowLeft,
+  Camera,
   ChevronLeft,
   ChevronRight,
-  Bookmark,
-  Camera,
-  X,
   Printer,
-  Shuffle,
+  X,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { LoadingState } from "@/components/loading-state";
 import { Button } from "@/components/ui/button";
@@ -100,11 +98,11 @@ export function CarDetailContent({ carId }: { carId: string }) {
 
   const isLightboxOpen = activeImageIndex !== null;
 
-  function closeLightbox() {
+  const closeLightbox = useCallback(() => {
     setActiveImageIndex(null);
-  }
+  }, []);
 
-  function showPreviousImage() {
+  const showPreviousImage = useCallback(() => {
     setActiveImageIndex((current) => {
       if (current === null) {
         return current;
@@ -112,9 +110,9 @@ export function CarDetailContent({ carId }: { carId: string }) {
 
       return (current - 1 + gallery.length) % gallery.length;
     });
-  }
+  }, [gallery.length]);
 
-  function showNextImage() {
+  const showNextImage = useCallback(() => {
     setActiveImageIndex((current) => {
       if (current === null) {
         return current;
@@ -122,7 +120,7 @@ export function CarDetailContent({ carId }: { carId: string }) {
 
       return (current + 1) % gallery.length;
     });
-  }
+  }, [gallery.length]);
 
   useEffect(() => {
     if (!isLightboxOpen) {
@@ -152,7 +150,7 @@ export function CarDetailContent({ carId }: { carId: string }) {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isLightboxOpen, gallery.length]);
+  }, [closeLightbox, isLightboxOpen, showNextImage, showPreviousImage]);
 
   if (!car) {
     return <LoadingState message={status} />;

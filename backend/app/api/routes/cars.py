@@ -1,9 +1,10 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, File, Query, Response, UploadFile, status
+from fastapi import APIRouter, Depends, File, HTTPException, Query, Response, UploadFile, status
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, require_dashboard_user, require_dealer_or_admin
+from app.core.storage import MAX_IMAGE_FILE_SIZE_BYTES, MAX_IMAGE_UPLOAD_COUNT
 from app.schemas.car_image import CarImageResponse
 from app.models.user import User
 from app.schemas.car import CarCreate, CarResponse, CarUpdate
@@ -82,9 +83,16 @@ async def upload_car_images_route(
     current_user: Annotated[User, Depends(require_dealer_or_admin)],
     files: Annotated[list[UploadFile], File(...)],
 ) -> list[CarImageResponse]:
+    if len(files) > MAX_IMAGE_UPLOAD_COUNT:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail=f"Upload no more than {MAX_IMAGE_UPLOAD_COUNT} images at a time.",
+        )
+
     payloads: list[tuple[str | None, str | None, bytes]] = []
     for file in files:
-        payloads.append((file.filename, file.content_type, await file.read()))
+        content = await file.read(MAX_IMAGE_FILE_SIZE_BYTES + 1)
+        payloads.append((file.filename, file.content_type, content))
 
     return upload_car_images(db, car_id, payloads, current_user)
 

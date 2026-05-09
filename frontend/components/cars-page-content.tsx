@@ -92,6 +92,9 @@ function FilterField({
 
 export function CarsPageContent({
   initialSearch = "",
+  initialBrand = "",
+  initialMinPrice = "",
+  initialMaxPrice = "",
 }: {
   initialSearch?: string;
   initialBrand?: string;
@@ -99,11 +102,11 @@ export function CarsPageContent({
   initialMaxPrice?: string;
 }) {
   const [cars, setCars] = useState<Car[]>([]);
-  const [make, setMake] = useState("");
+  const [make, setMake] = useState(initialBrand);
   const [model, setModel] = useState("");
   const [year, setYear] = useState("");
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
+  const [minPrice, setMinPrice] = useState(initialMinPrice);
+  const [maxPrice, setMaxPrice] = useState(initialMaxPrice);
   const [mileage, setMileage] = useState("");
   const [bodyType, setBodyType] = useState("");
   const [exteriorColor, setExteriorColor] = useState("");
@@ -112,6 +115,11 @@ export function CarsPageContent({
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const search = searchQuery.trim().toLowerCase();
+
+  function updateFilter(setter: (value: string) => void, value: string) {
+    setCurrentPage(1);
+    setter(value);
+  }
 
   useEffect(() => {
     async function loadCars() {
@@ -174,24 +182,11 @@ export function CarsPageContent({
     });
   }, [bodyType, cars, exteriorColor, mileage, model, search]);
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [
-    bodyType,
-    exteriorColor,
-    make,
-    maxPrice,
-    mileage,
-    minPrice,
-    model,
-    search,
-    year,
-  ]);
-
   const totalPages = Math.max(1, Math.ceil(filteredCars.length / carsPerPage));
+  const visiblePage = Math.min(currentPage, totalPages);
   const paginatedCars = filteredCars.slice(
-    (currentPage - 1) * carsPerPage,
-    currentPage * carsPerPage
+    (visiblePage - 1) * carsPerPage,
+    visiblePage * carsPerPage
   );
 
   function goToPage(page: number) {
@@ -216,7 +211,7 @@ export function CarsPageContent({
                 <input
                   type="text"
                   value={searchQuery}
-                  onChange={(event) => setSearchQuery(event.target.value)}
+                  onChange={(event) => updateFilter(setSearchQuery, event.target.value)}
                   placeholder="Search by name, model, make, or year"
                   className="h-11 w-full border-0 border-b border-[#DDD7CC] bg-transparent px-0 text-sm text-[#111111] outline-none placeholder:text-[#8B877F] focus:border-[#C5B48A]"
                 />
@@ -239,37 +234,52 @@ export function CarsPageContent({
                 </p>
               </div>
 
-              <FilterField label="Make" value={make} onChange={setMake} options={makeOptions} />
-              <FilterField label="Model" value={model} onChange={setModel} options={modelOptions} />
-              <FilterField label="Year" value={year} onChange={setYear} options={yearOptions} />
+              <FilterField
+                label="Make"
+                value={make}
+                onChange={(value) => updateFilter(setMake, value)}
+                options={makeOptions}
+              />
+              <FilterField
+                label="Model"
+                value={model}
+                onChange={(value) => updateFilter(setModel, value)}
+                options={modelOptions}
+              />
+              <FilterField
+                label="Year"
+                value={year}
+                onChange={(value) => updateFilter(setYear, value)}
+                options={yearOptions}
+              />
               <FilterField
                 label="Min Price"
                 value={minPrice}
-                onChange={setMinPrice}
+                onChange={(value) => updateFilter(setMinPrice, value)}
                 options={["50000", "100000", "200000", "300000"]}
               />
               <FilterField
                 label="Max Price"
                 value={maxPrice}
-                onChange={setMaxPrice}
+                onChange={(value) => updateFilter(setMaxPrice, value)}
                 options={["200000", "300000", "400000", "500000"]}
               />
               <FilterField
                 label="Mileage"
                 value={mileage}
-                onChange={setMileage}
+                onChange={(value) => updateFilter(setMileage, value)}
                 options={["Under 5,000 mi", "5,000 - 10,000 mi", "10,000+ mi"]}
               />
               <FilterField
                 label="Body Type"
                 value={bodyType}
-                onChange={setBodyType}
+                onChange={(value) => updateFilter(setBodyType, value)}
                 options={["Coupe", "Convertible", "Sedan", "SUV"]}
               />
               <FilterField
                 label="Exterior Color"
                 value={exteriorColor}
-                onChange={setExteriorColor}
+                onChange={(value) => updateFilter(setExteriorColor, value)}
                 options={["Black", "White", "Silver", "Green", "Red"]}
               />
 
@@ -284,6 +294,7 @@ export function CarsPageContent({
                   setMileage("");
                   setBodyType("");
                   setExteriorColor("");
+                  setCurrentPage(1);
                 }}
                 className="inline-flex items-center gap-2 pt-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#3D4C45] transition hover:text-[#111111]"
               >
@@ -348,10 +359,28 @@ export function CarsPageContent({
 
                       <div className="flex flex-1 flex-col space-y-6 p-7">
                         <div className="space-y-3">
-                          <h2 className="font-heading text-[1.55rem] leading-[1.14] tracking-[-0.03em] text-[#111111]">
+                          <h2
+                            className="min-h-[3.54rem] font-heading text-[1.55rem] leading-[1.14] tracking-[-0.03em] text-[#111111]"
+                            style={{
+                              display: "-webkit-box",
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: "vertical",
+                              overflow: "hidden",
+                            }}
+                          >
                             {car.title}
                           </h2>
-                          <p className="text-sm leading-6 text-[#6E6A63]">{buildSubtitle(car)}</p>
+                          <p
+                            className="text-sm leading-6 text-[#6E6A63]"
+                            style={{
+                              display: "-webkit-box",
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: "vertical",
+                              overflow: "hidden",
+                            }}
+                          >
+                            {buildSubtitle(car)}
+                          </p>
                           <p className="text-[1.7rem] font-light tracking-[-0.03em] text-[#111111]">
                             {formatPrice(car.price)}
                           </p>
@@ -379,8 +408,8 @@ export function CarsPageContent({
               </div>
               <div className="flex flex-col items-center justify-between gap-6 border-t border-[#DDD7CC] pt-8 sm:flex-row">
                 <p className="text-sm text-[#6E6A63]">
-                  Showing {(currentPage - 1) * carsPerPage + 1}-
-                  {Math.min(currentPage * carsPerPage, filteredCars.length)} of{" "}
+                  Showing {(visiblePage - 1) * carsPerPage + 1}-
+                  {Math.min(visiblePage * carsPerPage, filteredCars.length)} of{" "}
                   {filteredCars.length} vehicles
                 </p>
 
@@ -392,12 +421,12 @@ export function CarsPageContent({
                         type="button"
                         onClick={() => goToPage(page)}
                         className={`flex h-10 w-10 items-center justify-center border text-sm transition ${
-                          currentPage === page
+                          visiblePage === page
                             ? "border-[#3D4C45] bg-[#3D4C45] text-white"
                             : "border-[#DDD7CC] bg-white text-[#111111] hover:border-[#3D4C45]"
                         }`}
                         aria-label={`Go to page ${page}`}
-                        aria-current={currentPage === page ? "page" : undefined}
+                        aria-current={visiblePage === page ? "page" : undefined}
                       >
                         {page}
                       </button>
@@ -406,8 +435,8 @@ export function CarsPageContent({
 
                   <button
                     type="button"
-                    onClick={() => goToPage(currentPage + 1)}
-                    disabled={currentPage >= totalPages}
+                    onClick={() => goToPage(visiblePage + 1)}
+                    disabled={visiblePage >= totalPages}
                     className="flex h-10 w-10 items-center justify-center border border-[#DDD7CC] bg-white text-[#3D4C45] transition hover:border-[#3D4C45] disabled:cursor-not-allowed disabled:opacity-40"
                     aria-label="Next page"
                   >

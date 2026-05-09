@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     postgres_user: str = Field(default="luxury_admin", alias="POSTGRES_USER")
     postgres_password: str = Field(default="", alias="POSTGRES_PASSWORD")
     database_url: str | None = Field(default=None, alias="DATABASE_URL")
-    secret_key: str = Field(default="change-this-in-production", alias="SECRET_KEY")
+    secret_key: str = Field(alias="SECRET_KEY")
     access_token_expire_minutes: int = Field(default=60, alias="ACCESS_TOKEN_EXPIRE_MINUTES")
     backend_cors_origins: str = Field(default="http://localhost:3000", alias="BACKEND_CORS_ORIGINS")
     admin_email: str = Field(default="admin@luxury.owner", alias="ADMIN_EMAIL")

@@ -94,7 +94,7 @@ export function SiteHeader() {
           <div className="flex items-center justify-end gap-3">
             <Link
               href={isCarsPage ? "/cars#inventory" : "#vehicle-enquiry"}
-              className="border border-[#3D4C45] bg-[#3D4C45] px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.24em] text-white transition hover:bg-[#2f3d37]"
+              className="border border-[#DDD7CC] bg-[#FEFDFC] px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.24em] text-[#111111] transition hover:border-[#3D4C45] hover:bg-[#F5F2EC]"
             >
               Make Inquiry
             </Link>

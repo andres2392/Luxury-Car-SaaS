@@ -10,6 +10,8 @@ from app.models.inquiry import Inquiry
 from app.models.user import User, UserRole
 from app.schemas.inquiry import InquiryCreate
 
+INQUIRY_STATES = {"new", "contacted", "negotiating", "reserved", "sold", "archived"}
+
 
 def create_inquiry(db: Session, payload: InquiryCreate, current_user: User | None = None) -> Inquiry:
     car = db.get(Car, payload.car_id)
@@ -22,22 +24,12 @@ def create_inquiry(db: Session, payload: InquiryCreate, current_user: User | Non
         name=payload.name,
         email=payload.email,
         message=payload.message,
-        state=payload.state,
+        state="new",
     )
     db.add(inquiry)
     db.commit()
     db.refresh(inquiry)
     return inquiry
-
-
-def get_inquiries(db: Session) -> list[Inquiry]:
-    return list(
-        db.scalars(
-            select(Inquiry)
-            .options(joinedload(Inquiry.car).joinedload(Car.dealer))
-            .order_by(Inquiry.created_at.desc())
-        ).all()
-    )
 
 
 def get_inquiries_for_dashboard(db: Session, current_user: User) -> list[Inquiry]:
@@ -62,12 +54,38 @@ def get_inquiries_for_dashboard(db: Session, current_user: User) -> list[Inquiry
     return list(db.scalars(query.where(Dealer.id == dealer.id)).all())
 
 
-def get_my_inquiries(db: Session, current_user: User) -> list[Inquiry]:
-    return list(
-        db.scalars(
-            select(Inquiry)
-            .where(Inquiry.user_id == current_user.id)
-            .options(joinedload(Inquiry.car).joinedload(Car.dealer))
-            .order_by(Inquiry.created_at.desc())
-        ).all()
+def update_inquiry_state(
+    db: Session,
+    inquiry_id: int,
+    state: str,
+    current_user: User,
+) -> Inquiry:
+    normalized_state = state.lower().strip()
+    if normalized_state not in INQUIRY_STATES:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid inquiry state.")
+
+    query = (
+        select(Inquiry)
+        .join(Inquiry.car)
+        .join(Car.dealer)
+        .options(joinedload(Inquiry.car).joinedload(Car.dealer))
+        .where(Inquiry.id == inquiry_id)
     )
+
+    if current_user.role != UserRole.ADMIN:
+        dealer = db.scalar(select(Dealer).where(Dealer.contact_email == current_user.email))
+        if dealer is None:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="No dealer profile is linked to this account.",
+            )
+        query = query.where(Dealer.id == dealer.id)
+
+    inquiry = db.scalar(query)
+    if inquiry is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Inquiry not found.")
+
+    inquiry.state = normalized_state
+    db.commit()
+    db.refresh(inquiry)
+    return inquiry

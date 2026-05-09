@@ -1,0 +1,102 @@
+{
+  "bentley-black": {
+    "storage_path": "template/bentley-black.webp",
+    "url": "https://zfiwubdvphrkrchnfbss.supabase.co/storage/v1/object/public/car-images/template/bentley-black.webp",
+    "source": "/Users/andresg/Pictures/cars/bentley-black.png"
+  },
+  "bentley-old": {
+    "storage_path": "template/bentley-old.webp",
+    "url": "https://zfiwubdvphrkrchnfbss.supabase.co/storage/v1/object/public/car-images/template/bentley-old.webp",
+    "source": "/Users/andresg/Pictures/cars/bentley-old.png"
+  },
+  "ferrari-testarosa": {
+    "storage_path": "template/ferrari-testarosa.webp",
+    "url": "https://zfiwubdvphrkrchnfbss.supabase.co/storage/v1/object/public/car-images/template/ferrari-testarosa.webp",
+    "source": "/Users/andresg/Pictures/cars/ferrari-testarosa.png"
+  },
+  "mountain-coupe-user": {
+    "storage_path": "template/mountain-coupe-user.webp",
+    "url": "https://zfiwubdvphrkrchnfbss.supabase.co/storage/v1/object/public/car-images/template/mountain-coupe-user.webp",
+    "source": "/Users/andresg/Pictures/cars/mountain-coupe.png"
+  },
+  "detail-atelier-user": {
+    "storage_path": "template/detail-atelier-user.webp",
+    "url": "https://zfiwubdvphrkrchnfbss.supabase.co/storage/v1/object/public/car-images/template/detail-atelier-user.webp",
+    "source": "/Users/andresg/Pictures/cars/detail-atelier.png"
+  },
+  "private-showroom-user": {
+    "storage_path": "template/private-showroom-user.webp",
+    "url": "https://zfiwubdvphrkrchnfbss.supabase.co/storage/v1/object/public/car-images/template/private-showroom-user.webp",
+    "source": "/Users/andresg/Pictures/cars/private-showroom.png"
+  },
+  "mustang-67-black": {
+    "storage_path": "template/mustang-67-black.webp",
+    "url": "https://zfiwubdvphrkrchnfbss.supabase.co/storage/v1/object/public/car-images/template/mustang-67-black.webp",
+    "source": "/Users/andresg/Pictures/cars/mustang-67-black.png"
+  },
+  "hotel-arrival-user": {
+    "storage_path": "template/hotel-arrival-user.webp",
+    "url": "https://zfiwubdvphrkrchnfbss.supabase.co/storage/v1/object/public/car-images/template/hotel-arrival-user.webp",
+    "source": "/Users/andresg/Pictures/cars/hotel-arrival.png"
+  },
+  "mustang67": {
+    "storage_path": "template/mustang67.webp",
+    "url": "https://zfiwubdvphrkrchnfbss.supabase.co/storage/v1/object/public/car-images/template/mustang67.webp",
+    "source": "/Users/andresg/Pictures/cars/mustang67.png"
+  },
+  "porsche-old": {
+    "storage_path": "template/porsche-old.webp",
+    "url": "https://zfiwubdvphrkrchnfbss.supabase.co/storage/v1/object/public/car-images/template/porsche-old.webp",
+    "source": "/Users/andresg/Pictures/cars/porshe-old.png"
+  },
+  "collector-analog-detail": {
+    "storage_path": "template/collector-analog-detail.webp",
+    "url": "https://zfiwubdvphrkrchnfbss.supabase.co/storage/v1/object/public/car-images/template/collector-analog-detail.webp",
+    "source": "/Users/andresg/Codex Prj/Luxury-Car-SaaS/frontend/public/images/gallery/analog-detail.webp"
+  },
+  "collector-analog-icons-garage": {
+    "storage_path": "template/collector-analog-icons-garage.webp",
+    "url": "https://zfiwubdvphrkrchnfbss.supabase.co/storage/v1/object/public/car-images/template/collector-analog-icons-garage.webp",
+    "source": "/Users/andresg/Codex Prj/Luxury-Car-SaaS/frontend/public/images/hero/collector-icons-garage.webp"
+  },
+  "collector-carrera-gt-gallery": {
+    "storage_path": "template/collector-carrera-gt-gallery.webp",
+    "url": "https://zfiwubdvphrkrchnfbss.supabase.co/storage/v1/object/public/car-images/template/collector-carrera-gt-gallery.webp",
+    "source": "/Users/andresg/Codex Prj/Luxury-Car-SaaS/frontend/public/images/gallery/carrera-gt-gallery.webp"
+  },
+  "collector-heritage-defender-gallery": {
+    "storage_path": "template/collector-heritage-defender-gallery.webp",
+    "url": "https://zfiwubdvphrkrchnfbss.supabase.co/storage/v1/object/public/car-images/template/collector-heritage-defender-gallery.webp",
+    "source": "/Users/andresg/Codex Prj/Luxury-Car-SaaS/frontend/public/images/gallery/heritage-defender-gallery.webp"
+  },
+  "collector-sell-consign-lounge": {
+    "storage_path": "template/collector-sell-consign-lounge.webp",
+    "url": "https://zfiwubdvphrkrchnfbss.supabase.co/storage/v1/object/public/car-images/template/collector-sell-consign-lounge.webp",
+    "source": "/Users/andresg/Codex Prj/Luxury-Car-SaaS/frontend/public/images/services/sell-consign-lounge.webp"
+  },
+  "homepage-custom-hero-mustang": {
+    "storage_path": "template/homepage-custom-hero-mustang.webp",
+    "url": "https://zfiwubdvphrkrchnfbss.supabase.co/storage/v1/object/public/car-images/template/homepage-custom-hero-mustang.webp",
+    "source": "/Users/andresg/Codex Prj/Luxury-Car-SaaS/frontend/public/images/hero/custom-hero-mustang.webp"
+  },
+  "gallery-detail-atelier": {
+    "storage_path": "template/gallery-detail-atelier.webp",
+    "url": "https://zfiwubdvphrkrchnfbss.supabase.co/storage/v1/object/public/car-images/template/gallery-detail-atelier.webp",
+    "source": "/Users/andresg/Codex Prj/Luxury-Car-SaaS/frontend/public/luxury-gallery/detail-atelier.png"
+  },
+  "gallery-hotel-arrival": {
+    "storage_path": "template/gallery-hotel-arrival.webp",
+    "url": "https://zfiwubdvphrkrchnfbss.supabase.co/storage/v1/object/public/car-images/template/gallery-hotel-arrival.webp",
+    "source": "/Users/andresg/Codex Prj/Luxury-Car-SaaS/frontend/public/luxury-gallery/hotel-arrival.png"
+  },
+  "gallery-mountain-coupe": {
+    "storage_path": "template/gallery-mountain-coupe.webp",
+    "url": "https://zfiwubdvphrkrchnfbss.supabase.co/storage/v1/object/public/car-images/template/gallery-mountain-coupe.webp",
+    "source": "/Users/andresg/Codex Prj/Luxury-Car-SaaS/frontend/public/luxury-gallery/mountain-coupe.png"
+  },
+  "gallery-private-showroom": {
+    "storage_path": "template/gallery-private-showroom.webp",
+    "url": "https://zfiwubdvphrkrchnfbss.supabase.co/storage/v1/object/public/car-images/template/gallery-private-showroom.webp",
+    "source": "/Users/andresg/Codex Prj/Luxury-Car-SaaS/frontend/public/luxury-gallery/private-showroom.png"
+  }
+}
