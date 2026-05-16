@@ -64,4 +64,3 @@ export function ProtectedContent({
 
   return <>{children}</>;
 }
-

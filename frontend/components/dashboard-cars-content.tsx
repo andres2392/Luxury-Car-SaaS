@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 
 import { LoadingState } from "@/components/loading-state";
@@ -89,7 +90,7 @@ export function DashboardCarsContent() {
   }
 
   return (
-    <div className="pr-6 text-[#f1eadf] lg:pr-10 xl:pr-14">
+    <div className="text-[#f1eadf] lg:pr-10 xl:pr-14">
       <div className="min-h-full">
         <div>
           <section className="bg-[#1a1b18] p-5 md:p-6">
@@ -112,8 +113,8 @@ export function DashboardCarsContent() {
                 </div>
               </div>
 
-              <Link href="/dashboard/cars/new" className="xl:justify-self-end">
-                <Button className="h-11 whitespace-nowrap rounded-[0.35rem] border border-[#4b4c43] bg-[#26352F] px-5 text-[#f1eadf] shadow-none hover:bg-[#31453d]">
+              <Link href="/dashboard/cars/new" className="w-full xl:w-auto xl:justify-self-end">
+                <Button className="h-11 w-full whitespace-nowrap rounded-[0.35rem] border border-[#4b4c43] bg-[#26352F] px-5 text-[#f1eadf] shadow-none hover:bg-[#31453d] xl:w-auto">
                   Create car
                 </Button>
               </Link>
@@ -199,7 +200,8 @@ export function DashboardCarsContent() {
                     No cars match these filters
                   </h3>
                   <p className="mt-2 max-w-xl text-sm leading-7 text-[#a7ab9f]">
-                    Try widening the price range or clearing a brand selection to bring listings back into view.
+                    Try widening the price range or clearing a brand selection to bring listings
+                    back into view.
                   </p>
                 </div>
               </div>
@@ -209,12 +211,12 @@ export function DashboardCarsContent() {
                   {paginatedCars.map((car) => (
                     <article
                       key={car.id}
-                      className="flex h-full min-h-[470px] flex-col overflow-hidden bg-[#171816] p-4"
+                      className="flex h-full min-h-[430px] flex-col overflow-hidden bg-[#171816] p-4 sm:min-h-[470px]"
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 text-xs font-semibold text-[#f1eadf]">
                           <span className="text-[#f1eadf]">★</span>
-                          <span>{(4 + ((car.id % 10) / 10)).toFixed(1)}</span>
+                          <span>{(4 + (car.id % 10) / 10).toFixed(1)}</span>
                         </div>
                         <span className="border border-[#4b4c43] bg-[#1e201d] px-3 py-1 text-xs font-medium uppercase tracking-[0.18em] text-[#f1eadf]">
                           {car.year}
@@ -222,12 +224,15 @@ export function DashboardCarsContent() {
                       </div>
 
                       <div className="pb-3 pt-4">
-                        <div className="overflow-hidden border border-[#2b302b] bg-[#1e201d]">
+                        <div className="relative aspect-[16/10] overflow-hidden border border-[#2b302b] bg-[#1e201d]">
                           {car.main_image_url ? (
-                            <img
+                            <Image
                               src={car.main_image_url}
                               alt={car.title}
-                              className="aspect-[16/10] h-full w-full object-cover"
+                              fill
+                              sizes="(min-width: 1280px) 20vw, (min-width: 768px) 36vw, 100vw"
+                              className="object-cover"
+                              unoptimized
                             />
                           ) : (
                             <div className="flex aspect-[16/10] items-center justify-center text-sm text-[#8f968c]">
@@ -239,7 +244,9 @@ export function DashboardCarsContent() {
 
                       <div className="flex flex-1 flex-col space-y-2.5">
                         <div className="min-h-[88px]">
-                          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f968c]">Vehicle</p>
+                          <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f968c]">
+                            Vehicle
+                          </p>
                           <h3 className="mt-1.5 text-lg font-semibold tracking-[-0.03em] text-[#f1eadf]">
                             {car.title}
                           </h3>
@@ -251,7 +258,9 @@ export function DashboardCarsContent() {
                         <div className="mt-auto">
                           <div className="flex items-end justify-between gap-4">
                             <div>
-                              <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f968c]">Price</p>
+                              <p className="text-[10px] uppercase tracking-[0.18em] text-[#8f968c]">
+                                Price
+                              </p>
                               <p className="mt-1.5 text-base font-semibold text-[#f1eadf]">
                                 {formatPrice(car.price)}
                               </p>
@@ -287,7 +296,7 @@ export function DashboardCarsContent() {
                     {filteredCars.length} vehicles
                   </p>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-end">
                     {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
                       <button
                         key={page}

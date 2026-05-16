@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight, MessageSquare, Plus, Upload, Users } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -106,10 +107,7 @@ export function DashboardOverviewContent() {
   useEffect(() => {
     async function loadDashboard() {
       try {
-        const [carsData, inquiriesData] = await Promise.all([
-          getMyCars(),
-          getDashboardInquiries(),
-        ]);
+        const [carsData, inquiriesData] = await Promise.all([getMyCars(), getDashboardInquiries()]);
         setCars(carsData);
         setInquiries(inquiriesData);
         setStatus("");
@@ -126,21 +124,27 @@ export function DashboardOverviewContent() {
   }
 
   return (
-    <div className="space-y-5 pr-6 lg:pr-10 xl:pr-14">
-      <p className="text-[10px] uppercase tracking-[0.2em] text-[#C2A878]">
-        Dashboard
-      </p>
+    <div className="space-y-5 lg:pr-10 xl:pr-14">
+      <p className="text-[10px] uppercase tracking-[0.2em] text-[#C2A878]">Dashboard</p>
 
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         <DashboardSummaryCard
           label="Total cars"
           value={cars.length}
-          helper={user?.role === "admin" ? "All vehicle inventory across the platform." : "Vehicles assigned to your dealership."}
+          helper={
+            user?.role === "admin"
+              ? "All vehicle inventory across the platform."
+              : "Vehicles assigned to your dealership."
+          }
         />
         <DashboardSummaryCard
           label="Active inquiries"
           value={inquiries.length}
-          helper={user?.role === "admin" ? "Every inbound inquiry across all dealers." : "Inquiries tied to your inventory."}
+          helper={
+            user?.role === "admin"
+              ? "Every inbound inquiry across all dealers."
+              : "Inquiries tied to your inventory."
+          }
         />
         <DashboardSummaryCard
           label="Vehicles sold"
@@ -157,7 +161,9 @@ export function DashboardOverviewContent() {
       <section className="border border-white/6 bg-white/[0.03] p-6 backdrop-blur-sm">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-[#C2A878]">Recent Inventory</p>
+            <p className="text-[10px] uppercase tracking-[0.2em] text-[#C2A878]">
+              Recent Inventory
+            </p>
             <h2 className="mt-3 font-heading text-3xl tracking-[-0.03em] text-[#F3EFE7]">
               Latest showroom additions
             </h2>
@@ -171,18 +177,28 @@ export function DashboardOverviewContent() {
           {(cars.length ? cars.slice(0, 3) : fallbackInventory).map((car) => {
             const fallback = fallbackInventory[0];
             const title = "title" in car ? car.title : fallback.title;
-            const dealer = "dealer" in car && typeof car.dealer !== "string" ? car.dealer.name : "Prestige Motor Collection";
+            const dealer =
+              "dealer" in car && typeof car.dealer !== "string"
+                ? car.dealer.name
+                : "Prestige Motor Collection";
             const price = "price" in car ? formatDashboardPrice(car.price) : fallback.price;
-            const mileage = "mileage" in car && typeof car.mileage === "number" ? `${car.mileage.toLocaleString()} mi` : fallback.mileage;
-            const image = "main_image_url" in car ? car.main_image_url || fallback.image : car.image;
+            const mileage =
+              "mileage" in car && typeof car.mileage === "number"
+                ? `${car.mileage.toLocaleString()} mi`
+                : fallback.mileage;
+            const image =
+              "main_image_url" in car ? car.main_image_url || fallback.image : car.image;
 
             return (
               <article key={car.id} className="group border border-white/6 bg-[#0f1412]/72">
-                <div className="aspect-[16/10] overflow-hidden bg-[#183028]">
-                  <img
+                <div className="relative aspect-[16/10] overflow-hidden bg-[#183028]">
+                  <Image
                     src={image}
                     alt={title}
-                    className="h-full w-full object-cover opacity-86 transition duration-700 group-hover:scale-[1.025] group-hover:opacity-100"
+                    fill
+                    sizes="(min-width: 1024px) 25vw, 100vw"
+                    className="object-cover opacity-86 transition duration-700 group-hover:scale-[1.025] group-hover:opacity-100"
+                    unoptimized
                   />
                 </div>
                 <div className="p-5">
@@ -202,7 +218,9 @@ export function DashboardOverviewContent() {
       <section className="border border-white/6 bg-white/[0.03] p-6 backdrop-blur-sm md:p-8">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-[#C2A878]">Inquiry Pipeline</p>
+            <p className="text-[10px] uppercase tracking-[0.2em] text-[#C2A878]">
+              Inquiry Pipeline
+            </p>
             <h2 className="mt-3 font-heading text-3xl tracking-[-0.03em] text-[#F3EFE7]">
               Latest customer inquiries
             </h2>
@@ -216,7 +234,7 @@ export function DashboardOverviewContent() {
           </Link>
         </div>
 
-        <div className="mt-9 grid gap-5 xl:grid-cols-4">
+        <div className="mt-7 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
           {pipelineStates.map((state) => {
             const stateInquiries = inquiries
               .filter((inquiry) => pipelineStateFor(inquiry) === state.key)
@@ -235,10 +253,17 @@ export function DashboardOverviewContent() {
                 <div className="mt-5 space-y-4">
                   {slots.map((inquiry, index) =>
                     inquiry ? (
-                      <article key={inquiry.id} className="min-h-[168px] border border-white/6 bg-[#0f1412]/72 p-5">
-                        <p className="text-sm font-semibold text-[#F3EFE7]">{inquiryVehicleLabel(inquiry)}</p>
+                      <article
+                        key={inquiry.id}
+                        className="min-h-[140px] border border-white/6 bg-[#0f1412]/72 p-4 sm:min-h-[168px] sm:p-5"
+                      >
+                        <p className="text-sm font-semibold text-[#F3EFE7]">
+                          {inquiryVehicleLabel(inquiry)}
+                        </p>
                         <p className="mt-4 text-xs text-[#C2A878]/68">{inquiry.name}</p>
-                        <p className="mt-2 text-xs leading-5 text-[#8E8A83]">{inquiryMessagePreview(inquiry)}</p>
+                        <p className="mt-2 text-xs leading-5 text-[#8E8A83]">
+                          {inquiryMessagePreview(inquiry)}
+                        </p>
                         <div className="mt-4 border-t border-white/6 pt-4">
                           <p className="text-[10px] uppercase tracking-[0.16em] text-[#8E8A83]">
                             {formatDateTime(inquiry.created_at)}
@@ -248,7 +273,7 @@ export function DashboardOverviewContent() {
                     ) : (
                       <div
                         key={`${state.key}-empty-${index}`}
-                        className="min-h-[168px]"
+                        className="min-h-[140px] sm:min-h-[168px]"
                         aria-label={`Empty ${state.label} inquiry slot`}
                       />
                     )
@@ -261,9 +286,7 @@ export function DashboardOverviewContent() {
       </section>
 
       <section className="pt-2">
-        <h2 className="font-heading text-3xl tracking-[-0.03em] text-[#F3EFE7]">
-          Quick Actions
-        </h2>
+        <h2 className="font-heading text-3xl tracking-[-0.03em] text-[#F3EFE7]">Quick Actions</h2>
 
         <div className="mt-7 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {quickActions.map((action) => {
@@ -275,7 +298,10 @@ export function DashboardOverviewContent() {
                 href={action.href}
                 className="group flex min-h-[84px] flex-col items-center justify-center border border-white/6 bg-white/[0.03] px-4 text-center transition hover:border-[#C2A878]/28 hover:bg-white/[0.05]"
               >
-                <Icon className="h-4 w-4 text-[#C2A878]/72 transition group-hover:text-[#C2A878]" strokeWidth={1.5} />
+                <Icon
+                  className="h-4 w-4 text-[#C2A878]/72 transition group-hover:text-[#C2A878]"
+                  strokeWidth={1.5}
+                />
                 <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#F3EFE7]">
                   {action.label}
                 </p>

@@ -55,11 +55,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   }
 
   if (dashboardRoute) {
-    return (
-      <div className="min-h-screen bg-[#121310]">
-        {children}
-      </div>
-    );
+    return <div className="min-h-screen bg-[#121310]">{children}</div>;
   }
 
   if (pathname === "/") {

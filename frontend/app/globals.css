@@ -1,7 +1,45 @@
 @import "tailwindcss";
 
 :root {
-  --bg-main: #010101;
+  --collector-black: #090909;
+  --collector-ink: #010101;
+  --collector-green: #183028;
+  --deep-green: #10211b;
+  --architectural-green: #31463d;
+  --moss: #3d4c45;
+  --champagne: #c2a878;
+  --ivory: #f3efe7;
+  --warm-muted: #8e8a83;
+  --inventory-bg: #fefdfc;
+  --inventory-card: #f5f2ec;
+  --dashboard-surface: #151713;
+  --dashboard-surface-raised: #1a1b18;
+  --dashboard-inset: #0d1411;
+  --light-foreground: #111111;
+  --light-muted: #6e6a63;
+  --light-border: #ddd7cc;
+
+  --background: var(--collector-ink);
+  --foreground: var(--ivory);
+  --card: var(--dashboard-surface);
+  --card-foreground: var(--ivory);
+  --primary: var(--champagne);
+  --primary-foreground: var(--collector-black);
+  --secondary: var(--architectural-green);
+  --secondary-foreground: var(--ivory);
+  --muted: var(--deep-green);
+  --muted-foreground: var(--warm-muted);
+  --accent: var(--champagne);
+  --accent-foreground: var(--collector-black);
+  --destructive: #8f4e42;
+  --border: rgba(255, 255, 255, 0.16);
+  --input: rgba(255, 255, 255, 0.1);
+  --ring: rgba(194, 168, 120, 0.52);
+  --success: #7ea17a;
+  --warning: var(--champagne);
+  --info: #86a9b6;
+
+  --bg-main: var(--collector-ink);
   --bg-deep: #0a0e0c;
   --bg-green: #26352f;
   --panel-green: #394e46;
@@ -9,21 +47,60 @@
   --text-primary: #f5f5f2;
   --text-secondary: #c8c8c2;
   --text-muted: #8e8e88;
-  --border-soft: rgba(255, 255, 255, 0.16);
-  --accent-gold: #f5f5f2;
-  --color-background: var(--bg-main);
-  --color-foreground: var(--text-primary);
-  --color-card: var(--panel-green);
-  --color-card-foreground: var(--text-primary);
-  --color-muted: var(--bg-green);
-  --color-muted-foreground: var(--text-muted);
-  --color-border: var(--border-soft);
-  --color-accent: var(--accent-gold);
-  --color-accent-foreground: var(--bg-main);
-  --font-heading: "Baskerville", "Iowan Old Style", "Palatino Linotype",
-    "Book Antiqua", Georgia, serif;
-  --font-body: "Avenir Next", "Neue Haas Grotesk Text Pro", "Segoe UI",
-    "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --border-soft: var(--border);
+  --accent-gold: var(--ivory);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --font-heading:
+    "Baskerville", "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --font-body:
+    "Avenir Next", "Neue Haas Grotesk Text Pro", "Segoe UI", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+  --radius-sm: 0.2rem;
+  --radius-md: 0.35rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+  --color-collector-black: var(--collector-black);
+  --color-collector-green: var(--collector-green);
+  --color-collector-deep: var(--deep-green);
+  --color-collector-moss: var(--moss);
+  --color-collector-champagne: var(--champagne);
+  --color-collector-ivory: var(--ivory);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
 }
 
 * {
@@ -31,16 +108,20 @@
 }
 
 :where(a, button, input, select, textarea):focus-visible {
-  outline: 2px solid #c7b38a;
+  outline: 2px solid var(--ring);
   outline-offset: 3px;
 }
 
 html {
+  max-width: 100%;
+  overflow-x: clip;
   scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
+  max-width: 100%;
+  overflow-x: clip;
   min-height: 100vh;
   font-family: var(--font-body);
   color: var(--color-foreground);
@@ -48,7 +129,7 @@ body {
   background-image:
     radial-gradient(circle at top, rgba(57, 78, 70, 0.22), transparent 30%),
     radial-gradient(circle at 82% 18%, rgba(191, 164, 106, 0.06), transparent 20%),
-    linear-gradient(180deg, #010101 0%, #0a0e0c 48%, #010101 100%);
+    linear-gradient(180deg, var(--collector-ink) 0%, var(--bg-deep) 48%, var(--collector-ink) 100%);
 }
 
 .font-heading {

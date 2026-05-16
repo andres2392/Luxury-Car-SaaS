@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  ArrowRight,
-  ChevronRight,
-  ExternalLink,
-  Gem,
-  Scale,
-  ShieldCheck,
-} from "lucide-react";
+import { ArrowRight, ChevronRight, ExternalLink, Gem, Scale, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -19,12 +12,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getCars } from "@/lib/api";
 import type { Car } from "@/lib/types";
 
-const heroImageUrl =
-  "/images/hero/custom-hero-mustang.webp";
-const certifiedImageUrl =
-  "/images/gallery/carrera-gt-gallery.webp";
-const sellImageUrl =
-  "/images/services/sell-consign-lounge.webp";
+const heroImageUrl = "/images/hero/custom-hero-mustang.webp";
+const certifiedImageUrl = "/images/gallery/carrera-gt-gallery.webp";
+const sellImageUrl = "/images/services/sell-consign-lounge.webp";
 
 const showcaseCars = [
   {
@@ -163,7 +153,13 @@ const footerColumns = [
   },
   {
     title: "Your Collection",
-    links: ["Service and Maintenance", "Ownership Support", "Technology", "Finance Services", "Accessories"],
+    links: [
+      "Service and Maintenance",
+      "Ownership Support",
+      "Technology",
+      "Finance Services",
+      "Accessories",
+    ],
   },
   {
     title: "Lifestyle",
@@ -171,11 +167,27 @@ const footerColumns = [
   },
   {
     title: "About",
-    links: ["News", "Environmental Foundation", "Beyond 100+", "History and Heritage", "People and Expertise", "Factory Tours"],
+    links: [
+      "News",
+      "Environmental Foundation",
+      "Beyond 100+",
+      "History and Heritage",
+      "People and Expertise",
+      "Factory Tours",
+    ],
   },
   {
     title: "Corporate",
-    links: ["Sitemap", "Contact Us", "Terms and Conditions", "Privacy Policy", "Cookies Policy", "Cookie Settings", "Recalls", "Battery Passport"],
+    links: [
+      "Sitemap",
+      "Contact Us",
+      "Terms and Conditions",
+      "Privacy Policy",
+      "Cookies Policy",
+      "Cookie Settings",
+      "Recalls",
+      "Battery Passport",
+    ],
   },
 ];
 
@@ -219,19 +231,19 @@ export function HomePageContent() {
               <p className="text-[10px] font-semibold uppercase tracking-[0.34em] text-[#F3EFE7]">
                 A Private World For Collectors
               </p>
-              <h1 className="mt-6 max-w-2xl font-heading text-5xl leading-[0.9] tracking-[-0.045em] text-[#F3EFE7] sm:text-6xl lg:text-[5.2rem]">
+              <h1 className="mt-6 max-w-2xl font-heading text-4xl leading-[0.94] tracking-[-0.045em] text-[#F3EFE7] sm:text-6xl lg:text-[5.2rem] lg:leading-[0.9]">
                 Sourcing icons. Preserving legends.
               </h1>
               <div className="mt-6 h-px w-14 bg-[#C2A878]/48" />
               <p className="mt-6 max-w-xl text-sm leading-7 text-[#8E8A83]">
-                A private automotive house for discerning collectors, offering curated
-                acquisition, discreet consignment, and concierge support for significant motor cars.
+                A private automotive house for discerning collectors, offering curated acquisition,
+                discreet consignment, and concierge support for significant motor cars.
               </p>
 
               <div className="mt-8 flex max-w-xl flex-col gap-3 sm:flex-row">
                 <Button
                   variant="secondary"
-                  className="h-10 rounded-none border-[#C2A878]/34 bg-transparent px-6 text-sm text-[#F3EFE7] shadow-none hover:bg-white/6 hover:text-[#F3EFE7]"
+                  className="h-11 w-full rounded-none border-[#C2A878]/34 bg-transparent px-6 text-sm text-[#F3EFE7] shadow-none hover:bg-white/6 hover:text-[#F3EFE7] sm:w-auto"
                   onClick={() => router.push("/cars")}
                 >
                   Begin Your Collection
@@ -252,7 +264,7 @@ export function HomePageContent() {
             {luxuryBrands.map((brand, index) => (
               <div key={brand.name} className="flex items-center">
                 {index > 0 ? (
-                    <span className="mx-6 text-[#8E8A83]/34" aria-hidden="true">
+                  <span className="mx-6 text-[#8E8A83]/34" aria-hidden="true">
                     |
                   </span>
                 ) : null}
@@ -301,9 +313,9 @@ export function HomePageContent() {
               A sanctuary for automotive excellence.
             </h2>
             <p className="mt-6 max-w-xl text-sm leading-7 text-[#8E8A83]">
-              We work with collectors who value privacy, provenance, and restraint.
-              Each opportunity is sourced, prepared, and presented with the care of a boutique
-              hospitality experience rather than the pace of a marketplace.
+              We work with collectors who value privacy, provenance, and restraint. Each opportunity
+              is sourced, prepared, and presented with the care of a boutique hospitality experience
+              rather than the pace of a marketplace.
             </p>
 
             <div className="mt-10 space-y-6">
@@ -353,9 +365,7 @@ export function HomePageContent() {
                   <h3 className="mt-5 font-heading text-3xl leading-tight tracking-[-0.035em] text-[#F3EFE7]">
                     {service.title}
                   </h3>
-                  <p className="mt-4 text-sm leading-7 text-[#8E8A83]">
-                    {service.description}
-                  </p>
+                  <p className="mt-4 text-sm leading-7 text-[#8E8A83]">{service.description}</p>
                 </div>
               ))}
             </div>
@@ -387,8 +397,7 @@ export function HomePageContent() {
               },
               {
                 item: lifestyleGallery[0],
-                className:
-                  "lg:absolute lg:left-0 lg:top-[145px] lg:z-10 lg:h-[330px] lg:w-[420px]",
+                className: "lg:absolute lg:left-0 lg:top-[145px] lg:z-10 lg:h-[330px] lg:w-[420px]",
                 imageClass: "min-h-[260px] lg:min-h-0 lg:object-[50%_center]",
               },
               {
@@ -418,11 +427,13 @@ export function HomePageContent() {
               </figure>
             ))}
           </div>
-
         </div>
       </section>
 
-      <section id="inventory" className="mx-auto max-w-[1240px] px-6 py-20 sm:px-10 md:py-28 lg:px-12">
+      <section
+        id="inventory"
+        className="mx-auto max-w-[1240px] px-6 py-20 sm:px-10 md:py-28 lg:px-12"
+      >
         <div className="flex flex-col justify-between gap-6 pb-8 lg:flex-row lg:items-end">
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[#F3EFE7]">
@@ -493,9 +504,7 @@ export function HomePageContent() {
                       <p className="mt-1 text-xs uppercase tracking-[0.16em] text-[#8E8A83]/78">
                         {car.location}
                       </p>
-                      <p className="mt-2 text-lg font-semibold text-[#F3EFE7]">
-                        {car.price}
-                      </p>
+                      <p className="mt-2 text-lg font-semibold text-[#F3EFE7]">{car.price}</p>
                     </div>
                     <Link
                       href={detailsHref}
@@ -509,120 +518,115 @@ export function HomePageContent() {
             );
           })}
         </div>
-
       </section>
 
       <div className="text-[#F3EFE7]">
-      <section
-        id="sell"
-        className="relative overflow-hidden"
-      >
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(9,9,9,0)_0%,rgba(16,33,27,0.18)_16%,rgba(16,33,27,0.42)_34%,rgba(24,48,40,0.72)_64%,#183028_100%)]" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_76%_38%,rgba(194,168,120,0.05),transparent_24%),radial-gradient(circle_at_22%_26%,rgba(243,239,231,0.025),transparent_22%)]" />
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(9,9,9,0.06)_0%,rgba(16,33,27,0.05)_34%,rgba(24,48,40,0.08)_72%,rgba(24,48,40,0.14)_100%)]" />
+        <section id="sell" className="relative overflow-hidden">
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(9,9,9,0)_0%,rgba(16,33,27,0.18)_16%,rgba(16,33,27,0.42)_34%,rgba(24,48,40,0.72)_64%,#183028_100%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_76%_38%,rgba(194,168,120,0.05),transparent_24%),radial-gradient(circle_at_22%_26%,rgba(243,239,231,0.025),transparent_22%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(9,9,9,0.06)_0%,rgba(16,33,27,0.05)_34%,rgba(24,48,40,0.08)_72%,rgba(24,48,40,0.14)_100%)]" />
 
-        <div className="relative mx-auto grid min-h-[540px] max-w-[1440px] gap-10 px-6 pb-20 pt-12 sm:px-10 md:pb-24 md:pt-16 lg:grid-cols-[0.42fr_0.58fr] lg:items-center lg:px-12 xl:px-20">
-          <div className="relative z-10 max-w-md lg:pl-2">
-            <p className="text-[10px] font-medium uppercase tracking-[0.4em] text-[#C2A878]/88">
-              Sell / Consign
-            </p>
-            <h2 className="mt-5 max-w-[9.5ch] font-heading text-4xl leading-[0.98] tracking-[-0.04em] text-[#F3EFE7] sm:text-5xl">
-              Best SoFlo collection.
-            </h2>
-            <div className="mt-6 h-px w-14 bg-[#C2A878]/34" />
-            <p className="mt-7 max-w-[31rem] text-sm leading-7 text-[#8E8A83]">
-              Present your vehicle through a more discreet editorial process, with specialist valuation,
-              tailored market positioning, and a buyer network shaped around collector-grade automobiles.
-            </p>
-            <Button
-              variant="secondary"
-              className="mt-8 h-9 rounded-none border-[#C2A878]/52 bg-transparent px-5 text-xs uppercase tracking-[0.2em] text-[#F3EFE7] shadow-none transition duration-300 hover:border-[#C2A878]/72 hover:bg-white/4 hover:text-[#F3EFE7]"
-              onClick={() => router.push("/inquiry")}
-            >
-              Request Valuation
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </div>
-
-          <div className="relative min-h-[400px] lg:min-h-[520px]">
-            <div className="absolute inset-x-0 bottom-0 top-6 overflow-hidden lg:top-8">
-              <Image
-                src={sellImageUrl}
-                alt="Luxury Bentley-style motor car in a warm architectural showroom"
-                fill
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                className="h-full w-full object-cover object-[50%_center] opacity-[0.97]"
-              />
-            </div>
-            <div className="absolute inset-y-0 left-0 w-14 bg-[linear-gradient(90deg,rgba(16,33,27,0.3)_0%,rgba(16,33,27,0.1)_48%,transparent_100%)]" />
-            <div className="absolute inset-y-0 right-0 w-12 bg-[linear-gradient(270deg,rgba(16,33,27,0.22)_0%,rgba(16,33,27,0.08)_44%,transparent_100%)]" />
-            <div className="absolute inset-x-0 top-0 h-10 bg-[linear-gradient(180deg,rgba(16,33,27,0.18)_0%,rgba(16,33,27,0.05)_42%,transparent_100%)]" />
-            <div className="absolute inset-x-0 bottom-0 h-10 bg-[linear-gradient(0deg,rgba(16,33,27,0.16)_0%,rgba(16,33,27,0.05)_42%,transparent_100%)]" />
-          </div>
-        </div>
-
-      </section>
-
-      <footer className="bg-[linear-gradient(180deg,#183028_0%,#10211B_100%)] text-[#F3EFE7]">
-        <div className="mx-auto max-w-[1440px] px-6 pb-8 pt-12 sm:px-10 lg:px-12 xl:px-20">
-          <div className="text-center">
-            <Link href="/" aria-label="Trilogy Garage home" className="mx-auto inline-flex">
-              <BrandLogo className="h-28 w-48" imageClassName="object-contain" />
-            </Link>
-          </div>
-
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-8">
-            {footerSocialLinks.map((item) => (
-              <Link
-                key={item}
-                href="/"
-                aria-label={`Social link ${item}`}
-                className="flex h-5 min-w-5 items-center justify-center text-[11px] font-semibold uppercase tracking-[0.05em] text-[#8E8A83] transition hover:text-white"
+          <div className="relative mx-auto grid min-h-[540px] max-w-[1440px] gap-10 px-6 pb-20 pt-12 sm:px-10 md:pb-24 md:pt-16 lg:grid-cols-[0.42fr_0.58fr] lg:items-center lg:px-12 xl:px-20">
+            <div className="relative z-10 max-w-md lg:pl-2">
+              <p className="text-[10px] font-medium uppercase tracking-[0.4em] text-[#C2A878]/88">
+                Sell / Consign
+              </p>
+              <h2 className="mt-5 max-w-[9.5ch] font-heading text-4xl leading-[0.98] tracking-[-0.04em] text-[#F3EFE7] sm:text-5xl">
+                Best SoFlo collection.
+              </h2>
+              <div className="mt-6 h-px w-14 bg-[#C2A878]/34" />
+              <p className="mt-7 max-w-[31rem] text-sm leading-7 text-[#8E8A83]">
+                Present your vehicle through a more discreet editorial process, with specialist
+                valuation, tailored market positioning, and a buyer network shaped around
+                collector-grade automobiles.
+              </p>
+              <Button
+                variant="secondary"
+                className="mt-8 h-9 rounded-none border-[#C2A878]/52 bg-transparent px-5 text-xs uppercase tracking-[0.2em] text-[#F3EFE7] shadow-none transition duration-300 hover:border-[#C2A878]/72 hover:bg-white/4 hover:text-[#F3EFE7]"
+                onClick={() => router.push("/inquiry")}
               >
-                {item}
-              </Link>
-            ))}
-          </div>
+                Request Valuation
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
 
-          <div className="mt-12 border-t border-[#C2A878]/28 pt-10">
-            <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
-              {footerColumns.map((column) => (
-                <div key={column.title}>
-                  <h3 className="text-lg font-light tracking-[0.04em] text-[#F3EFE7]">
-                    {column.title}
-                  </h3>
-                  <div className="mt-7 space-y-5">
-                    {column.links.map((item) => (
-                      <Link
-                        key={item}
-                        href="/cars"
-                        className="flex items-center gap-3 text-[11px] leading-4 text-[#8E8A83] transition hover:text-[#F3EFE7]"
-                      >
-                        {column.title === "Models" ? null : (
-                          <ExternalLink className="h-3 w-3 shrink-0" strokeWidth={1.6} />
-                        )}
-                        {item}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
+            <div className="relative min-h-[400px] lg:min-h-[520px]">
+              <div className="absolute inset-x-0 bottom-0 top-6 overflow-hidden lg:top-8">
+                <Image
+                  src={sellImageUrl}
+                  alt="Luxury Bentley-style motor car in a warm architectural showroom"
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="h-full w-full object-cover object-[50%_center] opacity-[0.97]"
+                />
+              </div>
+              <div className="absolute inset-y-0 left-0 w-14 bg-[linear-gradient(90deg,rgba(16,33,27,0.3)_0%,rgba(16,33,27,0.1)_48%,transparent_100%)]" />
+              <div className="absolute inset-y-0 right-0 w-12 bg-[linear-gradient(270deg,rgba(16,33,27,0.22)_0%,rgba(16,33,27,0.08)_44%,transparent_100%)]" />
+              <div className="absolute inset-x-0 top-0 h-10 bg-[linear-gradient(180deg,rgba(16,33,27,0.18)_0%,rgba(16,33,27,0.05)_42%,transparent_100%)]" />
+              <div className="absolute inset-x-0 bottom-0 h-10 bg-[linear-gradient(0deg,rgba(16,33,27,0.16)_0%,rgba(16,33,27,0.05)_42%,transparent_100%)]" />
+            </div>
+          </div>
+        </section>
+
+        <footer className="bg-[linear-gradient(180deg,#183028_0%,#10211B_100%)] text-[#F3EFE7]">
+          <div className="mx-auto max-w-[1440px] px-6 pb-8 pt-12 sm:px-10 lg:px-12 xl:px-20">
+            <div className="text-center">
+              <Link href="/" aria-label="Trilogy Garage home" className="mx-auto inline-flex">
+                <BrandLogo className="h-28 w-48" imageClassName="object-contain" />
+              </Link>
+            </div>
+
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-8">
+              {footerSocialLinks.map((item) => (
+                <Link
+                  key={item}
+                  href="/"
+                  aria-label={`Social link ${item}`}
+                  className="flex h-5 min-w-5 items-center justify-center text-[11px] font-semibold uppercase tracking-[0.05em] text-[#8E8A83] transition hover:text-white"
+                >
+                  {item}
+                </Link>
               ))}
             </div>
-          </div>
 
-          <div className="mt-12 border-t border-[#C2A878]/28 pt-8">
-            <div className="text-xs leading-6 text-[#8E8A83]">
-              <p>© Copyright Trilogy Garage 2026</p>
-              <p className="mt-6 max-w-3xl">
-                Registered office: Miami, Florida. Premium inventory presentation for rare,
-                refined, and collector-grade automobiles.
-              </p>
+            <div className="mt-12 border-t border-[#C2A878]/28 pt-10">
+              <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
+                {footerColumns.map((column) => (
+                  <div key={column.title}>
+                    <h3 className="text-lg font-light tracking-[0.04em] text-[#F3EFE7]">
+                      {column.title}
+                    </h3>
+                    <div className="mt-7 space-y-5">
+                      {column.links.map((item) => (
+                        <Link
+                          key={item}
+                          href="/cars"
+                          className="flex items-center gap-3 text-[11px] leading-4 text-[#8E8A83] transition hover:text-[#F3EFE7]"
+                        >
+                          {column.title === "Models" ? null : (
+                            <ExternalLink className="h-3 w-3 shrink-0" strokeWidth={1.6} />
+                          )}
+                          {item}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-12 border-t border-[#C2A878]/28 pt-8">
+              <div className="text-xs leading-6 text-[#8E8A83]">
+                <p>© Copyright Trilogy Garage 2026</p>
+                <p className="mt-6 max-w-3xl">
+                  Registered office: Miami, Florida. Premium inventory presentation for rare,
+                  refined, and collector-grade automobiles.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-      </footer>
+        </footer>
       </div>
-
     </div>
   );
 }

@@ -1,13 +1,7 @@
 "use client";
 
-import {
-  ArrowLeft,
-  Camera,
-  ChevronLeft,
-  ChevronRight,
-  Printer,
-  X,
-} from "lucide-react";
+import { ArrowLeft, Camera, ChevronLeft, ChevronRight, Printer, X } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -213,11 +207,15 @@ export function CarDetailContent({ carId }: { carId: string }) {
                 onClick={() => setActiveImageIndex(0)}
                 aria-label={`Open ${car.title} image 1 fullscreen`}
               >
-              <img
-                src={gallery[0]}
-                alt={car.title}
-                className="h-full w-full object-cover brightness-[1.04] saturate-[0.96]"
-              />
+                <Image
+                  src={gallery[0]}
+                  alt={car.title}
+                  fill
+                  priority
+                  sizes="(min-width: 1024px) 58vw, 100vw"
+                  className="object-cover brightness-[1.04] saturate-[0.96]"
+                  unoptimized
+                />
               </button>
               <div className="absolute bottom-4 left-4 inline-flex items-center gap-3 border border-[#D8D0C4] bg-[#FEFDFC]/88 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#6E6A63] backdrop-blur-sm">
                 <Camera className="h-4 w-4" strokeWidth={1.5} />
@@ -227,18 +225,24 @@ export function CarDetailContent({ carId }: { carId: string }) {
 
             <div className="grid grid-cols-2 gap-2 lg:h-[440px] lg:grid-rows-2">
               {gallery.slice(1, 5).map((image, index) => (
-                <figure key={`${image}-${index}`} className="group aspect-square overflow-hidden bg-[#EFE9DF] lg:aspect-auto lg:h-full">
+                <figure
+                  key={`${image}-${index}`}
+                  className="group relative aspect-square overflow-hidden bg-[#EFE9DF] lg:aspect-auto lg:h-full"
+                >
                   <button
                     type="button"
                     className="block h-full w-full cursor-zoom-in"
                     onClick={() => setActiveImageIndex(index + 1)}
                     aria-label={`Open ${car.title} image ${index + 2} fullscreen`}
                   >
-                  <img
-                    src={image}
-                    alt={`${car.title} supporting image ${index + 1}`}
-                    className="h-full w-full object-cover brightness-[1.03] saturate-[0.96] transition duration-700 ease-out group-hover:scale-[1.035]"
-                  />
+                    <Image
+                      src={image}
+                      alt={`${car.title} supporting image ${index + 1}`}
+                      fill
+                      sizes="(min-width: 1024px) 21vw, 50vw"
+                      className="object-cover brightness-[1.03] saturate-[0.96] transition duration-700 ease-out group-hover:scale-[1.035]"
+                      unoptimized
+                    />
                   </button>
                 </figure>
               ))}
@@ -266,7 +270,7 @@ export function CarDetailContent({ carId }: { carId: string }) {
         <div className="mx-auto flex max-w-4xl flex-col items-stretch justify-center gap-3 sm:flex-row sm:gap-4">
           <Button
             type="button"
-            className="h-11 rounded-none border border-[#DDD7CC] bg-[#FEFDFC] px-9 text-[10px] uppercase tracking-[0.3em] text-[#111111] shadow-none transition duration-300 hover:border-[#3D4C45] hover:bg-[#F5F2EC] hover:text-[#111111]"
+            className="h-11 w-full rounded-none border border-[#DDD7CC] bg-[#FEFDFC] px-9 text-[10px] uppercase tracking-[0.3em] text-[#111111] shadow-none transition duration-300 hover:border-[#3D4C45] hover:bg-[#F5F2EC] hover:text-[#111111] sm:w-auto"
             onClick={handleEnquire}
           >
             Enquire to Buy
@@ -274,7 +278,7 @@ export function CarDetailContent({ carId }: { carId: string }) {
           <Button
             type="button"
             variant="secondary"
-            className="h-11 rounded-none border-[#34483F] bg-transparent px-9 text-[10px] uppercase tracking-[0.3em] text-[#34483F] shadow-none transition duration-300 hover:bg-[#F5F2EC]"
+            className="h-11 w-full rounded-none border-[#34483F] bg-transparent px-9 text-[10px] uppercase tracking-[0.3em] text-[#34483F] shadow-none transition duration-300 hover:bg-[#F5F2EC] sm:w-auto"
             onClick={() => window.print()}
           >
             <Printer className="h-4 w-4" strokeWidth={1.5} />
@@ -341,11 +345,14 @@ export function CarDetailContent({ carId }: { carId: string }) {
               </button>
             ) : null}
 
-            <img
+            <Image
               key={activeImageIndex}
               src={gallery[activeImageIndex ?? 0]}
               alt={`${car.title} fullscreen image ${(activeImageIndex ?? 0) + 1}`}
-              className="max-h-full max-w-full scale-100 object-contain opacity-100 transition duration-300 ease-out"
+              fill
+              sizes="100vw"
+              className="scale-100 object-contain opacity-100 transition duration-300 ease-out"
+              unoptimized
             />
 
             {gallery.length > 1 ? (
@@ -367,17 +374,20 @@ export function CarDetailContent({ carId }: { carId: string }) {
                   key={`${image}-thumb-${index}`}
                   type="button"
                   onClick={() => setActiveImageIndex(index)}
-                  className={`h-16 w-24 shrink-0 overflow-hidden border transition sm:h-20 sm:w-32 ${
+                  className={`relative h-16 w-24 shrink-0 overflow-hidden border transition sm:h-20 sm:w-32 ${
                     activeImageIndex === index
                       ? "border-[#d8c7a0]"
                       : "border-white/14 opacity-60 hover:opacity-100"
                   }`}
                   aria-label={`View image ${index + 1}`}
                 >
-                  <img
+                  <Image
                     src={image}
                     alt={`${car.title} thumbnail ${index + 1}`}
-                    className="h-full w-full object-cover"
+                    fill
+                    sizes="8rem"
+                    className="object-cover"
+                    unoptimized
                   />
                 </button>
               ))}

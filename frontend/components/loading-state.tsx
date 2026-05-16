@@ -9,4 +9,3 @@ export function LoadingState({ message = "Loading..." }: { message?: string }) {
     </Card>
   );
 }
-

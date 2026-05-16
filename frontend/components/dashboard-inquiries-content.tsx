@@ -89,15 +89,15 @@ function valueOrDash(value: string | null | undefined) {
 }
 
 function displayInquiryType(value: string | null | undefined) {
-  return value ? inquiryTypeLabels[value] ?? value : "-";
+  return value ? (inquiryTypeLabels[value] ?? value) : "-";
 }
 
 function displayContactMethod(value: string | null | undefined) {
-  return value ? contactMethodLabels[value] ?? value : "-";
+  return value ? (contactMethodLabels[value] ?? value) : "-";
 }
 
 function displayTimeline(value: string | null | undefined) {
-  return value ? timelineLabels[value] ?? value : "-";
+  return value ? (timelineLabels[value] ?? value) : "-";
 }
 
 function messageText(inquiry: Inquiry) {
@@ -124,7 +124,9 @@ export function DashboardInquiriesContent() {
   const [sortKey, setSortKey] = useState<SortKey>("created_at");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [bulkStatus, setBulkStatus] = useState<InquiryStage>("contacted");
-  const [pendingStatusChanges, setPendingStatusChanges] = useState<Record<number, InquiryStage>>({});
+  const [pendingStatusChanges, setPendingStatusChanges] = useState<Record<number, InquiryStage>>(
+    {}
+  );
   const [viewingInquiry, setViewingInquiry] = useState<Inquiry | null>(null);
   const [status, setStatus] = useState("Loading inquiries...");
   const [error, setError] = useState("");
@@ -181,7 +183,8 @@ export function DashboardInquiriesContent() {
   }, [inquiries, searchTerm, sortDirection, sortKey, statusFilter, typeFilter]);
 
   const allVisibleSelected =
-    filteredInquiries.length > 0 && filteredInquiries.every((inquiry) => selectedIds.includes(inquiry.id));
+    filteredInquiries.length > 0 &&
+    filteredInquiries.every((inquiry) => selectedIds.includes(inquiry.id));
   const pendingChangeCount = Object.keys(pendingStatusChanges).length;
   const canUpdateStatuses = selectedIds.length > 0 || pendingChangeCount > 0;
 
@@ -202,10 +205,14 @@ export function DashboardInquiriesContent() {
 
   function toggleSelectAllVisible() {
     if (allVisibleSelected) {
-      setSelectedIds((current) => current.filter((id) => !filteredInquiries.some((inquiry) => inquiry.id === id)));
+      setSelectedIds((current) =>
+        current.filter((id) => !filteredInquiries.some((inquiry) => inquiry.id === id))
+      );
       return;
     }
-    setSelectedIds((current) => [...new Set([...current, ...filteredInquiries.map((inquiry) => inquiry.id)])]);
+    setSelectedIds((current) => [
+      ...new Set([...current, ...filteredInquiries.map((inquiry) => inquiry.id)]),
+    ]);
   }
 
   function handleStatusChange(id: number, nextStatus: string) {
@@ -264,7 +271,9 @@ export function DashboardInquiriesContent() {
       setPendingStatusChanges({});
       setSelectedIds([]);
     } catch (bulkError) {
-      setError(bulkError instanceof Error ? bulkError.message : "Could not update inquiry statuses.");
+      setError(
+        bulkError instanceof Error ? bulkError.message : "Could not update inquiry statuses."
+      );
     } finally {
       setIsWorking(false);
     }
@@ -294,7 +303,10 @@ export function DashboardInquiriesContent() {
   }
 
   async function handleBulkDelete() {
-    if (selectedIds.length === 0 || !window.confirm(`Delete ${selectedIds.length} selected inquiries?`)) {
+    if (
+      selectedIds.length === 0 ||
+      !window.confirm(`Delete ${selectedIds.length} selected inquiries?`)
+    ) {
       return;
     }
     setIsWorking(true);
@@ -302,7 +314,9 @@ export function DashboardInquiriesContent() {
     try {
       await bulkDeleteInquiries(selectedIds);
       setInquiries((current) => current.filter((inquiry) => !selectedIds.includes(inquiry.id)));
-      setViewingInquiry((current) => (current && selectedIds.includes(current.id) ? null : current));
+      setViewingInquiry((current) =>
+        current && selectedIds.includes(current.id) ? null : current
+      );
       setPendingStatusChanges((current) => {
         const next = { ...current };
         for (const id of selectedIds) {
@@ -312,7 +326,9 @@ export function DashboardInquiriesContent() {
       });
       setSelectedIds([]);
     } catch (deleteError) {
-      setError(deleteError instanceof Error ? deleteError.message : "Could not delete selected inquiries.");
+      setError(
+        deleteError instanceof Error ? deleteError.message : "Could not delete selected inquiries."
+      );
     } finally {
       setIsWorking(false);
     }
@@ -323,7 +339,7 @@ export function DashboardInquiriesContent() {
   }
 
   return (
-    <div className="pr-6 text-[#f3efe7] lg:pr-10 xl:pr-14">
+    <div className="text-[#f3efe7] lg:pr-10 xl:pr-14">
       <div className="mb-5 flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#C2A878]/76">
@@ -336,7 +352,7 @@ export function DashboardInquiriesContent() {
             Review, filter, sort, update, and delete customer inquiry submissions.
           </p>
         </div>
-        <div className="grid grid-cols-3 gap-3 text-right">
+        <div className="grid w-full grid-cols-3 gap-2 text-left sm:w-auto sm:gap-3 sm:text-right">
           <Metric label="Total" value={inquiries.length.toString()} />
           <Metric label="Visible" value={filteredInquiries.length.toString()} />
           <Metric label="Changes" value={(selectedIds.length + pendingChangeCount).toString()} />
@@ -350,8 +366,8 @@ export function DashboardInquiriesContent() {
       ) : null}
 
       <section className="border border-white/7 bg-[#151713]/72">
-        <div className="grid gap-3 border-b border-white/7 p-4 xl:grid-cols-[minmax(260px,1fr)_180px_180px_auto]">
-          <label className="relative">
+        <div className="grid gap-3 border-b border-white/7 p-4 sm:grid-cols-2 xl:grid-cols-[minmax(260px,1fr)_180px_180px_auto]">
+          <label className="relative sm:col-span-2 xl:col-span-1">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8E8A83]" />
             <input
               value={searchTerm}
@@ -364,22 +380,26 @@ export function DashboardInquiriesContent() {
           <select
             value={statusFilter}
             onChange={(event) => setStatusFilter(event.target.value)}
-            className="h-10 border border-white/10 bg-[#0D1411] px-3 text-sm text-[#f3efe7] outline-none focus:border-[#C2A878]/52"
+            className="h-10 w-full border border-white/10 bg-[#0D1411] px-3 text-sm text-[#f3efe7] outline-none focus:border-[#C2A878]/52"
           >
             <option value="all">All statuses</option>
             {stages.map((stage) => (
-              <option key={stage.key} value={stage.key}>{stage.label}</option>
+              <option key={stage.key} value={stage.key}>
+                {stage.label}
+              </option>
             ))}
           </select>
 
           <select
             value={typeFilter}
             onChange={(event) => setTypeFilter(event.target.value)}
-            className="h-10 border border-white/10 bg-[#0D1411] px-3 text-sm text-[#f3efe7] outline-none focus:border-[#C2A878]/52"
+            className="h-10 w-full border border-white/10 bg-[#0D1411] px-3 text-sm text-[#f3efe7] outline-none focus:border-[#C2A878]/52"
           >
             <option value="all">All types</option>
             {Object.entries(inquiryTypeLabels).map(([value, label]) => (
-              <option key={value} value={value}>{label}</option>
+              <option key={value} value={value}>
+                {label}
+              </option>
             ))}
           </select>
 
@@ -390,7 +410,7 @@ export function DashboardInquiriesContent() {
               setStatusFilter("all");
               setTypeFilter("all");
             }}
-            className="h-10 border border-white/10 px-4 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#f3efe7] transition hover:border-[#C2A878]/42"
+            className="h-10 w-full border border-white/10 px-4 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#f3efe7] transition hover:border-[#C2A878]/42"
           >
             Clear filters
           </button>
@@ -404,18 +424,20 @@ export function DashboardInquiriesContent() {
             <select
               value={bulkStatus}
               onChange={(event) => setBulkStatus(event.target.value as InquiryStage)}
-              className="h-9 border border-white/10 bg-[#0D1411] px-3 text-xs text-[#f3efe7] outline-none focus:border-[#C2A878]/52"
+              className="h-10 border border-white/10 bg-[#0D1411] px-3 text-xs text-[#f3efe7] outline-none focus:border-[#C2A878]/52"
               disabled={selectedIds.length === 0 || isWorking}
             >
               {stages.map((stage) => (
-                <option key={stage.key} value={stage.key}>{stage.label}</option>
+                <option key={stage.key} value={stage.key}>
+                  {stage.label}
+                </option>
               ))}
             </select>
             <button
               type="button"
               onClick={handleSaveStatusChanges}
               disabled={!canUpdateStatuses || isWorking}
-              className="h-9 border border-[#C2A878]/32 px-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#f3efe7] disabled:cursor-not-allowed disabled:opacity-40"
+              className="h-10 border border-[#C2A878]/32 px-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#f3efe7] disabled:cursor-not-allowed disabled:opacity-40"
             >
               <span className="inline-flex items-center gap-2">
                 <Save className="h-3.5 w-3.5" strokeWidth={1.6} />
@@ -426,7 +448,7 @@ export function DashboardInquiriesContent() {
               type="button"
               onClick={handleBulkDelete}
               disabled={selectedIds.length === 0 || isWorking}
-              className="h-9 border border-[#8F4E42]/60 px-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#F0C8BF] disabled:cursor-not-allowed disabled:opacity-40"
+              className="h-10 border border-[#8F4E42]/60 px-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#F0C8BF] disabled:cursor-not-allowed disabled:opacity-40"
             >
               Bulk delete
             </button>
@@ -436,13 +458,13 @@ export function DashboardInquiriesContent() {
             type="button"
             onClick={() => setSelectedIds([])}
             disabled={selectedIds.length === 0}
-            className="h-9 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8E8A83] transition hover:text-[#f3efe7] disabled:opacity-40"
+            className="h-10 text-left text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8E8A83] transition hover:text-[#f3efe7] disabled:opacity-40"
           >
             Clear selection
           </button>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto overscroll-x-contain">
           <table className="min-w-[1680px] w-full border-collapse text-left text-sm">
             <thead className="bg-[#0D1411] text-[10px] uppercase tracking-[0.14em] text-[#C2A878]/78">
               <tr>
@@ -498,15 +520,31 @@ export function DashboardInquiriesContent() {
                         aria-label={`Select inquiry from ${inquiry.name}`}
                       />
                     </td>
-                    <td className="px-3 py-3 align-top font-medium text-[#f3efe7]">{inquiry.name}</td>
+                    <td className="px-3 py-3 align-top font-medium text-[#f3efe7]">
+                      {inquiry.name}
+                    </td>
                     <td className="px-3 py-3 align-top text-[#d8d2c7]">{inquiry.email}</td>
-                    <td className="px-3 py-3 align-top text-[#d8d2c7]">{valueOrDash(inquiry.phone)}</td>
-                    <td className="px-3 py-3 align-top text-[#d8d2c7]">{valueOrDash(inquiry.location)}</td>
-                    <td className="px-3 py-3 align-top text-[#d8d2c7]">{displayInquiryType(inquiry.inquiry_type)}</td>
-                    <td className="px-3 py-3 align-top text-[#d8d2c7]">{valueOrDash(inquiry.vehicle_of_interest ?? inquiry.car_title)}</td>
-                    <td className="px-3 py-3 align-top text-[#d8d2c7]">{valueOrDash(inquiry.budget_range)}</td>
-                    <td className="px-3 py-3 align-top text-[#d8d2c7]">{displayContactMethod(inquiry.preferred_contact_method)}</td>
-                    <td className="px-3 py-3 align-top text-[#d8d2c7]">{displayTimeline(inquiry.timeline)}</td>
+                    <td className="px-3 py-3 align-top text-[#d8d2c7]">
+                      {valueOrDash(inquiry.phone)}
+                    </td>
+                    <td className="px-3 py-3 align-top text-[#d8d2c7]">
+                      {valueOrDash(inquiry.location)}
+                    </td>
+                    <td className="px-3 py-3 align-top text-[#d8d2c7]">
+                      {displayInquiryType(inquiry.inquiry_type)}
+                    </td>
+                    <td className="px-3 py-3 align-top text-[#d8d2c7]">
+                      {valueOrDash(inquiry.vehicle_of_interest ?? inquiry.car_title)}
+                    </td>
+                    <td className="px-3 py-3 align-top text-[#d8d2c7]">
+                      {valueOrDash(inquiry.budget_range)}
+                    </td>
+                    <td className="px-3 py-3 align-top text-[#d8d2c7]">
+                      {displayContactMethod(inquiry.preferred_contact_method)}
+                    </td>
+                    <td className="px-3 py-3 align-top text-[#d8d2c7]">
+                      {displayTimeline(inquiry.timeline)}
+                    </td>
                     <td className="px-3 py-3 align-top">
                       <select
                         value={stage}
@@ -514,15 +552,23 @@ export function DashboardInquiriesContent() {
                         className="h-8 border border-white/10 bg-[#0D1411] px-2 text-xs text-[#f3efe7] outline-none focus:border-[#C2A878]/52"
                       >
                         {stages.map((option) => (
-                          <option key={option.key} value={option.key}>{option.label}</option>
+                          <option key={option.key} value={option.key}>
+                            {option.label}
+                          </option>
                         ))}
                       </select>
                       {hasPendingChange ? (
-                        <p className="mt-1 text-[10px] uppercase tracking-[0.12em] text-[#C2A878]">Unsaved</p>
+                        <p className="mt-1 text-[10px] uppercase tracking-[0.12em] text-[#C2A878]">
+                          Unsaved
+                        </p>
                       ) : null}
                     </td>
-                    <td className="px-3 py-3 align-top text-[#d8d2c7]">{formatDate(inquiry.created_at)}</td>
-                    <td className="max-w-[280px] px-3 py-3 align-top text-[#d8d2c7]">{preview(messageText(inquiry))}</td>
+                    <td className="px-3 py-3 align-top text-[#d8d2c7]">
+                      {formatDate(inquiry.created_at)}
+                    </td>
+                    <td className="max-w-[280px] px-3 py-3 align-top text-[#d8d2c7]">
+                      {preview(messageText(inquiry))}
+                    </td>
                     <td className="px-3 py-3 align-top">
                       <div className="flex items-center gap-2">
                         <button
@@ -552,14 +598,17 @@ export function DashboardInquiriesContent() {
       </section>
 
       {viewingInquiry ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 px-4 py-6 backdrop-blur-sm sm:items-center">
           <section className="max-h-[88vh] w-full max-w-4xl overflow-y-auto border border-white/10 bg-[#151713] p-5 shadow-2xl">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-[10px] uppercase tracking-[0.18em] text-[#C2A878]/78">Inquiry details</p>
+                <p className="text-[10px] uppercase tracking-[0.18em] text-[#C2A878]/78">
+                  Inquiry details
+                </p>
                 <h2 className="mt-2 text-xl font-medium text-[#f3efe7]">{viewingInquiry.name}</h2>
                 <p className="mt-1 text-sm text-[#8E8A83]">
-                  {displayInquiryType(viewingInquiry.inquiry_type)} · {formatDate(viewingInquiry.created_at)}
+                  {displayInquiryType(viewingInquiry.inquiry_type)} ·{" "}
+                  {formatDate(viewingInquiry.created_at)}
                 </p>
               </div>
               <button
@@ -577,11 +626,25 @@ export function DashboardInquiriesContent() {
               <Detail label="Email" value={viewingInquiry.email} />
               <Detail label="Phone" value={viewingInquiry.phone} />
               <Detail label="Location" value={viewingInquiry.location} />
-              <Detail label="Inquiry type" value={displayInquiryType(viewingInquiry.inquiry_type)} />
-              <Detail label="Status" value={stages.find((stage) => stage.key === normalizeStage(viewingInquiry.state))?.label} />
-              <Detail label="Vehicle of interest" value={viewingInquiry.vehicle_of_interest ?? viewingInquiry.car_title} />
+              <Detail
+                label="Inquiry type"
+                value={displayInquiryType(viewingInquiry.inquiry_type)}
+              />
+              <Detail
+                label="Status"
+                value={
+                  stages.find((stage) => stage.key === normalizeStage(viewingInquiry.state))?.label
+                }
+              />
+              <Detail
+                label="Vehicle of interest"
+                value={viewingInquiry.vehicle_of_interest ?? viewingInquiry.car_title}
+              />
               <Detail label="Budget range" value={viewingInquiry.budget_range} />
-              <Detail label="Preferred contact" value={displayContactMethod(viewingInquiry.preferred_contact_method)} />
+              <Detail
+                label="Preferred contact"
+                value={displayContactMethod(viewingInquiry.preferred_contact_method)}
+              />
               <Detail label="Timeline" value={displayTimeline(viewingInquiry.timeline)} />
               <Detail label="Dealer" value={viewingInquiry.dealer_name} />
               <Detail label="Created" value={formatDate(viewingInquiry.created_at)} />

@@ -270,16 +270,18 @@ export function InquiryPageContent() {
             <p className="text-[10px] font-semibold uppercase tracking-[0.34em] text-[#C2A878]">
               Private Collector Desk
             </p>
-            <h1 className="mt-6 font-heading text-5xl leading-[0.94] tracking-[-0.045em] text-[#F3EFE7] sm:text-6xl lg:text-[5.2rem]">
+            <h1 className="mt-6 font-heading text-4xl leading-[0.96] tracking-[-0.045em] text-[#F3EFE7] sm:text-6xl lg:text-[5.2rem]">
               Begin a Private Conversation
             </h1>
             <div className="mt-7 h-px w-16 bg-[#C2A878]/52" />
             <p className="mt-7 max-w-xl text-sm leading-7 text-[#C8C2B7]">
-              Whether you are searching for a collector-grade automobile, considering a private sale, or requesting discreet sourcing support, our team will respond with tailored guidance.
+              Whether you are searching for a collector-grade automobile, considering a private
+              sale, or requesting discreet sourcing support, our team will respond with tailored
+              guidance.
             </p>
             <a
               href="#start-inquiry"
-              className="mt-9 inline-flex h-11 items-center gap-3 border border-[#C2A878]/45 bg-[#C2A878]/10 px-6 text-[10px] font-semibold uppercase tracking-[0.28em] text-[#F3EFE7] transition hover:border-[#C2A878]/70 hover:bg-[#C2A878]/18"
+              className="mt-9 inline-flex h-11 w-full items-center justify-center gap-3 border border-[#C2A878]/45 bg-[#C2A878]/10 px-6 text-[10px] font-semibold uppercase tracking-[0.28em] text-[#F3EFE7] transition hover:border-[#C2A878]/70 hover:bg-[#C2A878]/18 sm:w-auto"
             >
               Start Inquiry
               <ArrowRight className="h-4 w-4" strokeWidth={1.5} />
@@ -322,18 +324,80 @@ export function InquiryPageContent() {
           <form
             onSubmit={handleSubmit}
             noValidate
-            className="border border-[#C2A878]/20 bg-[#070A09]/78 p-5 shadow-[0_28px_90px_rgba(0,0,0,0.32)] backdrop-blur-md sm:p-8"
+            className="min-w-0 border border-[#C2A878]/20 bg-[#070A09]/78 p-5 shadow-[0_28px_90px_rgba(0,0,0,0.32)] backdrop-blur-md sm:p-8"
           >
             <div className="grid gap-5 md:grid-cols-2">
-              <Field label="Full name" value={form.name} onBlur={() => markTouched("name")} onChange={(value) => updateField("name", value)} error={touched.name ? errors.name : undefined} required />
-              <Field label="Email" type="email" value={form.email} onBlur={() => markTouched("email")} onChange={(value) => updateField("email", value)} error={touched.email ? errors.email : undefined} required />
-              <Field label="Phone" value={form.phone} onBlur={() => markTouched("phone")} onChange={(value) => updateField("phone", value)} error={touched.phone ? errors.phone : undefined} required />
-              <Field label="Location" value={form.location} onBlur={() => markTouched("location")} onChange={(value) => updateField("location", value)} error={touched.location ? errors.location : undefined} required />
-              <SelectField label="Inquiry type" value={form.inquiryType} options={inquiryTypes} onBlur={() => markTouched("inquiryType")} onChange={(value) => updateField("inquiryType", value as InquiryTypeValue)} error={touched.inquiryType ? errors.inquiryType : undefined} required />
-              <Field label="Vehicle of interest" value={form.vehicle} onBlur={() => markTouched("vehicle")} onChange={(value) => updateField("vehicle", value)} error={touched.vehicle ? errors.vehicle : undefined} placeholder="Model, collection, or open brief" />
-              <Field label="Budget range" value={form.budget} onBlur={() => markTouched("budget")} onChange={(value) => updateField("budget", value)} error={touched.budget ? errors.budget : undefined} placeholder="Optional" />
-              <SelectField label="Preferred contact method" value={form.contactMethod} options={contactMethods} onChange={(value) => updateField("contactMethod", value as ContactMethodValue)} />
-              <SelectField label="Timeline" value={form.timeline} options={timelines} onChange={(value) => updateField("timeline", value as TimelineValue)} className="md:col-span-2" />
+              <Field
+                label="Full name"
+                value={form.name}
+                onBlur={() => markTouched("name")}
+                onChange={(value) => updateField("name", value)}
+                error={touched.name ? errors.name : undefined}
+                required
+              />
+              <Field
+                label="Email"
+                type="email"
+                value={form.email}
+                onBlur={() => markTouched("email")}
+                onChange={(value) => updateField("email", value)}
+                error={touched.email ? errors.email : undefined}
+                required
+              />
+              <Field
+                label="Phone"
+                value={form.phone}
+                onBlur={() => markTouched("phone")}
+                onChange={(value) => updateField("phone", value)}
+                error={touched.phone ? errors.phone : undefined}
+                required
+              />
+              <Field
+                label="Location"
+                value={form.location}
+                onBlur={() => markTouched("location")}
+                onChange={(value) => updateField("location", value)}
+                error={touched.location ? errors.location : undefined}
+                required
+              />
+              <SelectField
+                label="Inquiry type"
+                value={form.inquiryType}
+                options={inquiryTypes}
+                onBlur={() => markTouched("inquiryType")}
+                onChange={(value) => updateField("inquiryType", value as InquiryTypeValue)}
+                error={touched.inquiryType ? errors.inquiryType : undefined}
+                required
+              />
+              <Field
+                label="Vehicle of interest"
+                value={form.vehicle}
+                onBlur={() => markTouched("vehicle")}
+                onChange={(value) => updateField("vehicle", value)}
+                error={touched.vehicle ? errors.vehicle : undefined}
+                placeholder="Model, collection, or open brief"
+              />
+              <Field
+                label="Budget range"
+                value={form.budget}
+                onBlur={() => markTouched("budget")}
+                onChange={(value) => updateField("budget", value)}
+                error={touched.budget ? errors.budget : undefined}
+                placeholder="Optional"
+              />
+              <SelectField
+                label="Preferred contact method"
+                value={form.contactMethod}
+                options={contactMethods}
+                onChange={(value) => updateField("contactMethod", value as ContactMethodValue)}
+              />
+              <SelectField
+                label="Timeline"
+                value={form.timeline}
+                options={timelines}
+                onChange={(value) => updateField("timeline", value as TimelineValue)}
+                className="md:col-span-2"
+              />
               <input
                 type="text"
                 name="company"
@@ -359,13 +423,17 @@ export function InquiryPageContent() {
                   placeholder="Share the vehicle, collection goal, provenance questions, or sale context you would like us to understand."
                   aria-invalid={Boolean(touched.message && errors.message)}
                   className={`mt-3 min-h-40 w-full rounded-none border bg-[#0D1411]/80 px-4 py-3 text-sm leading-7 text-[#F3EFE7] outline-none transition placeholder:text-[#8E8A83]/70 focus:ring-2 focus:ring-[#C2A878]/12 ${
-                    touched.message && errors.message ? "border-[#8F4E42]/70" : "border-[#C2A878]/24 focus:border-[#C2A878]/70"
+                    touched.message && errors.message
+                      ? "border-[#8F4E42]/70"
+                      : "border-[#C2A878]/24 focus:border-[#C2A878]/70"
                   }`}
                 />
                 {touched.message && errors.message ? (
                   <span className="mt-2 block text-xs text-[#F0C8BF]">{errors.message}</span>
                 ) : (
-                  <span className="mt-2 block text-xs text-[#8E8A83]">{form.message.trim().length}/1000 characters</span>
+                  <span className="mt-2 block text-xs text-[#8E8A83]">
+                    {form.message.trim().length}/1000 characters
+                  </span>
                 )}
               </label>
             </div>
@@ -384,7 +452,7 @@ export function InquiryPageContent() {
             <Button
               type="submit"
               disabled={!isFormValid || status === "loading"}
-              className="mt-7 h-12 rounded-none border border-[#C2A878]/48 bg-[#C2A878]/12 px-7 text-[10px] uppercase tracking-[0.28em] text-[#F3EFE7] shadow-none hover:bg-[#C2A878]/20 disabled:cursor-not-allowed disabled:opacity-45"
+              className="mt-7 h-12 w-full rounded-none border border-[#C2A878]/48 bg-[#C2A878]/12 px-7 text-[10px] uppercase tracking-[0.28em] text-[#F3EFE7] shadow-none hover:bg-[#C2A878]/20 disabled:cursor-not-allowed disabled:opacity-45 sm:w-auto"
             >
               {status === "loading" ? "Submitting..." : "Submit Private Inquiry"}
             </Button>
@@ -399,7 +467,9 @@ export function InquiryPageContent() {
             return (
               <article key={card.title} className="border border-white/10 bg-[#0D1411]/70 p-6">
                 <Icon className="h-5 w-5 text-[#C2A878]" strokeWidth={1.5} />
-                <h3 className="mt-7 font-heading text-2xl tracking-[-0.02em] text-[#F3EFE7]">{card.title}</h3>
+                <h3 className="mt-7 font-heading text-2xl tracking-[-0.02em] text-[#F3EFE7]">
+                  {card.title}
+                </h3>
                 <p className="mt-4 text-sm leading-7 text-[#8E8A83]">{card.copy}</p>
               </article>
             );

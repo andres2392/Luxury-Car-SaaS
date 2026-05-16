@@ -1,6 +1,7 @@
 "use client";
 
 import { ImageIcon, Star, UploadCloud } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -57,12 +58,7 @@ const brandOptions = [
   "Rolls-Royce",
 ];
 
-const allowedFileTypes = new Set([
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-]);
+const allowedFileTypes = new Set(["image/jpeg", "image/jpg", "image/png", "image/webp"]);
 
 export function DashboardCarForm({ mode, carId }: DashboardCarFormProps) {
   const router = useRouter();
@@ -230,9 +226,7 @@ export function DashboardCarForm({ mode, carId }: DashboardCarFormProps) {
     try {
       const payload = buildCarPayload();
       const savedCar =
-        mode === "create"
-          ? await createCar(payload)
-          : await updateCar(carId ?? "", payload);
+        mode === "create" ? await createCar(payload) : await updateCar(carId ?? "", payload);
 
       const targetCarId = savedCar.id;
 
@@ -323,7 +317,7 @@ export function DashboardCarForm({ mode, carId }: DashboardCarFormProps) {
   const imageCount = carImages.length + pendingImages.length;
 
   return (
-    <form id="dashboard-car-form" className="pr-6 text-white lg:pr-10 xl:pr-14" onSubmit={handleSubmit}>
+    <form id="dashboard-car-form" className="text-white lg:pr-10 xl:pr-14" onSubmit={handleSubmit}>
       <input
         ref={fileInputRef}
         type="file"
@@ -339,7 +333,7 @@ export function DashboardCarForm({ mode, carId }: DashboardCarFormProps) {
       <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_430px] xl:items-start">
         <main className="space-y-5">
           <section className="border border-white/6 bg-[#151916]/74 p-6 sm:p-7">
-            <div className="flex items-end justify-between gap-6 border-b border-white/8 pb-5">
+            <div className="flex flex-col items-start justify-between gap-4 border-b border-white/8 pb-5 sm:flex-row sm:items-end sm:gap-6">
               <div>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#C2A878]/78">
                   Vehicle Information
@@ -355,7 +349,10 @@ export function DashboardCarForm({ mode, carId }: DashboardCarFormProps) {
 
             <div className="mt-6 grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
               <div className="space-y-2">
-                <Label htmlFor="title" className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8f968c]">
+                <Label
+                  htmlFor="title"
+                  className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8f968c]"
+                >
                   Car name
                 </Label>
                 <Input
@@ -368,7 +365,10 @@ export function DashboardCarForm({ mode, carId }: DashboardCarFormProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="model" className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8f968c]">
+                <Label
+                  htmlFor="model"
+                  className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8f968c]"
+                >
                   Model
                 </Label>
                 <Input
@@ -393,7 +393,10 @@ export function DashboardCarForm({ mode, carId }: DashboardCarFormProps) {
             </div>
 
             <div className="mt-6 space-y-2">
-              <Label htmlFor="description" className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8f968c]">
+              <Label
+                htmlFor="description"
+                className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8f968c]"
+              >
                 Description
               </Label>
               <Textarea
@@ -418,7 +421,10 @@ export function DashboardCarForm({ mode, carId }: DashboardCarFormProps) {
 
             <div className="mt-6 grid gap-5 sm:grid-cols-3">
               <div className="space-y-2">
-                <Label htmlFor="year" className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8f968c]">
+                <Label
+                  htmlFor="year"
+                  className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8f968c]"
+                >
                   Year
                 </Label>
                 <Input
@@ -431,7 +437,10 @@ export function DashboardCarForm({ mode, carId }: DashboardCarFormProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="mileage" className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8f968c]">
+                <Label
+                  htmlFor="mileage"
+                  className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8f968c]"
+                >
                   Mileage
                 </Label>
                 <Input
@@ -444,7 +453,10 @@ export function DashboardCarForm({ mode, carId }: DashboardCarFormProps) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="price" className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8f968c]">
+                <Label
+                  htmlFor="price"
+                  className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#8f968c]"
+                >
                   Price
                 </Label>
                 <Input
@@ -462,7 +474,7 @@ export function DashboardCarForm({ mode, carId }: DashboardCarFormProps) {
         <aside className="xl:sticky xl:top-24">
           <div className="space-y-5 border border-white/8 bg-[#101310]/92 p-5 backdrop-blur-xl">
             <section className="border-b border-white/8 pb-5">
-              <div className="flex items-center justify-between gap-4">
+              <div className="flex flex-col items-stretch justify-between gap-4 sm:flex-row sm:items-center">
                 <div>
                   <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#C2A878]/78">
                     Publishing
@@ -473,7 +485,7 @@ export function DashboardCarForm({ mode, carId }: DashboardCarFormProps) {
                 </div>
                 <Button
                   type="submit"
-                  className="h-10 rounded-none border border-[#C2A878]/36 bg-transparent px-5 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#f3efe7] shadow-none hover:bg-white/[0.05]"
+                  className="h-10 w-full rounded-none border border-[#C2A878]/36 bg-transparent px-5 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#f3efe7] shadow-none hover:bg-white/[0.05] sm:w-auto"
                   disabled={isSubmitting || isUploading}
                 >
                   {isSubmitting ? "Saving..." : mode === "create" ? "Publish" : "Save"}
@@ -493,7 +505,10 @@ export function DashboardCarForm({ mode, carId }: DashboardCarFormProps) {
               <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
                 {isUserAdmin ? (
                   <div className="space-y-2">
-                    <Label htmlFor="dealer_id" className="text-[10px] uppercase tracking-[0.2em] text-[#8f968c]">
+                    <Label
+                      htmlFor="dealer_id"
+                      className="text-[10px] uppercase tracking-[0.2em] text-[#8f968c]"
+                    >
                       Dealer
                     </Label>
                     <select
@@ -522,7 +537,10 @@ export function DashboardCarForm({ mode, carId }: DashboardCarFormProps) {
                 )}
 
                 <div className="space-y-2">
-                  <Label htmlFor="brand" className="text-[10px] uppercase tracking-[0.2em] text-[#8f968c]">
+                  <Label
+                    htmlFor="brand"
+                    className="text-[10px] uppercase tracking-[0.2em] text-[#8f968c]"
+                  >
                     Brand
                   </Label>
                   <select
@@ -549,7 +567,9 @@ export function DashboardCarForm({ mode, carId }: DashboardCarFormProps) {
                     Media Gallery
                   </p>
                   <p className="mt-1 text-sm text-[#f3efe7]">
-                    {imageCount ? `${imageCount} image${imageCount === 1 ? "" : "s"} curated` : "No images yet"}
+                    {imageCount
+                      ? `${imageCount} image${imageCount === 1 ? "" : "s"} curated`
+                      : "No images yet"}
                   </p>
                 </div>
                 <ImageIcon className="h-5 w-5 text-[#C2A878]/70" strokeWidth={1.4} />
@@ -583,7 +603,9 @@ export function DashboardCarForm({ mode, carId }: DashboardCarFormProps) {
                 )}
               >
                 <UploadCloud className="h-7 w-7 text-[#C2A878]/76" strokeWidth={1.35} />
-                <p className="mt-4 text-sm font-medium text-[#f1eadf]">Curate vehicle photography</p>
+                <p className="mt-4 text-sm font-medium text-[#f1eadf]">
+                  Curate vehicle photography
+                </p>
                 <p className="mt-2 max-w-[15rem] text-xs leading-5 text-[#8f968c]">
                   Drop images here or browse. Hero, details, provenance, and interior moments.
                 </p>
@@ -603,21 +625,25 @@ export function DashboardCarForm({ mode, carId }: DashboardCarFormProps) {
                 </div>
               ) : null}
 
-              {uploadError ? (
-                <p className="mt-4 text-sm text-red-300">{uploadError}</p>
-              ) : null}
+              {uploadError ? <p className="mt-4 text-sm text-red-300">{uploadError}</p> : null}
 
               <div className="mt-5 grid gap-3">
                 {carImages.map((image) => {
                   const isFeatured = image.image_url === mainImageUrl;
 
                   return (
-                    <div key={image.id} className="group overflow-hidden border border-white/8 bg-[#151916]">
+                    <div
+                      key={image.id}
+                      className="group overflow-hidden border border-white/8 bg-[#151916]"
+                    >
                       <div className="relative aspect-[16/10] overflow-hidden">
-                        <img
+                        <Image
                           src={image.image_url}
                           alt="Vehicle upload preview"
-                          className="h-full w-full object-cover opacity-90 transition duration-500 group-hover:scale-[1.02] group-hover:opacity-100"
+                          fill
+                          sizes="(min-width: 1024px) 20vw, 100vw"
+                          className="object-cover opacity-90 transition duration-500 group-hover:scale-[1.02] group-hover:opacity-100"
+                          unoptimized
                         />
                         {isFeatured ? (
                           <div className="absolute left-3 top-3 inline-flex items-center gap-2 bg-[#101310]/80 px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] text-[#f3efe7] backdrop-blur-md">
@@ -651,15 +677,24 @@ export function DashboardCarForm({ mode, carId }: DashboardCarFormProps) {
                   const isFeatured = featuredPendingId === image.id;
 
                   return (
-                    <div key={image.id} className="group overflow-hidden border border-white/8 bg-[#151916]">
+                    <div
+                      key={image.id}
+                      className="group overflow-hidden border border-white/8 bg-[#151916]"
+                    >
                       <div className="relative aspect-[16/10] overflow-hidden">
-                        <img
+                        <Image
                           src={image.previewUrl}
                           alt="Pending vehicle upload"
-                          className="h-full w-full object-cover opacity-90 transition duration-500 group-hover:scale-[1.02] group-hover:opacity-100"
+                          fill
+                          sizes="(min-width: 1024px) 20vw, 100vw"
+                          className="object-cover opacity-90 transition duration-500 group-hover:scale-[1.02] group-hover:opacity-100"
+                          unoptimized
                         />
                         <div className="absolute left-3 top-3 inline-flex items-center gap-2 bg-[#101310]/80 px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] text-[#f3efe7] backdrop-blur-md">
-                          <Star className="h-3 w-3 text-[#C2A878]" fill={isFeatured ? "currentColor" : "none"} />
+                          <Star
+                            className="h-3 w-3 text-[#C2A878]"
+                            fill={isFeatured ? "currentColor" : "none"}
+                          />
                           {isFeatured ? "Featured on save" : "Pending"}
                         </div>
                       </div>

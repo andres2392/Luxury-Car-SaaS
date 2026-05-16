@@ -4,7 +4,7 @@ Luxury-Car-SaaS is a premium vehicle marketplace and dealer operations platform.
 
 ## Stack
 
-- Frontend: Next.js 15 App Router, React 19, TypeScript, Tailwind CSS, shadcn/ui-style components
+- Frontend: Next.js 15 App Router, React 19, TypeScript, Tailwind CSS, app-owned UI primitives
 - Backend: FastAPI, SQLAlchemy, Pydantic, Alembic
 - Database: PostgreSQL
 - Storage: Supabase Storage for uploaded car images
@@ -43,7 +43,8 @@ Luxury-Car-SaaS/
 │   ├── components/           # UI and feature components
 │   ├── hooks/                # Client hooks
 │   ├── lib/                  # API, auth, types, utilities
-│   └── public/               # Static visual assets
+│   ├── public/               # Static visual assets
+│   └── src/                  # Production tokens, primitives, and layout helpers
 └── infra/
     └── docker-compose.yml
 ```
@@ -70,6 +71,9 @@ Frontend:
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
+Only `NEXT_PUBLIC_*` values are exposed to browser code. Do not place backend secrets in
+`frontend/.env.local`.
+
 Backend Supabase image storage:
 
 ```env
@@ -85,6 +89,14 @@ ADMIN_EMAIL=admin@luxury.owner
 ```
 
 The Supabase service role key is used only by the backend and must not be exposed to the frontend.
+
+Backend security-critical values:
+
+```env
+SECRET_KEY=replace-with-a-long-random-secret-at-least-32-characters
+BACKEND_CORS_ORIGINS=http://localhost:3000
+DATABASE_URL=postgresql+psycopg://...
+```
 
 ## Run Locally
 
@@ -117,17 +129,6 @@ Health check:
 ```bash
 curl http://localhost:8000/health
 ```
-
-## Docker Compose
-
-If Docker is available, the local infrastructure can be started from `infra/`:
-
-```bash
-cd infra
-docker compose up --build
-```
-
-This starts PostgreSQL on `localhost:5432` and the FastAPI backend on `localhost:8000`.
 
 ## Database Workflow
 
@@ -168,7 +169,6 @@ Frontend routes:
 API routes:
 
 - `GET /health`
-- `POST /auth/signup`
 - `POST /auth/login`
 - `GET /cars`
 - `GET /cars/{id}`
@@ -183,6 +183,10 @@ API routes:
 - `POST /inquiries`
 - `GET /inquiries`
 - `PATCH /inquiries/{id}`
+- `PATCH /inquiries/{id}/status`
+- `DELETE /inquiries/{id}`
+- `PATCH /inquiries/bulk-status`
+- `DELETE /inquiries/bulk`
 
 ## Dashboard Image Uploads
 
@@ -196,15 +200,57 @@ The dashboard listing editor supports drag-and-drop or click-to-browse image upl
 
 ## Verification
 
-Frontend production build:
+Frontend checks:
 
 ```bash
 cd frontend
+npm run format:check
+npm run lint
+npm run typecheck
 npm run build
+npm run verify
 ```
 
-Backend syntax check:
+Backend checks:
 
 ```bash
-python3 -m compileall -q backend/app backend/scripts backend/alembic
+cd backend
+python -m compileall app
+alembic current
+alembic upgrade head
+pytest
 ```
+
+Root Makefile shortcuts:
+
+```bash
+make dev-frontend
+make dev-backend
+make frontend-check
+make backend-check
+make verify
+```
+
+`pytest` currently reports no collected tests unless test files are added.
+
+## Design System
+
+The frontend keeps production design foundations in:
+
+- `frontend/src/theme/tokens.ts`
+- `frontend/app/globals.css`
+- `frontend/tailwind.config.ts`
+- `frontend/src/components/ui`
+- `frontend/src/components/layout`
+
+The active visual direction remains the same dark collector green, black, ivory,
+warm muted text, and champagne accent palette. Prefer semantic variables and
+tokens for new code instead of introducing new hex values.
+
+## Troubleshooting
+
+- If Alembic fails under Python 3.14, use Python 3.12 for the backend environment.
+- If image uploads fail, confirm `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and
+  `SUPABASE_STORAGE_BUCKET` are present in `backend/.env`.
+- If the frontend cannot reach the API, confirm `NEXT_PUBLIC_API_URL` points to the
+  FastAPI origin and that `BACKEND_CORS_ORIGINS` includes the frontend origin.

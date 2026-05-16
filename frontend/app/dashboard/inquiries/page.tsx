@@ -3,4 +3,3 @@ import { DashboardInquiriesContent } from "@/components/dashboard-inquiries-cont
 export default function DashboardInquiriesPage() {
   return <DashboardInquiriesContent />;
 }
-

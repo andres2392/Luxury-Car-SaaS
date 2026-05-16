@@ -10,7 +10,13 @@ const footerColumns = [
   },
   {
     title: "Your Collection",
-    links: ["Service and Maintenance", "Ownership Support", "Technology", "Finance Services", "Accessories"],
+    links: [
+      "Service and Maintenance",
+      "Ownership Support",
+      "Technology",
+      "Finance Services",
+      "Accessories",
+    ],
   },
   {
     title: "Lifestyle",
@@ -18,11 +24,27 @@ const footerColumns = [
   },
   {
     title: "About",
-    links: ["News", "Environmental Foundation", "Beyond 100+", "History and Heritage", "People and Expertise", "Factory Tours"],
+    links: [
+      "News",
+      "Environmental Foundation",
+      "Beyond 100+",
+      "History and Heritage",
+      "People and Expertise",
+      "Factory Tours",
+    ],
   },
   {
     title: "Corporate",
-    links: ["Sitemap", "Contact Us", "Terms and Conditions", "Privacy Policy", "Cookies Policy", "Cookie Settings", "Recalls", "Battery Passport"],
+    links: [
+      "Sitemap",
+      "Contact Us",
+      "Terms and Conditions",
+      "Privacy Policy",
+      "Cookies Policy",
+      "Cookie Settings",
+      "Recalls",
+      "Battery Passport",
+    ],
   },
 ];
 
@@ -38,12 +60,12 @@ export function SiteFooter({
     variant === "inquiry"
       ? "bg-[#090909] text-[#F3EFE7]"
       : variant === "dark"
-      ? "bg-[linear-gradient(180deg,#183028_0%,#10211B_100%)] text-[#F3EFE7]"
-      : variant === "detail"
-        ? "bg-[#FEFDFC] text-[#111111]"
-        : variant === "ivory"
+        ? "bg-[linear-gradient(180deg,#183028_0%,#10211B_100%)] text-[#F3EFE7]"
+        : variant === "detail"
           ? "bg-[#FEFDFC] text-[#111111]"
-          : "bg-[#FEFDFC] text-[#111111]";
+          : variant === "ivory"
+            ? "bg-[#FEFDFC] text-[#111111]"
+            : "bg-[#FEFDFC] text-[#111111]";
   const dividerClass = isDark ? "border-[#C2A878]/28" : "border-[#D9D2C6]";
   const mutedClass = isDark ? "text-[#8E8A83]" : "text-[#6F6A63]";
   const linkClass = isDark
@@ -100,8 +122,8 @@ export function SiteFooter({
           <div className={`text-xs leading-6 ${mutedClass}`}>
             <p>© Copyright Trilogy Garage 2026</p>
             <p className="mt-6 max-w-3xl">
-              Registered office: Miami, Florida. Premium inventory presentation for rare,
-              refined, and collector-grade automobiles.
+              Registered office: Miami, Florida. Premium inventory presentation for rare, refined,
+              and collector-grade automobiles.
             </p>
           </div>
         </div>

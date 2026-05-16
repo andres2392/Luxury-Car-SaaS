@@ -1,9 +1,7 @@
 import { clearAuthSession, getStoredToken } from "@/lib/auth";
+import { env } from "@/src/lib/env";
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ??
-  process.env.NEXT_PUBLIC_API_BASE_URL ??
-  "http://localhost:8000";
+const API_BASE_URL = env.NEXT_PUBLIC_API_URL;
 
 export class APIError extends Error {
   status: number;
@@ -116,8 +114,7 @@ export function buildQueryString<T extends object>(params: T) {
   for (const [key, value] of Object.entries(params) as Array<
     [string, string | number | undefined]
   >) {
-    const normalizedValue =
-      typeof value === "number" ? String(value) : value?.trim();
+    const normalizedValue = typeof value === "number" ? String(value) : value?.trim();
 
     if (normalizedValue) {
       searchParams.set(key, normalizedValue);

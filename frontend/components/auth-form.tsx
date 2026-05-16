@@ -78,16 +78,20 @@ export function AuthForm() {
             <p className="text-[10px] font-semibold uppercase tracking-[0.34em] text-[#C2A878]">
               Platform Access
             </p>
-            <h1 className="mt-5 max-w-md font-heading text-5xl leading-[0.92] tracking-[-0.045em] text-[#F3EFE7] sm:text-6xl">
+            <h1 className="mt-5 max-w-md font-heading text-4xl leading-[0.94] tracking-[-0.045em] text-[#F3EFE7] sm:text-6xl">
               Welcome back.
             </h1>
             <p className="mt-6 max-w-md text-sm leading-7 text-[#8E8A83]">
-              Sign in to manage inventory, review inquiries, and operate the private dealership platform.
+              Sign in to manage inventory, review inquiries, and operate the private dealership
+              platform.
             </p>
 
             <form className="mt-10 space-y-6" onSubmit={handleSubmit}>
               <div className="space-y-3">
-                <Label htmlFor="email" className="text-[10px] font-semibold uppercase tracking-[0.26em] text-[#F3EFE7]/68">
+                <Label
+                  htmlFor="email"
+                  className="text-[10px] font-semibold uppercase tracking-[0.26em] text-[#F3EFE7]/68"
+                >
                   Email
                 </Label>
                 <Input
@@ -101,7 +105,10 @@ export function AuthForm() {
               </div>
 
               <div className="space-y-3">
-                <Label htmlFor="password" className="text-[10px] font-semibold uppercase tracking-[0.26em] text-[#F3EFE7]/68">
+                <Label
+                  htmlFor="password"
+                  className="text-[10px] font-semibold uppercase tracking-[0.26em] text-[#F3EFE7]/68"
+                >
                   Password
                 </Label>
                 <Input

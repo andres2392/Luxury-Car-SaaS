@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight, Camera, ChevronDown, ChevronRight, MapPin } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
@@ -168,17 +169,12 @@ export function CarsPageContent({
           car.mileage <= 10000) ||
         (normalizedMileage === "10,000+ mi" && car.mileage > 10000);
 
-      const haystack = `${car.title} ${car.description ?? ""} ${car.brand} ${car.model}`.toLowerCase();
+      const haystack =
+        `${car.title} ${car.description ?? ""} ${car.brand} ${car.model}`.toLowerCase();
       const matchesBodyType = !bodyType || haystack.includes(bodyType.toLowerCase());
       const matchesExterior = !exteriorColor || haystack.includes(exteriorColor.toLowerCase());
 
-      return (
-        matchesSearch &&
-        matchesModel &&
-        matchesMileage &&
-        matchesBodyType &&
-        matchesExterior
-      );
+      return matchesSearch && matchesModel && matchesMileage && matchesBodyType && matchesExterior;
     });
   }, [bodyType, cars, exteriorColor, mileage, model, search]);
 
@@ -198,7 +194,7 @@ export function CarsPageContent({
   return (
     <div className="min-h-screen bg-[#FEFDFC] text-[#111111]">
       <section id="inventory" className="bg-[#FEFDFC]">
-        <div className="mx-auto max-w-[1620px] px-7 pb-4 pt-2 sm:px-12 lg:px-16">
+        <div className="mx-auto max-w-[1620px] px-4 pb-4 pt-2 sm:px-12 lg:px-16">
           <div className="grid gap-8 lg:grid-cols-[240px_minmax(0,1fr)] lg:items-center">
             <div className="flex h-11 items-center -translate-y-0.5">
               <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[#8B877F]">
@@ -221,7 +217,7 @@ export function CarsPageContent({
         </div>
       </section>
 
-      <section className="mx-auto max-w-[1620px] px-7 pb-12 pt-6 sm:px-12 lg:px-16 lg:pb-14 lg:pt-8">
+      <section className="mx-auto max-w-[1620px] px-4 pb-12 pt-6 sm:px-12 lg:px-16 lg:pb-14 lg:pt-8">
         <div className="grid gap-12 lg:grid-cols-[240px_minmax(0,1fr)]">
           <aside className="h-fit bg-[#FEFDFC]">
             <div className="space-y-4 bg-[#FEFDFC] px-1 py-1">
@@ -320,130 +316,139 @@ export function CarsPageContent({
               <p className="text-sm text-[#6E6A63]">No vehicles found.</p>
             ) : (
               <>
-              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {paginatedCars.map((car, index) => {
-                  const gallery = buildGallery(car, index);
-                  const photoCount = (car.image_urls?.length ?? 0) + (car.main_image_url ? 1 : 0);
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                  {paginatedCars.map((car, index) => {
+                    const gallery = buildGallery(car, index);
+                    const photoCount = (car.image_urls?.length ?? 0) + (car.main_image_url ? 1 : 0);
 
-                  return (
-                    <Link
-                      key={car.id}
-                      href={`/cars/${car.id}`}
-                      scroll
-                      className="group flex h-full flex-col overflow-hidden border border-[#DDD7CC] bg-white transition-colors hover:border-[#C5B48A]"
-                    >
-                      <div className="relative aspect-[16/10] overflow-hidden bg-[#F5F2EC]">
-                        <img
-                          src={gallery[0]}
-                          alt={car.title}
-                          className="h-full w-full object-cover brightness-[1.05] contrast-[0.98] transition duration-500 group-hover:scale-[1.015]"
-                        />
-                        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.02)_0%,rgba(255,255,255,0)_58%,rgba(245,242,236,0.08)_100%)]" />
-                        <div className="absolute right-4 top-4 inline-flex items-center gap-2 bg-[#ffffff]/92 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#6E6A63]">
-                          <Camera className="h-4 w-4 text-[#3D4C45]" />
-                          {photoCount || gallery.length}
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-3 gap-px border-y border-[#DDD7CC] bg-[#DDD7CC]">
-                        {gallery.slice(1, 4).map((thumbnail, thumbnailIndex) => (
-                          <div key={`${car.id}-${thumbnailIndex}`} className="aspect-[16/10] bg-[#F5F2EC]">
-                            <img
-                              src={thumbnail}
-                              alt={`${car.title} gallery view ${thumbnailIndex + 1}`}
-                              className="h-full w-full object-cover brightness-[1.03]"
-                            />
-                          </div>
-                        ))}
-                      </div>
-
-                      <div className="flex flex-1 flex-col space-y-6 p-7">
-                        <div className="space-y-3">
-                          <h2
-                            className="min-h-[3.54rem] font-heading text-[1.55rem] leading-[1.14] tracking-[-0.03em] text-[#111111]"
-                            style={{
-                              display: "-webkit-box",
-                              WebkitLineClamp: 2,
-                              WebkitBoxOrient: "vertical",
-                              overflow: "hidden",
-                            }}
-                          >
-                            {car.title}
-                          </h2>
-                          <p
-                            className="text-sm leading-6 text-[#6E6A63]"
-                            style={{
-                              display: "-webkit-box",
-                              WebkitLineClamp: 2,
-                              WebkitBoxOrient: "vertical",
-                              overflow: "hidden",
-                            }}
-                          >
-                            {buildSubtitle(car)}
-                          </p>
-                          <p className="text-[1.7rem] font-light tracking-[-0.03em] text-[#111111]">
-                            {formatPrice(car.price)}
-                          </p>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-3 border-t border-[#DDD7CC] pt-5 text-[11px] uppercase tracking-[0.18em] text-[#8B877F]">
-                          <span>{car.year}</span>
-                          <span>{formatMileage(car.mileage)}</span>
-                        </div>
-
-                        <div className="mt-auto border-t border-[#DDD7CC] pt-5">
-                          <div className="flex items-center gap-2 text-sm text-[#6E6A63]">
-                            <MapPin className="h-4 w-4 text-[#3D4C45]" />
-                            {buildLocation(car)}
-                          </div>
-                          <span className="mt-5 inline-flex h-11 items-center gap-2 px-5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#3D4C45] transition group-hover:text-[#111111]">
-                            View Details
-                            <ChevronRight className="h-4 w-4" />
-                          </span>
-                        </div>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-              <div className="flex flex-col items-center justify-between gap-6 border-t border-[#DDD7CC] pt-8 sm:flex-row">
-                <p className="text-sm text-[#6E6A63]">
-                  Showing {(visiblePage - 1) * carsPerPage + 1}-
-                  {Math.min(visiblePage * carsPerPage, filteredCars.length)} of{" "}
-                  {filteredCars.length} vehicles
-                </p>
-
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2">
-                    {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
-                      <button
-                        key={page}
-                        type="button"
-                        onClick={() => goToPage(page)}
-                        className={`flex h-10 w-10 items-center justify-center border text-sm transition ${
-                          visiblePage === page
-                            ? "border-[#3D4C45] bg-[#3D4C45] text-white"
-                            : "border-[#DDD7CC] bg-white text-[#111111] hover:border-[#3D4C45]"
-                        }`}
-                        aria-label={`Go to page ${page}`}
-                        aria-current={visiblePage === page ? "page" : undefined}
+                    return (
+                      <Link
+                        key={car.id}
+                        href={`/cars/${car.id}`}
+                        scroll
+                        className="group flex h-full flex-col overflow-hidden border border-[#DDD7CC] bg-white transition-colors hover:border-[#C5B48A]"
                       >
-                        {page}
-                      </button>
-                    ))}
-                  </div>
+                        <div className="relative aspect-[16/10] overflow-hidden bg-[#F5F2EC]">
+                          <Image
+                            src={gallery[0]}
+                            alt={car.title}
+                            fill
+                            sizes="(min-width: 1280px) 25vw, (min-width: 768px) 40vw, 100vw"
+                            className="object-cover brightness-[1.05] contrast-[0.98] transition duration-500 group-hover:scale-[1.015]"
+                            unoptimized
+                          />
+                          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.02)_0%,rgba(255,255,255,0)_58%,rgba(245,242,236,0.08)_100%)]" />
+                          <div className="absolute right-4 top-4 inline-flex items-center gap-2 bg-[#ffffff]/92 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#6E6A63]">
+                            <Camera className="h-4 w-4 text-[#3D4C45]" />
+                            {photoCount || gallery.length}
+                          </div>
+                        </div>
 
-                  <button
-                    type="button"
-                    onClick={() => goToPage(visiblePage + 1)}
-                    disabled={visiblePage >= totalPages}
-                    className="flex h-10 w-10 items-center justify-center border border-[#DDD7CC] bg-white text-[#3D4C45] transition hover:border-[#3D4C45] disabled:cursor-not-allowed disabled:opacity-40"
-                    aria-label="Next page"
-                  >
-                    <ArrowRight className="h-4 w-4" />
-                  </button>
+                        <div className="grid grid-cols-3 gap-px border-y border-[#DDD7CC] bg-[#DDD7CC]">
+                          {gallery.slice(1, 4).map((thumbnail, thumbnailIndex) => (
+                            <div
+                              key={`${car.id}-${thumbnailIndex}`}
+                              className="relative aspect-[16/10] bg-[#F5F2EC]"
+                            >
+                              <Image
+                                src={thumbnail}
+                                alt={`${car.title} gallery view ${thumbnailIndex + 1}`}
+                                fill
+                                sizes="(min-width: 1280px) 8vw, (min-width: 768px) 14vw, 33vw"
+                                className="object-cover brightness-[1.03]"
+                                unoptimized
+                              />
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="flex flex-1 flex-col space-y-5 p-5 sm:space-y-6 sm:p-7">
+                          <div className="space-y-3">
+                            <h2
+                              className="min-h-[3.54rem] font-heading text-[1.55rem] leading-[1.14] tracking-[-0.03em] text-[#111111]"
+                              style={{
+                                display: "-webkit-box",
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: "vertical",
+                                overflow: "hidden",
+                              }}
+                            >
+                              {car.title}
+                            </h2>
+                            <p
+                              className="text-sm leading-6 text-[#6E6A63]"
+                              style={{
+                                display: "-webkit-box",
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: "vertical",
+                                overflow: "hidden",
+                              }}
+                            >
+                              {buildSubtitle(car)}
+                            </p>
+                            <p className="text-[1.45rem] font-light tracking-[-0.03em] text-[#111111] sm:text-[1.7rem]">
+                              {formatPrice(car.price)}
+                            </p>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-x-4 gap-y-3 border-t border-[#DDD7CC] pt-5 text-[11px] uppercase tracking-[0.18em] text-[#8B877F]">
+                            <span>{car.year}</span>
+                            <span>{formatMileage(car.mileage)}</span>
+                          </div>
+
+                          <div className="mt-auto border-t border-[#DDD7CC] pt-5">
+                            <div className="flex items-center gap-2 text-sm text-[#6E6A63]">
+                              <MapPin className="h-4 w-4 text-[#3D4C45]" />
+                              {buildLocation(car)}
+                            </div>
+                            <span className="mt-5 inline-flex h-11 items-center gap-2 px-5 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#3D4C45] transition group-hover:text-[#111111]">
+                              View Details
+                              <ChevronRight className="h-4 w-4" />
+                            </span>
+                          </div>
+                        </div>
+                      </Link>
+                    );
+                  })}
                 </div>
-              </div>
+                <div className="flex flex-col items-center justify-between gap-6 border-t border-[#DDD7CC] pt-8 sm:flex-row">
+                  <p className="text-sm text-[#6E6A63]">
+                    Showing {(visiblePage - 1) * carsPerPage + 1}-
+                    {Math.min(visiblePage * carsPerPage, filteredCars.length)} of{" "}
+                    {filteredCars.length} vehicles
+                  </p>
+
+                  <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-end">
+                    <div className="flex flex-wrap items-center justify-center gap-2">
+                      {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+                        <button
+                          key={page}
+                          type="button"
+                          onClick={() => goToPage(page)}
+                          className={`flex h-10 w-10 items-center justify-center border text-sm transition ${
+                            visiblePage === page
+                              ? "border-[#3D4C45] bg-[#3D4C45] text-white"
+                              : "border-[#DDD7CC] bg-white text-[#111111] hover:border-[#3D4C45]"
+                          }`}
+                          aria-label={`Go to page ${page}`}
+                          aria-current={visiblePage === page ? "page" : undefined}
+                        >
+                          {page}
+                        </button>
+                      ))}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => goToPage(visiblePage + 1)}
+                      disabled={visiblePage >= totalPages}
+                      className="flex h-10 w-10 items-center justify-center border border-[#DDD7CC] bg-white text-[#3D4C45] transition hover:border-[#3D4C45] disabled:cursor-not-allowed disabled:opacity-40"
+                      aria-label="Next page"
+                    >
+                      <ArrowRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
               </>
             )}
           </div>
