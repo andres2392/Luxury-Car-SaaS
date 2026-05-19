@@ -57,7 +57,6 @@ Luxury-Car-SaaS/
 - Supabase project and storage bucket for production-style image uploads
 
 ## Environment
-
 Create frontend and backend environment files from the examples:
 
 ```bash
